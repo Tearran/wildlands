@@ -42,7 +42,8 @@
 
                 main {
                         display: grid;
-                        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+                        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+                        align-items: start;
                         gap: clamp(1rem, 3vw, 2rem);
                         width: min(100%, 80rem);
                         margin: 0 auto;
@@ -55,6 +56,16 @@
                         border: 1px solid #1e293b;
                         border-radius: 1rem;
                         background: rgb(15 23 42 / 0.7);
+                }
+
+                main > section:first-child {
+                        max-height: calc(100vh - 3rem);
+                        overflow-y: auto;
+                }
+
+                main > section:last-child {
+                        position: sticky;
+                        top: 1.5rem;
                 }
 
                 #cardForm {
@@ -210,6 +221,16 @@
                 @media (max-width: 1023px) {
                         main {
                                 grid-template-columns: minmax(0, 1fr);
+                        }
+
+                        main > section:first-child {
+                                max-height: none;
+                                overflow-y: visible;
+                        }
+
+                        main > section:last-child {
+                                position: static;
+                                top: auto;
                         }
 
                         #cardPreviewContainer {
