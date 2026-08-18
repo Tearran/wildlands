@@ -91,6 +91,70 @@
                         margin-bottom: 0.375rem;
                 }
 
+                #rules_text_group {
+                        margin-bottom: 1.5rem;
+                        padding-bottom: 1.5rem;
+                        border-bottom: 1px solid #1e293b;
+                }
+
+                #rules_text_group label {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 0.75rem;
+                        margin-bottom: 0.375rem;
+                        font-size: 0.75rem;
+                        font-weight: 500;
+                        color: #94a3b8;
+                }
+
+                #rules_text_input {
+                        width: 100%;
+                        min-height: 6rem;
+                        padding: 0.625rem 0.75rem;
+                        border: 1px solid #1e293b;
+                        border-radius: 0.5rem;
+                        background: #020617;
+                        color: #e2e8f0;
+                        font: inherit;
+                        resize: vertical;
+                }
+
+                #rules_text_input:focus {
+                        border-color: #6366f1;
+                        outline: 2px solid transparent;
+                        box-shadow: 0 0 0 2px rgb(99 102 241 / 0.35);
+                }
+
+                #rules_text_group .rules_text_actions {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 0.75rem;
+                        margin-top: 0.75rem;
+                }
+
+                #apply_rules_text {
+                        background: #4f46e5;
+                        color: #fff;
+                        font-weight: 500;
+                        padding: 0 1.25rem;
+                }
+
+                #apply_rules_text:hover {
+                        background: #6366f1;
+                }
+
+                #rules_text_status {
+                        font-size: 0.7rem;
+                        font-family: monospace;
+                        color: #64748b;
+                }
+
+                #rules_text_status.rules-text-warning {
+                        color: #fbbf24;
+                        font-weight: 700;
+                }
+
                 #cardForm > div:nth-child(1) {
                         display: grid;
                         grid-template-columns: minmax(5rem, 1fr) minmax(0, 3fr);
@@ -246,6 +310,18 @@
                                         <h2 class="text-lg font-bold text-slate-200">Configure Card Variables</h2>
                                         <p class="text-xs text-slate-400 mt-1">Fill out the variables below. Character
                                                 constraints are strictly enforced automatically.</p>
+                                </div>
+
+                                <div id="rules_text_group">
+                                        <label for="rules_text_input">
+                                                <span>Paragraph Input</span>
+                                        </label>
+                                        <textarea id="rules_text_input" rows="4"
+                                                placeholder="Paste or type a paragraph here. Apply Text wraps it into Line 1 - Line 8, respecting each line's character limit."></textarea>
+                                        <div class="rules_text_actions">
+                                                <button type="button" id="apply_rules_text">Apply Text</button>
+                                                <span id="rules_text_status">Paste text above, then Apply.</span>
+                                        </div>
                                 </div>
 
                                 <form id="cardForm" class="space-y-5">
@@ -520,6 +596,9 @@
                 const btnDownload = document.getElementById('btnDownload');
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toastMessage');
+                const rulesTextInput = document.getElementById('rules_text_input');
+                const applyRulesTextBtn = document.getElementById('apply_rules_text');
+                const rulesTextStatus = document.getElementById('rules_text_status');
 
                 // Initialize Counter Listeners & Triggers
                 function setupValidation() {
@@ -692,12 +771,161 @@
                         });
                 }
 
+                // Read the per-line character limits straight from the line_1..line_8 inputs
+                function getLineFieldLimits() {
+                        const limits = [];
+                        for (let i = 1; i <= 8; i++) {
+                                const el = document.getElementById(`line_${i}`);
+                                const max = el ? parseInt(el.getAttribute('maxlength'), 10) : 0;
+                                limits.push(Number.isFinite(max) ? max : 0);
+                        }
+                        return limits;
+                }
+
+                // Wrap a pasted paragraph into a set of lines that respect per-line limits.
+                // Manual newlines are treated as requested line boundaries, wrapping otherwise
+                // prefers whitespace, and a word is only split when it exceeds a whole line.
+                function wrapTextToCardLines(text, limits) {
+                        const paragraphs = text.split('\n').map(p => p.replace(/[ \t]+/g, ' ').trim());
+
+                        const outputLines = [];
+                        const overflowParagraphs = [];
+                        let capacityReached = false;
+                        let currentLine = '';
+
+                        const hasCapacity = () => outputLines.length < limits.length;
+
+                        const flushCurrentLine = () => {
+                                if (hasCapacity()) {
+                                        outputLines.push(currentLine);
+                                } else {
+                                        capacityReached = true;
+                                }
+                                currentLine = '';
+                        };
+
+                        for (let p = 0; p < paragraphs.length; p++) {
+                                if (capacityReached) {
+                                        overflowParagraphs.push(paragraphs[p]);
+                                        continue;
+                                }
+
+                                // A manual (pasted) newline always starts a new output line.
+                                if (p > 0) {
+                                        flushCurrentLine();
+                                        if (capacityReached) {
+                                                overflowParagraphs.push(paragraphs[p]);
+                                                continue;
+                                        }
+                                }
+
+                                if (paragraphs[p] === '') {
+                                        if (hasCapacity()) {
+                                                outputLines.push('');
+                                        } else {
+                                                capacityReached = true;
+                                                overflowParagraphs.push('');
+                                        }
+                                        continue;
+                                }
+
+                                const words = paragraphs[p].split(' ');
+
+                                for (let w = 0; w < words.length; w++) {
+                                        let word = words[w];
+
+                                        // Split a word only once it exceeds the limit of the line it would start.
+                                        while (hasCapacity() && word.length > limits[outputLines.length]) {
+                                                if (currentLine) {
+                                                        flushCurrentLine();
+                                                        if (capacityReached) break;
+                                                        continue;
+                                                }
+                                                const lineLimit = limits[outputLines.length];
+                                                outputLines.push(word.slice(0, lineLimit));
+                                                word = word.slice(lineLimit);
+                                        }
+
+                                        if (!hasCapacity()) {
+                                                capacityReached = true;
+                                                const remaining = [word, ...words.slice(w + 1)].join(' ').trim();
+                                                if (remaining) overflowParagraphs.push(remaining);
+                                                break;
+                                        }
+
+                                        const candidate = currentLine ? `${currentLine} ${word}` : word;
+                                        if (candidate.length <= limits[outputLines.length]) {
+                                                currentLine = candidate;
+                                        } else {
+                                                flushCurrentLine();
+                                                if (capacityReached) {
+                                                        const remaining = words.slice(w).join(' ');
+                                                        if (remaining) overflowParagraphs.push(remaining);
+                                                        break;
+                                                }
+                                                currentLine = word;
+                                        }
+                                }
+                        }
+
+                        if (currentLine) {
+                                if (hasCapacity()) {
+                                        outputLines.push(currentLine);
+                                        currentLine = '';
+                                } else {
+                                        capacityReached = true;
+                                        overflowParagraphs.unshift(currentLine);
+                                }
+                        }
+
+                        return { lines: outputLines, overflow: overflowParagraphs.join('\n') };
+                }
+
+                // Apply the paragraph textarea to line_1..line_8, then reuse the existing
+                // per-field counter/render pipeline by dispatching input events.
+                function applyRulesText() {
+                        const rawText = rulesTextInput.value;
+
+                        if (!rawText.trim()) {
+                                rulesTextStatus.textContent = 'Enter text above, then Apply.';
+                                rulesTextStatus.classList.remove('rules-text-warning');
+                                return;
+                        }
+
+                        const limits = getLineFieldLimits();
+                        const { lines, overflow } = wrapTextToCardLines(rawText, limits);
+
+                        for (let i = 0; i < limits.length; i++) {
+                                const el = document.getElementById(`line_${i + 1}`);
+                                if (!el) continue;
+                                el.value = lines[i] || '';
+                                el.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+
+                        if (overflow) {
+                                const count = overflow.length;
+                                rulesTextStatus.textContent = `${count} character${count === 1 ? '' : 's'} did not fit and were not applied.`;
+                                rulesTextStatus.classList.add('rules-text-warning');
+                        } else {
+                                rulesTextStatus.textContent = 'All text applied to Line 1 - Line 8.';
+                                rulesTextStatus.classList.remove('rules-text-warning');
+                        }
+                }
+
+                // Wire up the paragraph input's Apply Text control
+                function setupRulesTextInput() {
+                        if (applyRulesTextBtn) {
+                                applyRulesTextBtn.addEventListener('click', applyRulesText);
+                        }
+                }
+
                 // Master window initial boot pipeline routine execution sequence loops
                 window.onload = function () {
                         setupValidation();
                         renderCardSVG();
                         setupClipboardCopy();
                         setupDownloadPipeline();
+                        setupRulesTextInput();
                 };
         </script>
 </body>
