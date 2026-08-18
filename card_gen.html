@@ -808,20 +808,22 @@
                         const hasCapacity = () => outputLines.length < limits.length;
 
                         const flushCurrentLine = () => {
+                                if (!currentLine) {
+                                        return;
+                                }
                                 if (hasCapacity()) {
                                         outputLines.push(currentLine);
                                 } else {
                                         capacityReached = true;
+                                        overflowParagraphs.push(currentLine);
                                 }
                                 currentLine = '';
                         };
-
                         for (let p = 0; p < paragraphs.length; p++) {
                                 if (capacityReached) {
                                         overflowParagraphs.push(paragraphs[p]);
                                         continue;
                                 }
-
                                 // A manual (pasted) newline always starts a new output line.
                                 if (p > 0) {
                                         flushCurrentLine();
@@ -830,7 +832,6 @@
                                                 continue;
                                         }
                                 }
-
                                 if (paragraphs[p] === '') {
                                         if (hasCapacity()) {
                                                 outputLines.push('');
