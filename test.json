@@ -1,0 +1,36 @@
+{
+        "cards": [
+                {
+                        "rank": "6",
+                        "primary_name": "Greater Roadrunner",
+                        "card_suite": "organisms",
+                        "card_secondary_name": "Geococcyx californianus",
+                        "line_1": "Lives in dry desert brush.",
+                        "line_2": "Hunts insects, lizards, and snakes.",
+                        "line_3": "Can run faster than it can fly.",
+                        "line_4": "Gets water from its prey.",
+                        "line_5": "Builds nests in low shrubs.",
+                        "line_6": "Pairs may stay together.",
+                        "line_7": "Active during daylight.",
+                        "line_8": "Found across the Southwest.",
+                        "illistator_name": "Tearran Studios",
+                        "expantion_name": "Tonto-basin"
+                },
+                {
+                        "rank": "Q",
+                        "primary_name": "Coyote",
+                        "card_suite": "organisms",
+                        "card_secondary_name": "Canis latrans",
+                        "line_1": "Lives in deserts and forests.",
+                        "line_2": "Eats rodents, insects, and fruit.",
+                        "line_3": "Adapts well to dry habitats.",
+                        "line_4": "Hunts mostly at night.",
+                        "line_5": "Uses dens to raise young.",
+                        "line_6": "Can travel long distances.",
+                        "line_7": "Helps control rodent numbers.",
+                        "line_8": "Found throughout Tonto Basin.",
+                        "illistator_name": "Tearran Studios",
+                        "expantion_name": "Tonto-basin"
+                }
+        ]
+}
