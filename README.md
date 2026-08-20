@@ -81,3 +81,9 @@ Each suit contains exactly one card of every rank, 1 through 13.
 | 13 | x | x | x | x |
 
 ---
+
+### Illustrations 
+
+Each cards illustrations/artwork are TBD
+extensive examples are located in the /illustrations folder
+
