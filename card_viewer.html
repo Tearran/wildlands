@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>SVG Card Deck</title>
+
+        <style>
+                body {
+                        margin: 0;
+                        padding: 20px;
+                        background: #222;
+                        font-family: Arial, sans-serif;
+                }
+
+                /* Header Menu */
+                header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 20px 40px;
+                        background-color: #1e1e1e;
+                        border-bottom: 1px solid #333;
+                }
+
+                .logo {
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                        color: #ffffff;
+                }
+
+                nav a {
+                        color: #b0b0b0;
+                        text-decoration: none;
+                        margin-left: 20px;
+                        font-size: 0.9rem;
+                }
+
+                nav a:hover {
+                        color: #ffffff;
+                }
+
+                #controls {
+                        display: flex;
+                        justify-content: center;
+                        gap: 10px;
+                        margin-bottom: 25px;
+                        flex-wrap: wrap;
+                }
+
+                button {
+                        padding: 10px 18px;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                }
+
+                #cardContainer {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 20px;
+                        justify-content: center;
+                        align-items: flex-start;
+                }
+
+                .card-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                }
+
+                .card-svg {
+                        width: 240px;
+                        height: 336px;
+                        flex: 0 0 240px;
+                }
+
+                .card-svg svg {
+                        display: block;
+                        width: 240px;
+                        height: 336px;
+                }
+
+                .download-card {
+                        width: 120px;
+                        padding: 7px 10px;
+                        font-size: 12px;
+                }
+
+                #status {
+                        color: white;
+                        text-align: center;
+                        margin-bottom: 15px;
+                }
+        </style>
+
+</head>
+
+
+<body>
+
+        <!-- Header & Menu -->
+        <header>
+                <div class="logo">Into the Wild!</div>
+                <nav>
+                        <a href="./card_viewer.html">Card View</a>
+                        <a href="./card_json_form.html">Card Editor</a>
+                </nav>
+        </header>
+
+        <div id="status"></div>
+
+
+        <div id="cardContainer"></div>
+
+        <div id="controls">
+
+                <button type="button" id="downloadAll">
+                        Download All Cards
+                </button>
+
+        </div>
+        <script>
+
+
+                const CARD_TEMPLATE = "card_template.svg";
+                const CARD_DATA = "data/cards.json";
+
+
+                /*
+                 * Finished cards
+                 */
+                const renderedCards = [];
+
+
+
+                /*
+                 * Load SVG template and JSON
+                 */
+                async function loadCards() {
+
+                        try {
+
+                                const [
+                                        svgResponse,
+                                        jsonResponse
+                                ] = await Promise.all([
+
+                                        fetch(CARD_TEMPLATE),
+                                        fetch(CARD_DATA)
+
+                                ]);
+
+
+                                if (!svgResponse.ok) {
+
+                                        throw new Error(
+                                                "Unable to load card-template.svg"
+                                        );
+
+                                }
+
+
+                                if (!jsonResponse.ok) {
+
+                                        throw new Error(
+                                                "Unable to load cards.json"
+                                        );
+
+                                }
+
+
+                                const svgText =
+                                        await svgResponse.text();
+
+
+                                const cards =
+                                        await jsonResponse.json();
+
+
+                                displayCards(
+                                        svgText,
+                                        cards
+                                );
+
+
+                        } catch (error) {
+
+                                console.error(error);
+
+
+                                document.getElementById(
+                                        "status"
+                                ).textContent =
+                                        error.message;
+
+                        }
+
+                }
+
+
+
+                /*
+                 * Display cards
+                 */
+                function displayCards(
+                        svgText,
+                        cards
+                ) {
+
+                        const container =
+                                document.getElementById(
+                                        "cardContainer"
+                                );
+
+
+                        container.innerHTML = "";
+
+
+                        renderedCards.length = 0;
+
+
+                        cards.forEach(
+                                (card, index) => {
+
+
+                                        /*
+                                         * Create finished SVG
+                                         */
+                                        const svg =
+                                                createCardSVG(
+                                                        svgText,
+                                                        card
+                                                );
+
+
+                                        /*
+                                         * Store finished card
+                                         */
+                                        const renderedCard = {
+
+                                                svg: svg,
+
+                                                card: card,
+
+                                                index: index + 1
+
+                                        };
+
+
+                                        renderedCards.push(
+                                                renderedCard
+                                        );
+
+
+
+                                        /*
+                                         * Create wrapper
+                                         */
+                                        const wrapper =
+                                                document.createElement(
+                                                        "div"
+                                                );
+
+
+                                        wrapper.className =
+                                                "card-wrapper";
+
+
+
+                                        /*
+                                         * Display SVG
+                                         */
+                                        const displaySVG =
+                                                document.importNode(
+                                                        svg,
+                                                        true
+                                                );
+
+
+                                        const svgContainer =
+                                                document.createElement(
+                                                        "div"
+                                                );
+
+
+                                        svgContainer.className =
+                                                "card-svg";
+
+
+                                        svgContainer.appendChild(
+                                                displaySVG
+                                        );
+
+
+                                        wrapper.appendChild(
+                                                svgContainer
+                                        );
+
+
+
+                                        /*
+                                         * Individual download button
+                                         */
+                                        const downloadButton =
+                                                document.createElement(
+                                                        "button"
+                                                );
+
+
+                                        downloadButton.type =
+                                                "button";
+
+
+                                        downloadButton.className =
+                                                "download-card";
+
+
+                                        downloadButton.textContent =
+                                                "Download SVG";
+
+
+                                        downloadButton.addEventListener(
+                                                "click",
+                                                function () {
+
+                                                        downloadCard(
+                                                                renderedCard
+                                                        );
+
+                                                }
+                                        );
+
+
+                                        wrapper.appendChild(
+                                                downloadButton
+                                        );
+
+
+                                        container.appendChild(
+                                                wrapper
+                                        );
+
+                                }
+                        );
+
+
+                        document.getElementById(
+                                "status"
+                        ).textContent =
+                                `${cards.length} card(s) loaded.`;
+
+                }
+
+
+
+                /*
+                 * Create finished SVG card
+                 */
+                function createCardSVG(
+                        svgText,
+                        card
+                ) {
+
+                        const parser =
+                                new DOMParser();
+
+
+                        const svgDocument =
+                                parser.parseFromString(
+                                        svgText,
+                                        "image/svg+xml"
+                                );
+
+
+                        let svg =
+                                svgDocument.documentElement;
+
+
+                        /*
+                         * Validate SVG
+                         */
+                        if (
+                                svg.nodeName === "parsererror"
+                        ) {
+
+                                throw new Error(
+                                        "Failed to parse SVG template"
+                                );
+
+                        }
+
+
+                        /*
+                         * Replace template values
+                         */
+                        svg =
+                                replaceTemplateValues(
+                                        svg,
+                                        card
+                                );
+
+
+                        /*
+                         * Set suite visibility
+                         *
+                         * JSON now contains:
+                         *
+                         * "suite": "organisms"
+                         *
+                         * or
+                         *
+                         * "suite": "dynamics"
+                         *
+                         * or
+                         *
+                         * "suite": "foundations"
+                         *
+                         * or
+                         *
+                         * "suite": "resources"
+                         */
+                        setSuiteDisplay(
+                                svg,
+                                card.suite
+                        );
+
+
+                        return svg;
+
+                }
+
+
+
+                /*
+                 * Set the correct suite icon
+                 *
+                 * Only one suite is displayed.
+                 */
+                function setSuiteDisplay(
+                        svg,
+                        suite
+                ) {
+
+                        const suites = [
+
+                                "organisms",
+                                "dynamics",
+                                "foundations",
+                                "resources"
+
+                        ];
+
+
+                        suites.forEach(
+                                function (name) {
+
+                                        const element =
+                                                svg.querySelector(
+                                                        `#${name}`
+                                                );
+
+
+                                        if (!element) {
+
+                                                console.warn(
+                                                        `SVG element not found: #${name}`
+                                                );
+
+                                                return;
+
+                                        }
+
+
+                                        if (name === suite) {
+
+                                                element.style.display =
+                                                        "inline";
+
+                                        } else {
+
+                                                element.style.display =
+                                                        "none";
+
+                                        }
+
+                                }
+                        );
+
+                }
+
+
+
+                /*
+                 * Replace SVG template values
+                 */
+                function replaceTemplateValues(
+                        svg,
+                        card
+                ) {
+
+                        const replacements = {
+
+
+                                /*
+                                 * Rank
+                                 */
+                                "${values.rank}":
+                                        card.card_rank || "",
+
+
+                                /*
+                                 * Rarity
+                                 */
+                                "${values.rarity}":
+                                        card.card_rairity || "",
+
+
+                                /*
+                                 * Year
+                                 *
+                                 * SVG uses:
+                                 *
+                                 * {values.year}
+                                 */
+                                "{values.year}":
+                                        card.card_year || "",
+
+
+
+                                /*
+                                 * Facts 1-5
+                                 */
+                                "${values.line_1}":
+                                        card.card_facts1 || "",
+
+                                "${values.line_2}":
+                                        card.card_facts2 || "",
+
+                                "${values.line_3}":
+                                        card.card_facts3 || "",
+
+                                "${values.line_4}":
+                                        card.card_facts4 || "",
+
+                                "${values.line_5}":
+                                        card.card_facts5 || "",
+
+
+                                /*
+                                 * Abilities 1-5 mapped to lines 6-10
+                                 */
+                                "${values.line_6}":
+                                        card.card_abiliies1 || "",
+
+                                "${values.line_7}":
+                                        card.card_abiliies2 || "",
+
+                                "${values.line_8}":
+                                        card.card_abiliies3 || "",
+
+                                "${values.line_9}":
+                                        card.card_abiliies4 || "",
+
+                                "${values.line_10}":
+                                        card.card_abiliies5 || "",
+
+
+
+                                /*
+                                 * Primary name
+                                 */
+                                "${values.primary_name}":
+                                        card.card_primary_name || "",
+
+
+                                /*
+                                 * Secondary name
+                                 */
+                                "${values.card_secondary_name}":
+                                        card.card_secondary_name || "",
+
+
+                                /*
+                                 * Expansion
+                                 */
+                                "${values.expantion_name}":
+                                        card.card_expantion || "",
+
+
+                                /*
+                                 * Artist
+                                 */
+                                "${values.illistator_name}":
+                                        card.card_artist_name || ""
+
+                        };
+
+
+
+                        /*
+                         * Convert SVG to text
+                         */
+                        let svgHTML =
+                                new XMLSerializer()
+                                        .serializeToString(
+                                                svg
+                                        );
+
+
+
+                        /*
+                         * Replace placeholders
+                         */
+                        for (
+                                const [
+                                        placeholder,
+                                        value
+                                ]
+                                of Object.entries(
+                                        replacements
+                                )
+                        ) {
+
+                                svgHTML =
+                                        svgHTML
+                                                .split(
+                                                        placeholder
+                                                )
+                                                .join(
+                                                        escapeXML(value)
+                                                );
+
+                        }
+
+
+
+                        /*
+                         * Parse completed SVG
+                         */
+                        const newDocument =
+                                new DOMParser()
+                                        .parseFromString(
+                                                svgHTML,
+                                                "image/svg+xml"
+                                        );
+
+
+                        const finalSVG =
+                                newDocument.documentElement;
+
+
+
+                        /*
+                         * Validate final SVG
+                         */
+                        if (
+                                finalSVG.nodeName === "parsererror"
+                        ) {
+
+                                console.error(
+                                        "SVG parse error after substitution:",
+                                        finalSVG.textContent
+                                );
+
+
+                                throw new Error(
+                                        "Failed to parse SVG after template substitution"
+                                );
+
+                        }
+
+
+                        const cardIllustration =
+                                card.card_illustration;
+
+
+                        if (cardIllustration) {
+
+                                const artworkArea =
+                                        finalSVG
+                                                .querySelector(
+                                                        "#card_art"
+                                                );
+
+
+                                if (artworkArea) {
+
+                                        const svgImage =
+                                                finalSVG
+                                                        .ownerDocument
+                                                        .createElementNS(
+                                                                "http://www.w3.org/2000/svg",
+                                                                "image"
+                                                        );
+
+
+                                        const resolvedHref =
+                                                new URL(
+                                                        cardIllustration,
+                                                        document.baseURI
+                                                ).href;
+
+
+                                        svgImage.setAttribute(
+                                                "href",
+                                                resolvedHref
+                                        );
+
+                                        svgImage.setAttribute(
+                                                "x",
+                                                artworkArea
+                                                        .getAttribute("x") || ""
+                                        );
+
+                                        svgImage.setAttribute(
+                                                "y",
+                                                artworkArea
+                                                        .getAttribute("y") || ""
+                                        );
+
+                                        svgImage.setAttribute(
+                                                "width",
+                                                artworkArea
+                                                        .getAttribute("width") || ""
+                                        );
+
+                                        svgImage.setAttribute(
+                                                "height",
+                                                artworkArea
+                                                        .getAttribute("height") || ""
+                                        );
+
+
+                                        artworkArea
+                                                .insertAdjacentElement(
+                                                        "afterend",
+                                                        svgImage
+                                                );
+
+                                }
+
+                        }
+
+
+                        return finalSVG;
+
+                }
+
+
+
+                /*
+                 * Escape XML characters
+                 */
+                function escapeXML(value) {
+
+                        return String(value)
+
+                                .replace(
+                                        /&/g,
+                                        "&amp;"
+                                )
+
+                                .replace(
+                                        /</g,
+                                        "&lt;"
+                                )
+
+                                .replace(
+                                        />/g,
+                                        "&gt;"
+                                )
+
+                                .replace(
+                                        /"/g,
+                                        "&quot;"
+                                )
+
+                                .replace(
+                                        /'/g,
+                                        "&apos;"
+                                );
+
+                }
+
+
+
+                /*
+                 * Download one SVG card
+                 */
+                function downloadCard(
+                        renderedCard
+                ) {
+
+                        const svgString =
+                                new XMLSerializer()
+                                        .serializeToString(
+                                                renderedCard.svg
+                                        );
+
+
+                        const blob =
+                                new Blob(
+                                        [svgString],
+                                        {
+                                                type: "image/svg+xml"
+                                        }
+                                );
+
+
+                        const url =
+                                URL.createObjectURL(
+                                        blob
+                                );
+
+
+                        const filename =
+                                createFilename(
+                                        renderedCard.card,
+                                        renderedCard.index
+                                );
+
+
+                        const link =
+                                document.createElement(
+                                        "a"
+                                );
+
+
+                        link.href =
+                                url;
+
+
+                        link.download =
+                                filename;
+
+
+                        document.body.appendChild(
+                                link
+                        );
+
+
+                        link.click();
+
+
+                        link.remove();
+
+
+                        URL.revokeObjectURL(
+                                url
+                        );
+
+                }
+
+
+
+                /*
+                 * Download entire deck
+                 */
+                function downloadAllCards() {
+
+                        if (
+                                renderedCards.length === 0
+                        ) {
+
+                                return;
+
+                        }
+
+
+                        /*
+                         * Download cards separately.
+                         *
+                         * Small delay helps prevent
+                         * the browser from blocking
+                         * multiple downloads.
+                         */
+                        renderedCards.forEach(
+                                (card, index) => {
+
+                                        setTimeout(
+                                                function () {
+
+                                                        downloadCard(
+                                                                card
+                                                        );
+
+                                                },
+                                                index * 250
+                                        );
+
+                                }
+                        );
+
+                }
+
+
+
+                /*
+                 * Create filename
+                 */
+                function createFilename(
+                        card,
+                        index
+                ) {
+
+                        const rank =
+                                card.card_rank ||
+                                "card";
+
+
+                        const name =
+                                card.card_primary_name ||
+                                "";
+
+
+                        let filename =
+                                `${rank}_${name}`;
+
+
+                        /*
+                         * Remove invalid filename
+                         * characters.
+                         */
+                        filename =
+                                filename
+
+                                        .replace(
+                                                /[<>:"/\\|?*]/g,
+                                                ""
+                                        )
+
+                                        .replace(
+                                                /\s+/g,
+                                                "_"
+                                        );
+
+
+                        /*
+                         * No name
+                         */
+                        if (!name) {
+
+                                filename =
+                                        `card_${index}`;
+
+                        }
+
+
+                        return `${filename}.svg`;
+
+                }
+
+
+
+                /*
+                 * Initialize Download All button
+                 */
+                function initializeDownloadButton() {
+
+                        const downloadAllButton =
+                                document.getElementById(
+                                        "downloadAll"
+                                );
+
+
+                        if (downloadAllButton) {
+
+                                downloadAllButton.addEventListener(
+                                        "click",
+                                        downloadAllCards
+                                );
+
+                        }
+
+                }
+
+
+
+                /*
+                 * Start application
+                 */
+                initializeDownloadButton();
+
+
+                loadCards();
+
+
+        </script>
+
+</body>
+
+</html>

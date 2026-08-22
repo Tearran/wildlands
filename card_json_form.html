@@ -1,0 +1,2789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Wildlands - Card Editor</title>
+
+        <style>
+                * {
+                        box-sizing: border-box;
+                }
+
+                body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        background: #eeeeee;
+                        color: #222;
+                }
+
+                /* Header Menu */
+                header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 20px 40px;
+                        background-color: #1e1e1e;
+                        border-bottom: 1px solid #333;
+                }
+
+                .logo {
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                        color: #ffffff;
+                }
+
+                nav a {
+                        color: #b0b0b0;
+                        text-decoration: none;
+                        margin-left: 20px;
+                        font-size: 0.9rem;
+                }
+
+                nav a:hover {
+                        color: #ffffff;
+                }
+
+                #app {
+                        max-width: 1000px;
+                        margin: auto;
+                }
+
+                .header {
+                        background: white;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        padding: 20px;
+                        margin-bottom: 15px;
+                }
+
+                .header h1 {
+                        margin: 0 0 10px 0;
+                }
+
+                /* =========================================================
+           NAVIGATION
+        ========================================================= */
+
+                .navigation {
+                        background: white;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 15px;
+                }
+
+                .nav-main {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 15px;
+                        margin-bottom: 15px;
+                }
+
+                .nav-main button {
+                        min-width: 100px;
+                }
+
+                #cardPosition {
+                        font-weight: bold;
+                        min-width: 120px;
+                        text-align: center;
+                }
+
+                #cardNavigation {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 5px;
+                        justify-content: center;
+                }
+
+                .card-nav-button {
+                        width: 48px;
+                        min-height: 36px;
+                        padding: 4px;
+                        margin: 0;
+                        font-size: 11px;
+                }
+
+                .card-nav-button.active {
+                        font-weight: bold;
+                        outline: 3px solid #333;
+                }
+
+                .card-nav-button.complete {
+                        background: #d9f2d9;
+                }
+
+                /* =========================================================
+           EDITOR
+        ========================================================= */
+
+                #editor {
+                        background: white;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        padding: 20px;
+                }
+
+                #editor h2 {
+                        margin-top: 0;
+                }
+
+                .field {
+                        margin-bottom: 15px;
+                }
+
+                label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                }
+
+                input,
+                select,
+                textarea {
+                        width: 100%;
+                        padding: 9px;
+                        font-family: Arial, sans-serif;
+                        font-size: 14px;
+                }
+
+                textarea {
+                        min-height: 120px;
+                        resize: vertical;
+                }
+
+                .two-column {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                }
+
+                /* =========================================================
+           TEXT SECTIONS
+        ========================================================= */
+
+                .text-section {
+                        border: 1px solid #ccc;
+                        border-radius: 7px;
+                        padding: 15px;
+                        margin: 20px 0;
+                        background: #fafafa;
+                }
+
+                .text-section h3 {
+                        margin-top: 0;
+                }
+
+                .section-description {
+                        font-size: 13px;
+                        color: #666;
+                        margin-bottom: 10px;
+                }
+
+                .wrap-status {
+                        font-size: 13px;
+                        color: #555;
+                        margin-top: 8px;
+                        margin-bottom: 10px;
+                }
+
+                /* =========================================================
+           FACT / ABILITY LINES
+        ========================================================= */
+
+                .line-field {
+                        margin-bottom: 12px;
+                }
+
+                .line-label {
+                        font-weight: bold;
+                        margin-bottom: 4px;
+                }
+
+                .char-count {
+                        font-size: 12px;
+                        color: #777;
+                        text-align: right;
+                        margin-top: 3px;
+                }
+
+                .char-count.limit {
+                        color: #c00;
+                        font-weight: bold;
+                }
+
+                /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+                button {
+                        padding: 10px 18px;
+                        margin: 5px;
+                        border: 1px solid #aaa;
+                        border-radius: 5px;
+                        background: #f5f5f5;
+                        cursor: pointer;
+                }
+
+                button:hover {
+                        background: #e5e5e5;
+                }
+
+                button.primary {
+                        background: #dcecff;
+                }
+
+                /* =========================================================
+           FILE CONTROLS
+        ========================================================= */
+
+                .file-controls {
+                        background: white;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 15px;
+                }
+
+                .file-controls input[type="file"] {
+                        padding: 5px;
+                }
+
+                /* =========================================================
+           BOTTOM CONTROLS
+        ========================================================= */
+
+                .bottom-controls {
+                        background: white;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-top: 15px;
+                        text-align: center;
+                }
+
+                /* =========================================================
+           JSON
+        ========================================================= */
+
+                #jsonSection {
+                        margin-top: 15px;
+                }
+
+                #jsonOutput {
+                        width: 100%;
+                        min-height: 400px;
+                        background: #222;
+                        color: #eee;
+                        padding: 15px;
+                        white-space: pre;
+                        overflow: auto;
+                        font-family: monospace;
+                }
+
+                /* =========================================================
+           MOBILE
+        ========================================================= */
+
+                @media (max-width: 650px) {
+
+                        body {
+                                padding: 10px;
+                        }
+
+                        .two-column {
+                                grid-template-columns: 1fr;
+                        }
+
+                        .nav-main {
+                                gap: 5px;
+                        }
+
+                        .nav-main button {
+                                min-width: 80px;
+                        }
+
+                        .card-nav-button {
+                                width: 40px;
+                        }
+
+                }
+        </style>
+
+</head>
+
+
+<body>
+
+
+        <div id="app">
+
+
+                <!-- =========================================================
+         HEADER
+    ========================================================= -->
+
+                <!-- Header & Menu -->
+                <header>
+                        <div class="logo">Into the Wild!</div>
+                        <nav>
+                                <a href="./card_viewer.html">Card View</a>
+                                <a href="./card_json_form.html">Card Editor</a>
+                        </nav>
+                </header>
+
+                <!-- =========================================================
+         LOAD JSON
+    ========================================================= -->
+
+                <div class="file-controls">
+
+                        <strong>
+                                Load Card Deck
+                        </strong>
+
+                        <br>
+
+                        <button type="button" id="loadDefaultJson">
+                                Load cards.json
+                        </button>
+
+
+                        <label for="jsonFile" style="margin-top:10px;">
+                                Or load JSON file:
+                        </label>
+
+
+                        <input type="file" id="jsonFile" accept=".json,application/json">
+
+
+                        <div id="loadStatus" style="margin-top:10px;"></div>
+
+                </div>
+
+
+                <!-- =========================================================
+         CARD NAVIGATION
+    ========================================================= -->
+
+                <div class="navigation">
+
+                        <div class="nav-main">
+
+                                <button type="button" id="previousCard">
+                                        ◀ Previous
+                                </button>
+
+
+                                <div id="cardPosition">
+                                        Card 1 of 52
+                                </div>
+
+
+                                <button type="button" id="nextCard">
+                                        Next ▶
+                                </button>
+
+                        </div>
+
+
+                        <div id="cardNavigation"></div>
+
+                </div>
+
+
+                <!-- =========================================================
+         EDITOR
+    ========================================================= -->
+
+                <div id="editor"></div>
+
+
+                <!-- =========================================================
+         JSON CONTROLS
+    ========================================================= -->
+
+                <div class="bottom-controls">
+
+                        <button type="button" class="primary" id="createJson">
+                                Create JSON
+                        </button>
+
+
+                        <button type="button" id="copyJson">
+                                Copy JSON
+                        </button>
+
+
+                        <button type="button" id="downloadJson">
+                                Download JSON
+                        </button>
+
+                </div>
+
+
+                <div id="jsonSection" style="display:none;">
+
+                        <h2>
+                                JSON Output
+                        </h2>
+
+                        <pre id="jsonOutput"></pre>
+
+                </div>
+
+
+        </div>
+
+
+        <script>
+
+
+                /* =========================================================
+                   SETTINGS
+                ========================================================= */
+
+                const TOTAL_CARDS = 52;
+
+                const MAX_LINES = 5;
+
+                const MAX_CHARS = 38;
+
+
+                /*
+                 * Only these four suite values are allowed.
+                 */
+
+                const VALID_SUITES = [
+                        "organisms",
+                        "dynamics",
+                        "foundations",
+                        "resources"
+                ];
+
+
+                /*
+                 * Current card.
+                 */
+
+                let currentCard = 0;
+
+
+                /*
+                 * Card collection.
+                 */
+
+                let cards = [];
+
+
+                /* =========================================================
+                   CREATE EMPTY CARD
+                ========================================================= */
+
+                function createEmptyCard() {
+
+                        const card = {
+
+                                /*
+                                 * One suite value.
+                                 */
+
+                                suite: "",
+
+
+                                /*
+                                 * Illustration path.
+                                 *
+                                 * This is intentionally just a text path.
+                                 */
+
+                                card_illustration: "",
+
+
+                                card_rank: "",
+
+                                card_rairity: "",
+
+                                card_year: "",
+
+                                card_primary_name: "",
+
+                                card_secondary_name: "",
+
+                                card_expantion: "",
+
+                                card_artist_name: "",
+
+
+                                /*
+                                 * Paragraph storage.
+                                 */
+
+                                fact_paragraph: "",
+
+                                abilities_paragraph: ""
+
+                        };
+
+
+                        /*
+                         * Facts 1-5.
+                         */
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                card[
+                                        `card_facts${i}`
+                                ] = "";
+
+                        }
+
+
+                        /*
+                         * Abilities 1-5.
+                         *
+                         * "abiliies" is intentionally preserved
+                         * to match your existing JSON/SVG naming.
+                         */
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                card[
+                                        `card_abiliies${i}`
+                                ] = "";
+
+                        }
+
+
+                        return card;
+
+                }
+
+
+                /* =========================================================
+                   CREATE 52 EMPTY CARDS
+                ========================================================= */
+
+                function createEmptyDeck() {
+
+                        cards = [];
+
+
+                        for (
+                                let i = 0;
+                                i < TOTAL_CARDS;
+                                i++
+                        ) {
+
+                                cards.push(
+                                        createEmptyCard()
+                                );
+
+                        }
+
+                }
+
+
+                /* =========================================================
+                   NORMALIZE LOADED CARD
+                ========================================================= */
+
+                function normalizeCard(source) {
+
+                        const card =
+                                createEmptyCard();
+
+
+                        if (
+                                !source ||
+                                typeof source !== "object"
+                        ) {
+
+                                return card;
+
+                        }
+
+
+                        /*
+                         * Suite.
+                         */
+
+                        if (
+                                VALID_SUITES.includes(
+                                        source.suite
+                                )
+                        ) {
+
+                                card.suite =
+                                        source.suite;
+
+                        }
+
+
+                        /*
+                         * Illustration path.
+                         *
+                         * Accept the new name.
+                         */
+
+                        card.card_illustration =
+                                source.card_illustration ||
+                                "";
+
+
+                        /*
+                         * Main information.
+                         */
+
+                        card.card_rank =
+                                source.card_rank ||
+                                "";
+
+                        card.card_rairity =
+                                source.card_rairity ||
+                                "";
+
+                        card.card_year =
+                                source.card_year ||
+                                source.year ||
+                                "";
+
+                        card.card_primary_name =
+                                source.card_primary_name ||
+                                "";
+
+                        card.card_secondary_name =
+                                source.card_secondary_name ||
+                                "";
+
+                        card.card_expantion =
+                                source.card_expantion ||
+                                "";
+
+                        card.card_artist_name =
+                                source.card_artist_name ||
+                                "";
+
+
+                        /*
+                         * Paragraphs.
+                         */
+
+                        card.fact_paragraph =
+                                source.fact_paragraph ||
+                                "";
+
+                        card.abilities_paragraph =
+                                source.abilities_paragraph ||
+                                "";
+
+
+                        /*
+                         * Facts 1-5.
+                         */
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                card[
+                                        `card_facts${i}`
+                                ] =
+                                        source[
+                                        `card_facts${i}`
+                                        ] || "";
+
+                        }
+
+
+                        /*
+                         * Abilities 1-5.
+                         */
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                card[
+                                        `card_abiliies${i}`
+                                ] =
+                                        source[
+                                        `card_abiliies${i}`
+                                        ] || "";
+
+                        }
+
+
+                        return card;
+
+                }
+
+
+                /* =========================================================
+                   LOAD DECK
+                ========================================================= */
+
+                function loadDeck(data) {
+
+                        let loadedCards;
+
+
+                        /*
+                         * Accept either:
+                         *
+                         * [
+                         *     {...},
+                         *     {...}
+                         * ]
+                         *
+                         * OR:
+                         *
+                         * {
+                         *     "cards": [...]
+                         * }
+                         */
+
+                        if (
+                                Array.isArray(data)
+                        ) {
+
+                                loadedCards =
+                                        data;
+
+                        }
+                        else if (
+                                data &&
+                                Array.isArray(data.cards)
+                        ) {
+
+                                loadedCards =
+                                        data.cards;
+
+                        }
+                        else {
+
+                                throw new Error(
+                                        "JSON must contain a card array."
+                                );
+
+                        }
+
+
+                        /*
+                         * Start with 52 slots.
+                         */
+
+                        createEmptyDeck();
+
+
+                        /*
+                         * Load cards into slots.
+                         */
+
+                        loadedCards.forEach(
+                                (source, index) => {
+
+                                        if (
+                                                index < TOTAL_CARDS
+                                        ) {
+
+                                                cards[index] =
+                                                        normalizeCard(
+                                                                source
+                                                        );
+
+                                        }
+
+                                }
+                        );
+
+
+                        currentCard = 0;
+
+
+                        renderEditor();
+
+                        renderNavigation();
+
+
+                        let statusMessage =
+                                `Loaded ${loadedCards.length} card(s). ` +
+                                `Editor contains ${TOTAL_CARDS} card slots.`;
+
+                        if (loadedCards.length > TOTAL_CARDS) {
+
+                                statusMessage +=
+                                        ` Warning: ${loadedCards.length - TOTAL_CARDS} card(s) beyond ` +
+                                        `the supported limit were discarded.`;
+
+                        }
+
+                        document.getElementById(
+                                "loadStatus"
+                        ).textContent =
+                                statusMessage;
+
+                }
+
+
+                /* =========================================================
+                   LOAD cards.json BUTTON
+                ========================================================= */
+
+                document.getElementById(
+                        "loadDefaultJson"
+                ).addEventListener(
+                        "click",
+                        async function () {
+
+                                try {
+
+                                        const response =
+                                                await fetch(
+                                                        "data/cards.json",
+                                                        {
+                                                                cache: "no-store"
+                                                        }
+                                                );
+
+
+                                        if (!response.ok) {
+
+                                                throw new Error(
+                                                        `Unable to load cards.json (${response.status})`
+                                                );
+
+                                        }
+
+
+                                        const data =
+                                                await response.json();
+
+
+                                        loadDeck(data);
+
+
+                                }
+                                catch (error) {
+
+                                        document.getElementById(
+                                                "loadStatus"
+                                        ).textContent =
+                                                error.message;
+
+                                        console.error(error);
+
+                                }
+
+                        }
+                );
+
+
+                /* =========================================================
+                   LOAD USER JSON FILE
+                ========================================================= */
+
+                document.getElementById(
+                        "jsonFile"
+                ).addEventListener(
+                        "change",
+                        function (event) {
+
+                                const file =
+                                        event.target.files[0];
+
+
+                                if (!file) {
+                                        return;
+                                }
+
+
+                                const reader =
+                                        new FileReader();
+
+
+                                reader.onload =
+                                        function () {
+
+                                                try {
+
+                                                        const data =
+                                                                JSON.parse(
+                                                                        reader.result
+                                                                );
+
+
+                                                        loadDeck(data);
+
+                                                }
+                                                catch (error) {
+
+                                                        document.getElementById(
+                                                                "loadStatus"
+                                                        ).textContent =
+                                                                `Unable to read JSON: ${error.message}`;
+
+                                                        console.error(error);
+
+                                                }
+
+                                        };
+
+
+                                reader.readAsText(file);
+
+                        }
+                );
+
+
+                /* =========================================================
+                   RENDER NAVIGATION
+                ========================================================= */
+
+                function renderNavigation() {
+
+                        const navigation =
+                                document.getElementById(
+                                        "cardNavigation"
+                                );
+
+
+                        navigation.innerHTML = "";
+
+
+                        cards.forEach(
+                                (card, index) => {
+
+                                        const button =
+                                                document.createElement(
+                                                        "button"
+                                                );
+
+
+                                        button.type =
+                                                "button";
+
+
+                                        button.className =
+                                                "card-nav-button";
+
+
+                                        button.textContent =
+                                                String(index + 1);
+
+
+                                        /*
+                                         * Current card.
+                                         */
+
+                                        if (
+                                                index === currentCard
+                                        ) {
+
+                                                button.classList.add(
+                                                        "active"
+                                                );
+
+                                        }
+
+
+                                        /*
+                                         * Consider card complete
+                                         * when it has a name.
+                                         */
+
+                                        if (
+                                                card.card_primary_name
+                                        ) {
+
+                                                button.classList.add(
+                                                        "complete"
+                                                );
+
+
+                                                button.title =
+                                                        card.card_primary_name;
+
+                                        }
+
+
+                                        button.addEventListener(
+                                                "click",
+                                                function () {
+
+                                                        saveCurrentCard();
+
+
+                                                        currentCard =
+                                                                index;
+
+
+                                                        renderEditor();
+
+                                                        renderNavigation();
+
+                                                }
+                                        );
+
+
+                                        navigation.appendChild(
+                                                button
+                                        );
+
+                                }
+                        );
+
+
+                        document.getElementById(
+                                "cardPosition"
+                        ).textContent =
+                                `Card ${currentCard + 1} of ${TOTAL_CARDS}`;
+
+                }
+
+
+                /* =========================================================
+                   RENDER EDITOR
+                ========================================================= */
+
+                function renderEditor() {
+
+                        const editor =
+                                document.getElementById(
+                                        "editor"
+                                );
+
+
+                        const card =
+                                cards[currentCard];
+
+
+                        editor.innerHTML = `
+
+        <h2>
+            Card ${currentCard + 1}
+        </h2>
+
+
+        <!-- SUITE -->
+
+        <div class="field">
+
+            <label>
+                Suite
+            </label>
+
+            <select id="cardSuite">
+
+                <option value="">
+                    Select Suite
+                </option>
+
+                <option value="organisms">
+                    Organisms
+                </option>
+
+                <option value="dynamics">
+                    Dynamics
+                </option>
+
+                <option value="foundations">
+                    Foundations
+                </option>
+
+                <option value="resources">
+                    Resources
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ILLUSTRATION -->
+
+        <div class="field">
+
+            <label>
+                Illustration Path
+            </label>
+
+            <input
+                type="text"
+                id="cardIllustration"
+                placeholder="artwork/example.svg"
+                value="${escapeHTML(card.card_illustration)}"
+            >
+
+            <div class="section-description">
+
+                Enter the path to the illustration.
+                The file location does not need to be
+                decided yet.
+
+            </div>
+
+        </div>
+
+
+        <!-- RANK / RARITY -->
+
+        <div class="two-column">
+
+            <div class="field">
+
+                <label>
+                    Rank
+                </label>
+
+                <select id="cardRank">
+
+                    <option value="">
+                        Select Rank
+                    </option>
+
+                    <option value="A">A</option>
+
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+
+                    <option value="J">J</option>
+                    <option value="Q">Q</option>
+                    <option value="K">K</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Rarity
+                </label>
+
+                <select id="cardRarity">
+
+                    <option value="">
+                        Select Rarity
+                    </option>
+
+                    <option value="C">
+                        C - Common
+                    </option>
+
+                    <option value="U">
+                        U - Uncommon
+                    </option>
+
+                    <option value="R">
+                        R - Rare
+                    </option>
+
+                    <option value="E">
+                        E - Endangered
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- YEAR -->
+
+        <div class="field">
+
+            <label>
+                Year
+            </label>
+
+            <input
+                type="text"
+                id="cardYear"
+                value="${escapeHTML(card.card_year)}"
+            >
+
+        </div>
+
+
+        <!-- NAMES -->
+
+        <h3>
+            Names
+        </h3>
+
+
+        <div class="field">
+
+            <label>
+                Primary Name
+            </label>
+
+            <input
+                type="text"
+                id="primaryName"
+                value="${escapeHTML(card.card_primary_name)}"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Secondary Name
+            </label>
+
+            <input
+                type="text"
+                id="secondaryName"
+                value="${escapeHTML(card.card_secondary_name)}"
+            >
+
+        </div>
+
+
+        <!-- FACTS -->
+
+        <div class="text-section">
+
+            <h3>
+                Facts
+            </h3>
+
+            <div class="section-description">
+
+                Paste a paragraph below.
+
+                The wrapper will automatically
+                break it into words without
+                exceeding 38 characters per line.
+
+                <br><br>
+
+                Maximum:
+                <strong>
+                    5 lines × 38 characters
+                </strong>
+
+            </div>
+
+
+            <textarea
+                id="factParagraph"
+                placeholder="Paste your facts paragraph here..."
+            >${escapeHTML(card.fact_paragraph)}</textarea>
+
+
+            <button
+                type="button"
+                class="primary"
+                id="wrapFacts"
+            >
+                Word Wrap → Facts
+            </button>
+
+
+            <button
+                type="button"
+                id="clearFacts"
+            >
+                Clear Facts
+            </button>
+
+
+            <div
+                class="wrap-status"
+                id="factWrapStatus"
+            ></div>
+
+
+            <div id="factsContainer"></div>
+
+        </div>
+
+
+        <!-- ABILITIES -->
+
+        <div class="text-section">
+
+            <h3>
+                Abilities
+            </h3>
+
+
+            <div class="section-description">
+
+                Paste game mechanics or abilities here.
+
+                <br><br>
+
+                Maximum:
+                <strong>
+                    5 lines × 38 characters
+                </strong>
+
+            </div>
+
+
+            <textarea
+                id="abilitiesParagraph"
+                placeholder="Paste game mechanics or abilities here..."
+            >${escapeHTML(card.abilities_paragraph)}</textarea>
+
+
+            <button
+                type="button"
+                class="primary"
+                id="wrapAbilities"
+            >
+                Word Wrap → Abilities
+            </button>
+
+
+            <button
+                type="button"
+                id="clearAbilities"
+            >
+                Clear Abilities
+            </button>
+
+
+            <div
+                class="wrap-status"
+                id="abilitiesWrapStatus"
+            ></div>
+
+
+            <div id="abilitiesContainer"></div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <h3>
+            Card Information
+        </h3>
+
+
+        <div class="two-column">
+
+            <div class="field">
+
+                <label>
+                    Expansion
+                </label>
+
+                <input
+                    type="text"
+                    id="cardExpansion"
+                    value="${escapeHTML(card.card_expantion)}"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Artist
+                </label>
+
+                <input
+                    type="text"
+                    id="cardArtist"
+                    value="${escapeHTML(card.card_artist_name)}"
+                >
+
+            </div>
+
+        </div>
+
+    `;
+
+
+                        /*
+                         * Set select values.
+                         */
+
+                        document.getElementById(
+                                "cardSuite"
+                        ).value =
+                                card.suite;
+
+
+                        const rankSelect =
+                                document.getElementById(
+                                        "cardRank"
+                                );
+
+                        const raritySelect =
+                                document.getElementById(
+                                        "cardRarity"
+                                );
+
+
+                        /*
+                         * Handle card_rank: add temporary option if value doesn't match.
+                         */
+
+                        if (
+                                card.card_rank &&
+                                !Array.from(rankSelect.options).some(
+                                        opt => opt.value === card.card_rank
+                                )
+                        ) {
+
+                                const tempOption =
+                                        document.createElement(
+                                                "option"
+                                        );
+
+                                tempOption.value =
+                                        card.card_rank;
+
+                                tempOption.textContent =
+                                        `${card.card_rank} (non-standard)`;
+
+                                tempOption.style.color =
+                                        "#c00";
+
+                                rankSelect.appendChild(
+                                        tempOption
+                                );
+
+                        }
+
+                        rankSelect.value =
+                                card.card_rank;
+
+
+                        /*
+                         * Handle card_rairity: add temporary option if value doesn't match.
+                         */
+
+                        if (
+                                card.card_rairity &&
+                                !Array.from(raritySelect.options).some(
+                                        opt => opt.value === card.card_rairity
+                                )
+                        ) {
+
+                                const tempOption =
+                                        document.createElement(
+                                                "option"
+                                        );
+
+                                tempOption.value =
+                                        card.card_rairity;
+
+                                tempOption.textContent =
+                                        `${card.card_rairity} (non-standard)`;
+
+                                tempOption.style.color =
+                                        "#c00";
+
+                                raritySelect.appendChild(
+                                        tempOption
+                                );
+
+                        }
+
+                        raritySelect.value =
+                                card.card_rairity;
+
+
+                        /*
+                         * Render lines.
+                         */
+
+                        renderFacts();
+
+                        renderAbilities();
+
+
+                        /*
+                         * Word wrap buttons.
+                         */
+
+                        document.getElementById(
+                                "wrapFacts"
+                        ).addEventListener(
+                                "click",
+                                function () {
+
+                                        saveCurrentCard();
+
+                                        wrapText("facts");
+
+                                }
+                        );
+
+
+                        document.getElementById(
+                                "wrapAbilities"
+                        ).addEventListener(
+                                "click",
+                                function () {
+
+                                        saveCurrentCard();
+
+                                        wrapText("abilities");
+
+                                }
+                        );
+
+
+                        /*
+                         * Clear Facts.
+                         */
+
+                        document.getElementById(
+                                "clearFacts"
+                        ).addEventListener(
+                                "click",
+                                function () {
+
+                                        saveCurrentCard();
+
+
+                                        cards[currentCard]
+                                                .fact_paragraph = "";
+
+
+                                        for (
+                                                let i = 1;
+                                                i <= 5;
+                                                i++
+                                        ) {
+
+                                                cards[currentCard][
+                                                        `card_facts${i}`
+                                                ] = "";
+
+                                        }
+
+
+                                        renderEditor();
+
+                                }
+                        );
+
+
+                        /*
+                         * Clear Abilities.
+                         */
+
+                        document.getElementById(
+                                "clearAbilities"
+                        ).addEventListener(
+                                "click",
+                                function () {
+
+                                        saveCurrentCard();
+
+
+                                        cards[currentCard]
+                                                .abilities_paragraph = "";
+
+
+                                        for (
+                                                let i = 1;
+                                                i <= 5;
+                                                i++
+                                        ) {
+
+                                                cards[currentCard][
+                                                        `card_abiliies${i}`
+                                                ] = "";
+
+                                        }
+
+
+                                        renderEditor();
+
+                                }
+                        );
+
+                }
+
+
+                /* =========================================================
+                   RENDER FACTS
+                ========================================================= */
+
+                function renderFacts() {
+
+                        const container =
+                                document.getElementById(
+                                        "factsContainer"
+                                );
+
+
+                        const card =
+                                cards[currentCard];
+
+
+                        container.innerHTML = "";
+
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                container.appendChild(
+                                        createLineField(
+                                                "facts",
+                                                i,
+                                                card[
+                                                `card_facts${i}`
+                                                ] || ""
+                                        )
+                                );
+
+                        }
+
+                }
+
+
+                /* =========================================================
+                   RENDER ABILITIES
+                ========================================================= */
+
+                function renderAbilities() {
+
+                        const container =
+                                document.getElementById(
+                                        "abilitiesContainer"
+                                );
+
+
+                        const card =
+                                cards[currentCard];
+
+
+                        container.innerHTML = "";
+
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                container.appendChild(
+                                        createLineField(
+                                                "abilities",
+                                                i,
+                                                card[
+                                                `card_abiliies${i}`
+                                                ] || ""
+                                        )
+                                );
+
+                        }
+
+                }
+
+
+                /* =========================================================
+                   CREATE LINE FIELD
+                ========================================================= */
+
+                function createLineField(
+                        type,
+                        number,
+                        value
+                ) {
+
+                        const field =
+                                document.createElement(
+                                        "div"
+                                );
+
+
+                        field.className =
+                                "line-field";
+
+
+                        const label =
+                                type === "facts"
+                                        ? "Fact"
+                                        : "Ability";
+
+
+                        field.innerHTML = `
+
+        <div class="line-label">
+            ${label} ${number}
+        </div>
+
+        <input
+            type="text"
+            class="${type === "facts"
+                                        ? "fact-line"
+                                        : "ability-line"
+                                }"
+            data-number="${number}"
+            maxlength="${MAX_CHARS}"
+            value="${escapeHTML(value)}"
+        >
+
+        <div class="char-count">
+
+            <span class="current-count">
+                0
+            </span>
+
+            / ${MAX_CHARS}
+
+        </div>
+
+    `;
+
+
+                        const input =
+                                field.querySelector(
+                                        "input"
+                                );
+
+
+                        updateCounter(input);
+
+
+                        input.addEventListener(
+                                "input",
+                                function () {
+
+                                        const card =
+                                                cards[currentCard];
+
+
+                                        if (
+                                                type === "facts"
+                                        ) {
+
+                                                card[
+                                                        `card_facts${number}`
+                                                ] =
+                                                        this.value;
+
+                                        }
+                                        else {
+
+                                                card[
+                                                        `card_abiliies${number}`
+                                                ] =
+                                                        this.value;
+
+                                        }
+
+
+                                        updateCounter(this);
+
+                                }
+                        );
+
+
+                        return field;
+
+                }
+
+
+                /* =========================================================
+                   SAVE CURRENT CARD
+                ========================================================= */
+
+                function saveCurrentCard() {
+
+                        const suiteElement =
+                                document.getElementById(
+                                        "cardSuite"
+                                );
+
+
+                        if (!suiteElement) {
+                                return;
+                        }
+
+
+                        const card =
+                                cards[currentCard];
+
+
+                        /*
+                         * Suite.
+                         */
+
+                        const selectedSuite =
+                                suiteElement.value;
+
+
+                        card.suite =
+                                VALID_SUITES.includes(
+                                        selectedSuite
+                                )
+                                        ? selectedSuite
+                                        : "";
+
+
+                        /*
+                         * Illustration path.
+                         */
+
+                        card.card_illustration =
+                                document.getElementById(
+                                        "cardIllustration"
+                                ).value;
+
+
+                        /*
+                         * Main fields.
+                         */
+
+                        card.card_rank =
+                                document.getElementById(
+                                        "cardRank"
+                                ).value;
+
+
+                        card.card_rairity =
+                                document.getElementById(
+                                        "cardRarity"
+                                ).value;
+
+
+                        card.card_year =
+                                document.getElementById(
+                                        "cardYear"
+                                ).value;
+
+
+                        card.card_primary_name =
+                                document.getElementById(
+                                        "primaryName"
+                                ).value;
+
+
+                        card.card_secondary_name =
+                                document.getElementById(
+                                        "secondaryName"
+                                ).value;
+
+
+                        card.card_expantion =
+                                document.getElementById(
+                                        "cardExpansion"
+                                ).value;
+
+
+                        card.card_artist_name =
+                                document.getElementById(
+                                        "cardArtist"
+                                ).value;
+
+
+                        /*
+                         * Paragraphs.
+                         */
+
+                        card.fact_paragraph =
+                                document.getElementById(
+                                        "factParagraph"
+                                ).value;
+
+
+                        card.abilities_paragraph =
+                                document.getElementById(
+                                        "abilitiesParagraph"
+                                ).value;
+
+
+                        /*
+                         * Facts.
+                         */
+
+                        document
+                                .querySelectorAll(
+                                        ".fact-line"
+                                )
+                                .forEach(
+                                        input => {
+
+                                                const number =
+                                                        input.dataset.number;
+
+
+                                                card[
+                                                        `card_facts${number}`
+                                                ] =
+                                                        input.value;
+
+                                        }
+                                );
+
+
+                        /*
+                         * Abilities.
+                         */
+
+                        document
+                                .querySelectorAll(
+                                        ".ability-line"
+                                )
+                                .forEach(
+                                        input => {
+
+                                                const number =
+                                                        input.dataset.number;
+
+
+                                                card[
+                                                        `card_abiliies${number}`
+                                                ] =
+                                                        input.value;
+
+                                        }
+                                );
+
+                }
+
+
+                /* =========================================================
+                   WORD WRAP
+                ========================================================= */
+
+                function wrapText(type) {
+
+                        const card =
+                                cards[currentCard];
+
+
+                        let paragraph;
+
+                        let prefix;
+
+                        let statusElement;
+
+
+                        if (
+                                type === "facts"
+                        ) {
+
+                                paragraph =
+                                        document.getElementById(
+                                                "factParagraph"
+                                        ).value.trim();
+
+
+                                prefix =
+                                        "card_facts";
+
+
+                                statusElement =
+                                        document.getElementById(
+                                                "factWrapStatus"
+                                        );
+
+
+                                card.fact_paragraph =
+                                        paragraph;
+
+                        }
+                        else {
+
+                                paragraph =
+                                        document.getElementById(
+                                                "abilitiesParagraph"
+                                        ).value.trim();
+
+
+                                prefix =
+                                        "card_abiliies";
+
+
+                                statusElement =
+                                        document.getElementById(
+                                                "abilitiesWrapStatus"
+                                        );
+
+
+                                card.abilities_paragraph =
+                                        paragraph;
+
+                        }
+
+
+                        if (!paragraph) {
+
+                                statusElement.textContent =
+                                        "Paste some text first.";
+
+                                return;
+
+                        }
+
+
+                        /*
+                         * Normalize whitespace.
+                         */
+
+                        const words =
+                                paragraph
+                                        .replace(
+                                                /\s+/g,
+                                                " "
+                                        )
+                                        .split(" ")
+                                        .filter(
+                                                word =>
+                                                        word.length > 0
+                                        );
+
+
+                        const lines = [];
+
+                        let currentLine = "";
+
+
+                        /*
+                         * Build lines no longer
+                         * than 38 characters.
+                         */
+
+                        words.forEach(
+                                word => {
+
+                                        /*
+                                         * Handle words longer
+                                         * than 38 characters.
+                                         */
+
+                                        if (
+                                                word.length >
+                                                MAX_CHARS
+                                        ) {
+
+                                                if (currentLine) {
+
+                                                        lines.push(
+                                                                currentLine
+                                                        );
+
+                                                        currentLine = "";
+
+                                                }
+
+
+                                                let remaining =
+                                                        word;
+
+
+                                                while (
+                                                        remaining.length >
+                                                        MAX_CHARS
+                                                ) {
+
+                                                        lines.push(
+                                                                remaining.substring(
+                                                                        0,
+                                                                        MAX_CHARS
+                                                                )
+                                                        );
+
+
+                                                        remaining =
+                                                                remaining.substring(
+                                                                        MAX_CHARS
+                                                                );
+
+                                                }
+
+
+                                                currentLine =
+                                                        remaining;
+
+
+                                                return;
+
+                                        }
+
+
+                                        const testLine =
+                                                currentLine
+                                                        ? `${currentLine} ${word}`
+                                                        : word;
+
+
+                                        if (
+                                                testLine.length <=
+                                                MAX_CHARS
+                                        ) {
+
+                                                currentLine =
+                                                        testLine;
+
+                                        }
+                                        else {
+
+                                                if (currentLine) {
+
+                                                        lines.push(
+                                                                currentLine
+                                                        );
+
+                                                }
+
+
+                                                currentLine =
+                                                        word;
+
+                                        }
+
+                                }
+                        );
+
+
+                        if (currentLine) {
+
+                                lines.push(
+                                        currentLine
+                                );
+
+                        }
+
+
+                        /*
+                         * Save first five lines.
+                         */
+
+                        for (
+                                let i = 1;
+                                i <= 5;
+                                i++
+                        ) {
+
+                                card[
+                                        `${prefix}${i}`
+                                ] =
+                                        lines[i - 1] || "";
+
+                        }
+
+
+                        /*
+                         * Report overflow.
+                         */
+
+                        if (
+                                lines.length >
+                                MAX_LINES
+                        ) {
+
+                                statusElement.textContent =
+                                        `Wrapped into ${lines.length} lines. ` +
+                                        `Only the first 5 lines fit. ` +
+                                        `${lines.length - MAX_LINES} line(s) were not stored.`;
+
+                        }
+                        else {
+
+                                statusElement.textContent =
+                                        `Wrapped into ${lines.length} line(s).`;
+
+                        }
+
+
+                        /*
+                         * Refresh line inputs.
+                         */
+
+                        if (
+                                type === "facts"
+                        ) {
+
+                                renderFacts();
+
+                        }
+                        else {
+
+                                renderAbilities();
+
+                        }
+
+                }
+
+
+                /* =========================================================
+                   CHARACTER COUNTER
+                ========================================================= */
+
+                function updateCounter(input) {
+
+                        const counter =
+                                input.parentElement
+                                        .querySelector(
+                                                ".current-count"
+                                        );
+
+
+                        const countContainer =
+                                input.parentElement
+                                        .querySelector(
+                                                ".char-count"
+                                        );
+
+
+                        if (!counter) {
+                                return;
+                        }
+
+
+                        counter.textContent =
+                                input.value.length;
+
+
+                        if (
+                                input.value.length >=
+                                MAX_CHARS
+                        ) {
+
+                                countContainer.classList.add(
+                                        "limit"
+                                );
+
+                        }
+                        else {
+
+                                countContainer.classList.remove(
+                                        "limit"
+                                );
+
+                        }
+
+                }
+
+
+                /* =========================================================
+                   PREVIOUS CARD
+                ========================================================= */
+
+                document.getElementById(
+                        "previousCard"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                saveCurrentCard();
+
+
+                                if (
+                                        currentCard > 0
+                                ) {
+
+                                        currentCard--;
+
+
+                                        renderEditor();
+
+                                        renderNavigation();
+
+                                }
+
+                        }
+                );
+
+
+                /* =========================================================
+                   NEXT CARD
+                ========================================================= */
+
+                document.getElementById(
+                        "nextCard"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                saveCurrentCard();
+
+
+                                if (
+                                        currentCard <
+                                        TOTAL_CARDS - 1
+                                ) {
+
+                                        currentCard++;
+
+
+                                        renderEditor();
+
+                                        renderNavigation();
+
+                                }
+
+                        }
+                );
+
+
+                /* =========================================================
+                   BUILD JSON
+                ========================================================= */
+
+                function buildJSON() {
+
+                        /*
+                         * Save current card first.
+                         */
+
+                        saveCurrentCard();
+
+
+                        return cards.map(
+                                card => {
+
+                                        return {
+
+                                                /*
+                                                 * Suite.
+                                                 */
+
+                                                suite:
+                                                        card.suite,
+
+
+                                                /*
+                                                 * Illustration.
+                                                 */
+
+                                                card_illustration:
+                                                        card.card_illustration,
+
+
+                                                /*
+                                                 * Card information.
+                                                 */
+
+                                                card_rank:
+                                                        card.card_rank,
+
+                                                card_rairity:
+                                                        card.card_rairity,
+
+                                                card_year:
+                                                        card.card_year,
+
+
+                                                /*
+                                                 * Paragraphs.
+                                                 */
+
+                                                fact_paragraph:
+                                                        card.fact_paragraph,
+
+                                                abilities_paragraph:
+                                                        card.abilities_paragraph,
+
+
+                                                /*
+                                                 * Facts.
+                                                 */
+
+                                                card_facts1:
+                                                        card.card_facts1,
+
+                                                card_facts2:
+                                                        card.card_facts2,
+
+                                                card_facts3:
+                                                        card.card_facts3,
+
+                                                card_facts4:
+                                                        card.card_facts4,
+
+                                                card_facts5:
+                                                        card.card_facts5,
+
+
+                                                /*
+                                                 * Abilities.
+                                                 */
+
+                                                card_abiliies1:
+                                                        card.card_abiliies1,
+
+                                                card_abiliies2:
+                                                        card.card_abiliies2,
+
+                                                card_abiliies3:
+                                                        card.card_abiliies3,
+
+                                                card_abiliies4:
+                                                        card.card_abiliies4,
+
+                                                card_abiliies5:
+                                                        card.card_abiliies5,
+
+
+                                                /*
+                                                 * Names.
+                                                 */
+
+                                                card_primary_name:
+                                                        card.card_primary_name,
+
+                                                card_secondary_name:
+                                                        card.card_secondary_name,
+
+
+                                                /*
+                                                 * Footer.
+                                                 */
+
+                                                card_expantion:
+                                                        card.card_expantion,
+
+                                                card_artist_name:
+                                                        card.card_artist_name
+
+                                        };
+
+                                }
+                        );
+
+                }
+
+
+                /* =========================================================
+                   CREATE JSON
+                ========================================================= */
+
+                document.getElementById(
+                        "createJson"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                const output =
+                                        buildJSON();
+
+
+                                const json =
+                                        JSON.stringify(
+                                                output,
+                                                null,
+                                                2
+                                        );
+
+
+                                document.getElementById(
+                                        "jsonOutput"
+                                ).textContent =
+                                        json;
+
+
+                                document.getElementById(
+                                        "jsonSection"
+                                ).style.display =
+                                        "block";
+
+                        }
+                );
+
+
+                /* =========================================================
+                   COPY JSON
+                ========================================================= */
+
+                document.getElementById(
+                        "copyJson"
+                ).addEventListener(
+                        "click",
+                        async function () {
+
+                                const output =
+                                        buildJSON();
+
+
+                                const json =
+                                        JSON.stringify(
+                                                output,
+                                                null,
+                                                2
+                                        );
+
+
+                                try {
+
+                                        await navigator.clipboard
+                                                .writeText(
+                                                        json
+                                                );
+
+
+                                        this.textContent =
+                                                "JSON Copied!";
+
+
+                                        setTimeout(
+                                                () => {
+
+                                                        this.textContent =
+                                                                "Copy JSON";
+
+                                                },
+                                                1500
+                                        );
+
+                                }
+                                catch (error) {
+
+                                        const textArea =
+                                                document.createElement(
+                                                        "textarea"
+                                                );
+
+
+                                        textArea.value =
+                                                json;
+
+
+                                        document.body.appendChild(
+                                                textArea
+                                        );
+
+
+                                        textArea.select();
+
+
+                                        document.execCommand(
+                                                "copy"
+                                        );
+
+
+                                        document.body.removeChild(
+                                                textArea
+                                        );
+
+
+                                        this.textContent =
+                                                "JSON Copied!";
+
+
+                                        setTimeout(
+                                                () => {
+
+                                                        this.textContent =
+                                                                "Copy JSON";
+
+                                                },
+                                                1500
+                                        );
+
+                                }
+
+                        }
+                );
+
+
+                /* =========================================================
+                   DOWNLOAD JSON
+                ========================================================= */
+
+                document.getElementById(
+                        "downloadJson"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                const output =
+                                        buildJSON();
+
+
+                                const json =
+                                        JSON.stringify(
+                                                output,
+                                                null,
+                                                2
+                                        );
+
+
+                                const blob =
+                                        new Blob(
+                                                [json],
+                                                {
+                                                        type:
+                                                                "application/json"
+                                                }
+                                        );
+
+
+                                const url =
+                                        URL.createObjectURL(
+                                                blob
+                                        );
+
+
+                                const link =
+                                        document.createElement(
+                                                "a"
+                                        );
+
+
+                                link.href =
+                                        url;
+
+
+                                link.download =
+                                        "into-the-wild-cards.json";
+
+
+                                document.body.appendChild(
+                                        link
+                                );
+
+
+                                link.click();
+
+
+                                document.body.removeChild(
+                                        link
+                                );
+
+
+                                URL.revokeObjectURL(
+                                        url
+                                );
+
+                        }
+                );
+
+
+                /* =========================================================
+                   ESCAPE HTML
+                ========================================================= */
+
+                function escapeHTML(value) {
+
+                        return String(
+                                value || ""
+                        )
+                                .replace(
+                                        /&/g,
+                                        "&amp;"
+                                )
+                                .replace(
+                                        /</g,
+                                        "&lt;"
+                                )
+                                .replace(
+                                        />/g,
+                                        "&gt;"
+                                )
+                                .replace(
+                                        /"/g,
+                                        "&quot;"
+                                )
+                                .replace(
+                                        /'/g,
+                                        "&#039;"
+                                );
+
+                }
+
+
+                /* =========================================================
+                   START
+                ========================================================= */
+
+                createEmptyDeck();
+
+                renderEditor();
+
+                renderNavigation();
+
+
+                /*
+                 * Automatically try cards.json.
+                 *
+                 * If it does not exist, start with
+                 * 52 blank cards.
+                 */
+
+                fetch(
+                        "cards.json",
+                        {
+                                cache: "no-store"
+                        }
+                )
+                        .then(
+                                response => {
+
+                                        if (!response.ok) {
+
+                                                throw new Error(
+                                                        "No cards.json"
+                                                );
+
+                                        }
+
+
+                                        return response.json();
+
+                                }
+                        )
+                        .then(
+                                data => {
+
+                                        loadDeck(data);
+
+                                }
+                        )
+                        .catch(
+                                () => {
+
+                                        document.getElementById(
+                                                "loadStatus"
+                                        ).textContent =
+                                                "No cards.json loaded. " +
+                                                "Starting with 52 blank cards.";
+
+                                }
+                        );
+
+
+        </script>
+
+
+</body>
+
+</html>
