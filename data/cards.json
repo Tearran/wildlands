@@ -24,7 +24,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/bobcat.svg",
+    "card_illustration": "assets/svg/bobcat.svg",
     "card_rank": "2",
     "card_rairity": "C",
     "card_year": "2026",
@@ -47,7 +47,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/cactus_wren.svg",
+    "card_illustration": "assets/svg/cactus_wren.svg",
     "card_rank": "3",
     "card_rairity": "C",
     "card_year": "2026",
@@ -70,7 +70,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/desert_cottontail.svg",
+    "card_illustration": "assets/svg/desert_cottontail.svg",
     "card_rank": "4",
     "card_rairity": "C",
     "card_year": "2026",
@@ -93,7 +93,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/desert_coyote.svg",
+    "card_illustration": "assets/svg/desert_coyote.svg",
     "card_rank": "5",
     "card_rairity": "C",
     "card_year": "2026",
@@ -116,7 +116,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/desert_iguana.svg",
+    "card_illustration": "assets/svg/desert_iguana.svg",
     "card_rank": "6",
     "card_rairity": "C",
     "card_year": "2026",
@@ -139,7 +139,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/gambels_quail.svg",
+    "card_illustration": "assets/svg/gambels_quail.svg",
     "card_rank": "7",
     "card_rairity": "C",
     "card_year": "2026",
@@ -162,7 +162,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/gila_monster.svg",
+    "card_illustration": "assets/svg/gila_monster.svg",
     "card_rank": "8",
     "card_rairity": "C",
     "card_year": "2026",
@@ -185,7 +185,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/gray_fox.svg",
+    "card_illustration": "assets/svg/gray_fox.svg",
     "card_rank": "9",
     "card_rairity": "C",
     "card_year": "2026",
@@ -208,7 +208,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/javelina.svg",
+    "card_illustration": "assets/svg/javelina.svg",
     "card_rank": "10",
     "card_rairity": "C",
     "card_year": "2026",
@@ -231,7 +231,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/kangaroo_rat.svg",
+    "card_illustration": "assets/svg/kangaroo_rat.svg",
     "card_rank": "J",
     "card_rairity": "C",
     "card_year": "2026",
@@ -254,7 +254,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/mountain_lion.svg",
+    "card_illustration": "assets/svg/mountain_lion.svg",
     "card_rank": "Q",
     "card_rairity": "C",
     "card_year": "2026",
@@ -277,7 +277,7 @@
   },
   {
     "suite": "organisms",
-    "card_illustration": "misc/roadrunner.svg",
+    "card_illustration": "assets/svg/roadrunner.svg",
     "card_rank": "K",
     "card_rairity": "C",
     "card_year": "2026",
@@ -300,7 +300,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/agave.svg",
+    "card_illustration": "assets/svg/agave.svg",
     "card_rank": "A",
     "card_rairity": "U",
     "card_year": "2026",
@@ -323,7 +323,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/barrel_cactus.svg",
+    "card_illustration": "assets/svg/barrel_cactus.svg",
     "card_rank": "2",
     "card_rairity": "U",
     "card_year": "2026",
@@ -346,7 +346,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/bermuda_grass.svg",
+    "card_illustration": "assets/svg/bermuda_grass.svg",
     "card_rank": "3",
     "card_rairity": "U",
     "card_year": "2026",
@@ -369,7 +369,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/brittlebush_flowers.svg",
+    "card_illustration": "assets/svg/brittlebush_flowers.svg",
     "card_rank": "4",
     "card_rairity": "U",
     "card_year": "2026",
@@ -392,7 +392,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/cattail_stand.svg",
+    "card_illustration": "assets/svg/cattail_stand.svg",
     "card_rank": "5",
     "card_rairity": "U",
     "card_year": "2026",
@@ -415,7 +415,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/creosote_bush.svg",
+    "card_illustration": "assets/svg/creosote_bush.svg",
     "card_rank": "6",
     "card_rairity": "U",
     "card_year": "2026",
@@ -438,7 +438,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/desert_grass.svg",
+    "card_illustration": "assets/svg/desert_grass.svg",
     "card_rank": "7",
     "card_rairity": "U",
     "card_year": "2026",
@@ -461,7 +461,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/mesquite.svg",
+    "card_illustration": "assets/svg/mesquite.svg",
     "card_rank": "8",
     "card_rairity": "U",
     "card_year": "2026",
@@ -484,7 +484,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/ocotillo.svg",
+    "card_illustration": "assets/svg/ocotillo.svg",
     "card_rank": "9",
     "card_rairity": "U",
     "card_year": "2026",
@@ -507,7 +507,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/palo_verde.svg",
+    "card_illustration": "assets/svg/palo_verde.svg",
     "card_rank": "10",
     "card_rairity": "U",
     "card_year": "2026",
@@ -530,7 +530,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/teddy_bear_cholla.svg",
+    "card_illustration": "assets/svg/teddy_bear_cholla.svg",
     "card_rank": "J",
     "card_rairity": "U",
     "card_year": "2026",
@@ -553,7 +553,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/saguaro.svg",
+    "card_illustration": "assets/svg/saguaro.svg",
     "card_rank": "Q",
     "card_rairity": "U",
     "card_year": "2026",
@@ -576,7 +576,7 @@
   },
   {
     "suite": "foundations",
-    "card_illustration": "misc/desert_ironwood_tree.svg",
+    "card_illustration": "assets/svg/desert_ironwood_tree.svg",
     "card_rank": "K",
     "card_rairity": "U",
     "card_year": "2026",
@@ -599,7 +599,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/desert_rainfall.svg",
+    "card_illustration": "assets/svg/desert_rainfall.svg",
     "card_rank": "A",
     "card_rairity": "U",
     "card_year": "2026",
@@ -622,7 +622,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/migration.svg",
+    "card_illustration": "assets/svg/migration.svg",
     "card_rank": "2",
     "card_rairity": "U",
     "card_year": "2026",
@@ -645,7 +645,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/arundo_donax_reeds.svg",
+    "card_illustration": "assets/svg/arundo_donax_reeds.svg",
     "card_rank": "3",
     "card_rairity": "U",
     "card_year": "2026",
@@ -668,7 +668,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/desert_frost.svg",
+    "card_illustration": "assets/svg/desert_frost.svg",
     "card_rank": "4",
     "card_rairity": "U",
     "card_year": "2026",
@@ -691,7 +691,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/haboob_winds.svg",
+    "card_illustration": "assets/svg/haboob_winds.svg",
     "card_rank": "5",
     "card_rairity": "U",
     "card_year": "2026",
@@ -714,7 +714,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/diversion_dam.svg",
+    "card_illustration": "assets/svg/diversion_dam.svg",
     "card_rank": "6",
     "card_rairity": "U",
     "card_year": "2026",
@@ -737,7 +737,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/extreme_heat.svg",
+    "card_illustration": "assets/svg/extreme_heat.svg",
     "card_rank": "7",
     "card_rairity": "U",
     "card_year": "2026",
@@ -760,7 +760,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/monsoon_storm.svg",
+    "card_illustration": "assets/svg/monsoon_storm.svg",
     "card_rank": "8",
     "card_rairity": "U",
     "card_year": "2026",
@@ -783,7 +783,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/mega_drought.svg",
+    "card_illustration": "assets/svg/mega_drought.svg",
     "card_rank": "9",
     "card_rairity": "U",
     "card_year": "2026",
@@ -806,7 +806,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/bluegill_sunfish.svg",
+    "card_illustration": "assets/svg/bluegill_sunfish.svg",
     "card_rank": "10",
     "card_rairity": "U",
     "card_year": "2026",
@@ -829,7 +829,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/gizzard_shad.svg",
+    "card_illustration": "assets/svg/gizzard_shad.svg",
     "card_rank": "J",
     "card_rairity": "U",
     "card_year": "2026",
@@ -852,7 +852,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/lowland_leopard_frog.svg",
+    "card_illustration": "assets/svg/lowland_leopard_frog.svg",
     "card_rank": "Q",
     "card_rairity": "U",
     "card_year": "2026",
@@ -875,7 +875,7 @@
   },
   {
     "suite": "dynamics",
-    "card_illustration": "misc/Roosevelt_lake_dam.svg",
+    "card_illustration": "assets/svg/Roosevelt_lake_dam.svg",
     "card_rank": "K",
     "card_rairity": "U",
     "card_year": "2026",
@@ -898,7 +898,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/bird_eggs.svg",
+    "card_illustration": "assets/svg/bird_eggs.svg",
     "card_rank": "A",
     "card_rairity": "U",
     "card_year": "2026",
@@ -921,7 +921,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/palo_verde_seeds.svg",
+    "card_illustration": "assets/svg/palo_verde_seeds.svg",
     "card_rank": "2",
     "card_rairity": "U",
     "card_year": "2026",
@@ -944,7 +944,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/mesquite_beans.svg",
+    "card_illustration": "assets/svg/mesquite_beans.svg",
     "card_rank": "3",
     "card_rairity": "U",
     "card_year": "2026",
@@ -967,7 +967,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/jojoba_nut.svg",
+    "card_illustration": "assets/svg/jojoba_nut.svg",
     "card_rank": "4",
     "card_rairity": "U",
     "card_year": "2026",
@@ -990,7 +990,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/prickly_pear_tuna.svg",
+    "card_illustration": "assets/svg/prickly_pear_tuna.svg",
     "card_rank": "5",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1013,7 +1013,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/fremont_cottonwood_catkins.svg",
+    "card_illustration": "assets/svg/fremont_cottonwood_catkins.svg",
     "card_rank": "6",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1036,7 +1036,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/desert_ironwood_blossoms.svg",
+    "card_illustration": "assets/svg/desert_ironwood_blossoms.svg",
     "card_rank": "7",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1059,7 +1059,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/desert_mistletoe.svg",
+    "card_illustration": "assets/svg/desert_mistletoe.svg",
     "card_rank": "8",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1082,7 +1082,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/gooddings_willow_bark.svg",
+    "card_illustration": "assets/svg/gooddings_willow_bark.svg",
     "card_rank": "9",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1105,7 +1105,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/thistle.svg",
+    "card_illustration": "assets/svg/thistle.svg",
     "card_rank": "10",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1128,7 +1128,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/chara.svg",
+    "card_illustration": "assets/svg/chara.svg",
     "card_rank": "J",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1151,7 +1151,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/cheeseweed_mallow.svg",
+    "card_illustration": "assets/svg/cheeseweed_mallow.svg",
     "card_rank": "Q",
     "card_rairity": "U",
     "card_year": "2026",
@@ -1174,7 +1174,7 @@
   },
   {
     "suite": "resources",
-    "card_illustration": "misc/nature_survey.svg",
+    "card_illustration": "assets/svg/nature_survey.svg",
     "card_rank": "K",
     "card_rairity": "U",
     "card_year": "2026",
