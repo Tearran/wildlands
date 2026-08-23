@@ -106,7 +106,7 @@
 
         <!-- Header & Menu -->
         <header>
-                <div class="logo">Into the Wild!</div>
+                <div class="logo">Wildlands</div>
                 <nav>
                         <a href="./index.html">Card View</a>
                         <a href="./card_json_form.html">Card Editor</a>
@@ -118,13 +118,6 @@
 
         <div id="cardContainer"></div>
 
-        <div id="controls">
-<br><br><br>
-                <button type="button" id="downloadAll">
-                        Download All Cards
-                </button>
-
-        </div>
         <script>
 
 
@@ -551,24 +544,25 @@
                                 "${values.line_5}":
                                         card.card_facts5 || "",
 
+                                "${values.line_6}":
+                                        card.card_facts6 || "",
+
 
                                 /*
-                                 * Abilities 1-5 mapped to lines 6-10
+                                 * Abilities 1-4 mapped to lines 7-10
                                  */
-                                "${values.line_6}":
-                                        card.card_abiliies1 || "",
 
                                 "${values.line_7}":
-                                        card.card_abiliies2 || "",
+                                        card.card_abiliies1 || "",
 
                                 "${values.line_8}":
-                                        card.card_abiliies3 || "",
+                                        card.card_abiliies2 || "",
 
                                 "${values.line_9}":
-                                        card.card_abiliies4 || "",
+                                        card.card_abiliies3 || "",
 
                                 "${values.line_10}":
-                                        card.card_abiliies5 || "",
+                                        card.card_abiliies4 || "",
 
 
 
@@ -858,49 +852,6 @@
                 }
 
 
-
-                /*
-                 * Download entire deck
-                 */
-                function downloadAllCards() {
-
-                        if (
-                                renderedCards.length === 0
-                        ) {
-
-                                return;
-
-                        }
-
-
-                        /*
-                         * Download cards separately.
-                         *
-                         * Small delay helps prevent
-                         * the browser from blocking
-                         * multiple downloads.
-                         */
-                        renderedCards.forEach(
-                                (card, index) => {
-
-                                        setTimeout(
-                                                function () {
-
-                                                        downloadCard(
-                                                                card
-                                                        );
-
-                                                },
-                                                index * 250
-                                        );
-
-                                }
-                        );
-
-                }
-
-
-
                 /*
                  * Create filename
                  */
@@ -956,36 +907,6 @@
 
                 }
 
-
-
-                /*
-                 * Initialize Download All button
-                 */
-                function initializeDownloadButton() {
-
-                        const downloadAllButton =
-                                document.getElementById(
-                                        "downloadAll"
-                                );
-
-
-                        if (downloadAllButton) {
-
-                                downloadAllButton.addEventListener(
-                                        "click",
-                                        downloadAllCards
-                                );
-
-                        }
-
-                }
-
-
-
-                /*
-                 * Start application
-                 */
-                initializeDownloadButton();
 
 
                 loadCards();
