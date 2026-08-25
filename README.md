@@ -109,9 +109,9 @@ The suit order is:
 
 A set must:
 
-- Start with a **Dynamic** or **Foundation**.
+- Must start with a **Dynamic** or **Foundation**.
 - Follow the suit order.
-- End with an **Organism** or **Dynamic**.
+- Can end with **Dynamic**.if not started with one
 - Contain no more than one card of the same suit.
 - Be a valid Run, N-of-a-Kind, or Double Pair.
 
@@ -119,7 +119,7 @@ A set must:
 
 - **Small Run:** 3 consecutive ranks.
 - **Long Run:** 4 consecutive ranks.
-- Suits do not need to match; the suits must follow the Wildlands suit order.
+- Suits can not match; the suits must follow the Wildlands suit order.
 
 ### N-of-a-Kind
 
@@ -148,6 +148,7 @@ On your turn:
 1. Draw one card.
    - Draw from the Draw Pile, or
    - Draw the top card of the Discard Pile if one exists.
+   - If the final card is drawn from the Draw Pile, the current player still completes their turn normally (play/discard as usual, then end turn).
 2. Play a valid set if you can.
 3. If you have more than 5 cards, discard until you have 5 cards.
 4. End your turn.
@@ -166,4 +167,4 @@ On your turn:
 
 - The game ends when the Draw Pile is empty.
 - Players count their points.
-- The player with the highest score wins. cards consisting of two matching-rank pairs.
+- The player with the highest score wins.
