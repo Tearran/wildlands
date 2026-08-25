@@ -93,54 +93,64 @@ Each suit contains exactly one card of every rank, 1 through 13.
 
 ## Setup
 
-- Shuffle the deck.
-- Each player draws **5 cards**.
-- Place the remaining cards face down as the **Draw Pile**.
-- Start a face-up **Discard Pile**.
+1. Shuffle the deck.
+2. Deal 5 cards to each player.
+3. Place the remaining cards face down as the Draw Pile.
+4. Start the Discard Pile empty.
+5. The player to the dealer's left goes first.
+
+## Building Sets
+
+Sets are built from a **Dynamic** or **Foundation**.
+
+The suit order is:
+
+**Dynamic → Foundation → Resource → Organism → Dynamic**
+
+A set must:
+
+- Start with a **Dynamic** or **Foundation**.
+- Follow the suit order.
+- End with an **Organism** or **Dynamic**.
+- Contain no more than one card of the same suit.
+- Be a valid Run, N-of-a-Kind, or Double Pair.
+
+### Runs
+
+- **Small Run:** 3 consecutive ranks.
+- **Long Run:** 4 consecutive ranks.
+- Suits do not need to match; the suits must follow the Wildlands suit order.
+
+### N-of-a-Kind
+
+- **Three of a Kind:** 3 cards of the same rank.
+- **Four of a Kind:** 4 cards of the same rank.
+- A 3+1 combination is invalid.
+
+### Double Pair
+
+- 4 cards consisting of two matching-rank pairs.
+- The two ranks must be adjacent, staying within ±1.
+- Any arrangement is valid as long as the suit order is maintained.
+
+## Playing Sets
+
+Play a valid **Run, N-of-a-Kind, or Double Pair** by placing the completed set on the board.
+
+- Sets are scored when played.
+- Once a set is placed on the board, it cannot be added to or changed.
+- A 3-card set cannot be upgraded into a 4-card set.
 
 ## Turn
 
 On your turn:
 
-1. **Draw** one card.
-   - Draw from the **Draw Pile**, or
-   - Draw the top card of the **Discard Pile**.
-2. **Play** a valid scoring set if you can.
-3. If you have **more than 5 cards**, discard until you have 5 cards.
+1. Draw one card.
+   - Draw from the Draw Pile, or
+   - Draw the top card of the Discard Pile if one exists.
+2. Play a valid set if you can.
+3. If you have more than 5 cards, discard until you have 5 cards.
 4. End your turn.
-
-## Scoring Sets
-
-### 3-Card Sets
-
-#### Small Run — 1 Point
-Three consecutive ranks.
-
-#### Three of a Kind — 2 Points
-Three cards of the same rank.
-
-### 4-Card Sets
-
-#### Adjacent-Rank Set — 3 Points
-Four cards using two adjacent ranks.
-
-Examples:
-
-- 1 1 2 2
-- 1 2 2 1
-- 1 2 1 2
-
-#### Long Run — 4 Points
-Four consecutive ranks.
-
-#### Four of a Kind — 5 Points
-Four cards of the same rank.
-
-## Set Placement
-
-- A set is scored when it is played.
-- Once a set is played, cards cannot be added to it later.
-- A 3-card set cannot be upgraded into a 4-card set.
 
 ## Scoring
 
@@ -148,6 +158,12 @@ Four cards of the same rank.
 |---|---:|---:|
 | Small Run | 3 | 1 |
 | Three of a Kind | 3 | 2 |
-| Adjacent-Rank Set | 4 | 3 |
+| Double Pair | 4 | 3 |
 | Long Run | 4 | 4 |
 | Four of a Kind | 4 | 5 |
+
+## Game End
+
+- The game ends when the Draw Pile is empty.
+- Players count their points.
+- The player with the highest score wins. cards consisting of two matching-rank pairs.
