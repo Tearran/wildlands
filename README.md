@@ -88,3 +88,82 @@ Each suit contains exactly one card of every rank, 1 through 13.
 | 13 | x | x | x | x |
 
 ---
+
+# Wildlands Basic Rules
+
+## Setup
+
+1. Shuffle the deck.
+2. Deal 5 cards to each player.
+3. Place the remaining cards face down as the Draw Pile.
+4. Start the Discard Pile empty.
+5. The player to the dealer's left goes first.
+
+## Building Sets
+
+Sets are built from a **Dynamic** or **Foundation**.
+
+The suit order is:
+
+**Dynamic → Foundation → Resource → Organism → Dynamic**
+
+A set must:
+
+- Must start with a **Dynamic** or **Foundation**.
+- Follow the suit order.
+- Runs may start or end with **Dynamic**.
+- Contain no more than one card of the same suit.
+- Be a valid Run, N-of-a-Kind, or Double Pair.
+
+### Runs
+
+- **Small Run:** 3 consecutive ranks.
+- **Long Run:** 4 consecutive ranks.
+- Suits can not match; the suits must follow the Wildlands suit order.
+
+### N-of-a-Kind
+
+- **Three of a Kind:** 3 cards of the same rank.
+- **Four of a Kind:** 4 cards of the same rank.
+- A 3+1 combination is invalid.
+
+### Double Pair
+
+- 4 cards consisting of two matching-rank pairs.
+- The two ranks must be adjacent, staying within ±1.
+- Any arrangement is valid as long as the suit order is maintained.
+
+## Playing Sets
+
+Play a valid **Run, N-of-a-Kind, or Double Pair** by placing the completed set on the board.
+
+- Sets are scored when played.
+- Once a set is placed on the board, it cannot be added to or changed.
+- A 3-card set cannot be upgraded into a 4-card set.
+
+## Turn
+
+On your turn:
+
+1. Draw one card.
+   - Draw from the Draw Pile, or
+   - Draw the top card of the Discard Pile if one exists.
+   - If the final card is drawn from the Draw Pile, the current player still completes their turn normally (play/discard as usual, then end turn).
+2. Play a valid set if you can.
+3. If you have more than 5 cards, discard until you have 5 cards.
+4. End your turn.
+
+## Scoring
+
+| Set | Cards | Points |
+|---|---:|---:|
+| Small Run | 3 | 1 |
+| Three of a Kind | 3 | 2 |
+| Double Pair | 4 | 3 |
+| Long Run | 4 | 4 |
+| Four of a Kind | 4 | 5 |
+
+## Game End
+
+- When a player draws the final card from the Draw Pile, that player completes their turn.
+- The game ends after that turn. score wins.
