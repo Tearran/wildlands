@@ -120,6 +120,7 @@ A set must:
 - **Small Run:** 3 consecutive ranks.
 - **Long Run:** 4 consecutive ranks.
 - Suits do not need to match; the suits must follow the Wildlands suit order.
+- A run starting with **Dynamic** must include at least **Organism** to satisfy the ending requirement (e.g., Dynamic → Foundation → Resource is invalid; Dynamic → Foundation → Resource → Organism is valid).
 
 ### N-of-a-Kind
 
@@ -148,6 +149,7 @@ On your turn:
 1. Draw one card.
    - Draw from the Draw Pile, or
    - Draw the top card of the Discard Pile if one exists.
+   - If the final card is drawn from the Draw Pile, the current player still completes their turn normally (play/discard as usual, then end turn).
 2. Play a valid set if you can.
 3. If you have more than 5 cards, discard until you have 5 cards.
 4. End your turn.
@@ -166,4 +168,4 @@ On your turn:
 
 - The game ends when the Draw Pile is empty.
 - Players count their points.
-- The player with the highest score wins. cards consisting of two matching-rank pairs.
+- The player with the highest score wins.
