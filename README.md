@@ -109,9 +109,9 @@ The suit order is:
 
 A set must:
 
-- Start with a **Dynamic** or **Foundation**.
+- Must start with a **Dynamic** or **Foundation**.
 - Follow the suit order.
-- End with an **Organism** or **Dynamic**.
+- Can end with **Dynamic**.if not started with one
 - Contain no more than one card of the same suit.
 - Be a valid Run, N-of-a-Kind, or Double Pair.
 
@@ -119,8 +119,7 @@ A set must:
 
 - **Small Run:** 3 consecutive ranks.
 - **Long Run:** 4 consecutive ranks.
-- Suits do not need to match; the suits must follow the Wildlands suit order.
-- A run starting with **Dynamic** must include at least **Organism** to satisfy the ending requirement (e.g., Dynamic → Foundation → Resource is invalid; Dynamic → Foundation → Resource → Organism is valid).
+- Suits can not match; the suits must follow the Wildlands suit order.
 
 ### N-of-a-Kind
 
