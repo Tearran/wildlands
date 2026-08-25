@@ -165,6 +165,5 @@ On your turn:
 
 ## Game End
 
-- The game ends when the Draw Pile is empty.
-- Players count their points.
-- The player with the highest score wins.
+- When a player draws the final card from the Draw Pile, that player completes their turn.
+- The game ends after that turn. score wins.
