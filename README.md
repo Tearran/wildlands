@@ -96,7 +96,8 @@ Each suit contains exactly one card of every rank, 1 through 13.
 - Shuffle the deck.
 - Each player draws **5 cards**.
 - Place the remaining cards face down as the **Draw Pile**.
-- Start a face-up **Discard Pile**.
+- Start an empty face-up **Discard Pile**.
+- If the **Draw Pile** runs out during the game, shuffle the **Discard Pile** (except its top card) to form a new **Draw Pile**.
 
 ## Turn
 
@@ -104,9 +105,12 @@ On your turn:
 
 1. **Draw** one card.
    - Draw from the **Draw Pile**, or
-   - Draw the top card of the **Discard Pile**.
+   - Draw the top card of the **Discard Pile** (if available).
+   - If one pile is empty, you must draw from the other.
 2. **Play** a valid scoring set if you can.
-3. If you have **more than 5 cards**, discard until you have 5 cards.
+   - Scored cards are removed from your hand and placed in your scored area.
+   - Scored cards cannot be reused.
+3. If you have **more than 5 cards** in your hand, discard until you have 5 cards.
 4. End your turn.
 
 ## Scoring Sets
@@ -114,7 +118,7 @@ On your turn:
 ### 3-Card Sets
 
 #### Small Run — 1 Point
-Three consecutive ranks.
+Three consecutive ranks (suits may differ).
 
 #### Three of a Kind — 2 Points
 Three cards of the same rank.
@@ -122,7 +126,7 @@ Three cards of the same rank.
 ### 4-Card Sets
 
 #### Adjacent-Rank Set — 3 Points
-Four cards using two adjacent ranks.
+Four cards using two adjacent ranks, with exactly two cards of each rank (2+2 distribution).
 
 Examples:
 
@@ -131,7 +135,7 @@ Examples:
 - 1 2 1 2
 
 #### Long Run — 4 Points
-Four consecutive ranks.
+Four consecutive ranks (suits may differ).
 
 #### Four of a Kind — 5 Points
 Four cards of the same rank.
