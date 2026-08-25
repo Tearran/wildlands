@@ -88,3 +88,66 @@ Each suit contains exactly one card of every rank, 1 through 13.
 | 13 | x | x | x | x |
 
 ---
+
+# Wildlands Basic Rules
+
+## Setup
+
+- Shuffle the deck.
+- Each player draws **5 cards**.
+- Place the remaining cards face down as the **Draw Pile**.
+- Start a face-up **Discard Pile**.
+
+## Turn
+
+On your turn:
+
+1. **Draw** one card.
+   - Draw from the **Draw Pile**, or
+   - Draw the top card of the **Discard Pile**.
+2. **Play** a valid scoring set if you can.
+3. If you have **more than 5 cards**, discard until you have 5 cards.
+4. End your turn.
+
+## Scoring Sets
+
+### 3-Card Sets
+
+#### Small Run — 1 Point
+Three consecutive ranks.
+
+#### Three of a Kind — 2 Points
+Three cards of the same rank.
+
+### 4-Card Sets
+
+#### Adjacent-Rank Set — 3 Points
+Four cards using two adjacent ranks.
+
+Examples:
+
+- 1 1 2 2
+- 1 2 2 1
+- 1 2 1 2
+
+#### Long Run — 4 Points
+Four consecutive ranks.
+
+#### Four of a Kind — 5 Points
+Four cards of the same rank.
+
+## Set Placement
+
+- A set is scored when it is played.
+- Once a set is played, cards cannot be added to it later.
+- A 3-card set cannot be upgraded into a 4-card set.
+
+## Scoring
+
+| Set | Cards | Points |
+|---|---:|---:|
+| Small Run | 3 | 1 |
+| Three of a Kind | 3 | 2 |
+| Adjacent-Rank Set | 4 | 3 |
+| Long Run | 4 | 4 |
+| Four of a Kind | 4 | 5 |
