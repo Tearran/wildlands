@@ -111,7 +111,7 @@ A set must:
 
 - Must start with a **Dynamic** or **Foundation**.
 - Follow the suit order.
-- Can end with **Dynamic**.if not started with one
+- Runs may start or end with **Dynamic**.
 - Contain no more than one card of the same suit.
 - Be a valid Run, N-of-a-Kind, or Double Pair.
 
