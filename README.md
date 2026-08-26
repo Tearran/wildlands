@@ -1,7 +1,7 @@
 # Wildlands
 
-## Collect the World's Wildlands. Discover Nature's Connections.
-Each expansion explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, habitat, or natural feature.
+## Collect the World's Wildlands.
+Explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, territory, or Condition.
 
 ### Standard Deck
 
@@ -13,7 +13,7 @@ The four suits are:
 
 | Suit | Definition |
 |------|------------|
-| Conditions | Events, environmental changes, natural processes, weather, or other conditions that alter the state of the ecosystem. |
+| Conditions | Events, environmental changes, natural processes, weather, or other conditions that alter the territories. |
 | Territory | Physical or ecological structures that form the base of an ecosystem, such as habitat, terrain, shelter, or persistent structures. |
 | Resources | Materials, food, energy sources, or other resources that can support an ecosystem. |
 | Fauna | Living things within the ecosystem, including plants, animals, insects, fungi, and other Fauna. |
