@@ -20,10 +20,10 @@ The four suits are:
 
 | Suit | Definition |
 |------|------------|
+| Conditions | Events, environmental changes, natural processes, weather, or other conditions that alter the state of the ecosystem. |
+| Territory | Physical or ecological structures that form the base of an ecosystem, such as habitat, terrain, shelter, or persistent structures. |
 | Resources | Materials, food, energy sources, or other resources that can support an ecosystem. |
-| Foundations | Physical or ecological structures that form the base of an ecosystem, such as habitat, terrain, shelter, or persistent structures. |
-| Organisms | Living things within the ecosystem, including plants, animals, insects, fungi, and other organisms. |
-| Dynamics | Events, environmental changes, natural processes, weather, or other conditions that alter the state of the ecosystem. |
+| Fauna | Living things within the ecosystem, including plants, animals, insects, fungi, and other Fauna. |
 
 A complete deck has one card for every suit/rank combination, for a total of 52 cards.
 
@@ -40,9 +40,9 @@ The four-suit taxonomy classification of a card, used for card identity and orga
 The four suits are:
 
 - Resources
-- Foundations
-- Organisms
-- Dynamics
+- Territory
+- Fauna
+- Conditions
 
 ---
 
@@ -58,10 +58,11 @@ A standard deck contains exactly **52 cards**: 4 suits by 13 ranks.
 
 | Suit | Cards |
 |------|------:|
+| Conditions | 13 |
+| Territory | 13 |
 | Resources | 13 |
-| Foundations | 13 |
-| Organisms | 13 |
-| Dynamics | 13 |
+| Fauna | 13 |
+
 
 Total: **52 cards**
 
@@ -71,7 +72,7 @@ Total: **52 cards**
 
 Each suit contains exactly one card of every rank, 1 through 13.
 
-| Rank | Resources | Foundations | Organisms | Dynamics |
+| Rank | Resources | Territory | Fauna | Conditions |
 |-----:|:---------:|:-----------:|:---------:|:--------:|
 | 1 | x | x | x | x |
 | 2 | x | x | x | x |
@@ -157,11 +158,11 @@ On your turn:
 
 | Set | Cards | Points |
 |---|---:|---:|
-| Small Run | 3 | 1 |
-| Three of a Kind | 3 | 2 |
-| Double Pair | 4 | 3 |
-| Long Run | 4 | 4 |
-| Four of a Kind | 4 | 5 |
+| Small Run | 3 | 5 |
+| Three of a Kind | 3 | 5 |
+| Double Pair | 4 | 10 |
+| Long Run | 4 | 10 |
+| Four of a Kind | 4 | 10 |
 
 ## Game End
 
