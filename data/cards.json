@@ -23,7 +23,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/agave.svg",
     "card_rank": "2",
     "card_rairity": "U",
@@ -69,7 +69,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/black_tailed_jackrabbit.svg",
     "card_rank": "2",
     "card_rairity": "C",
@@ -115,7 +115,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/barrel_cactus.svg",
     "card_rank": "3",
     "card_rairity": "U",
@@ -161,7 +161,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/kangaroo_rat.svg",
     "card_rank": "3",
     "card_rairity": "C",
@@ -207,7 +207,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/bermuda_grass.svg",
     "card_rank": "4",
     "card_rairity": "U",
@@ -253,7 +253,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/cactus_wren.svg",
     "card_rank": "4",
     "card_rairity": "C",
@@ -299,7 +299,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/brittlebush_flowers.svg",
     "card_rank": "5",
     "card_rairity": "U",
@@ -345,7 +345,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/ringtail.svg",
     "card_rank": "5",
     "card_rairity": "U",
@@ -391,7 +391,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/cattail_stand.svg",
     "card_rank": "6",
     "card_rairity": "U",
@@ -437,7 +437,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/desert_coyote.svg",
     "card_rank": "6",
     "card_rairity": "C",
@@ -465,10 +465,10 @@
     "card_rank": "7",
     "card_rairity": "C",
     "card_year": "2026",
-    "fact_paragraph": "Extreme heat increases water loss and physiological stress in desert organisms. Many animals avoid midday temperatures by seeking shade, shifting activity to cooler hours. Plants may close stomata, shed leaves, or slow growth to conserve water.",
+    "fact_paragraph": "Extreme heat increases water loss and physiological stress in desert fauna. Many animals avoid midday temperatures by seeking shade, shifting activity to cooler hours. Plants may close stomata, shed leaves, or slow growth to conserve water.",
     "abilities_paragraph": "",
     "card_facts1": "Extreme heat increases water loss and",
-    "card_facts2": "physiological stress in desert organisms.",
+    "card_facts2": "physiological stress in desert fauna.",
     "card_facts3": "Many animals avoid midday temperatures by",
     "card_facts4": "seeking shade, shifting activity to cooler",
     "card_facts5": "hours. Plants may close stomata, shed leaves,",
@@ -483,7 +483,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/creosote_bush.svg",
     "card_rank": "7",
     "card_rairity": "U",
@@ -529,7 +529,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/desert_iguana.svg",
     "card_rank": "7",
     "card_rairity": "C",
@@ -575,7 +575,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/desert_grass.svg",
     "card_rank": "8",
     "card_rairity": "U",
@@ -621,7 +621,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/gambels_quail.svg",
     "card_rank": "8",
     "card_rairity": "C",
@@ -667,7 +667,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/mesquite.svg",
     "card_rank": "9",
     "card_rairity": "U",
@@ -713,7 +713,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/gila_monster.svg",
     "card_rank": "9",
     "card_rairity": "C",
@@ -759,7 +759,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/ocotillo.svg",
     "card_rank": "10",
     "card_rairity": "U",
@@ -805,7 +805,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/gray_fox.svg",
     "card_rank": "10",
     "card_rairity": "C",
@@ -851,7 +851,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/palo_verde.svg",
     "card_rank": "J",
     "card_rairity": "U",
@@ -897,7 +897,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/javelina.svg",
     "card_rank": "J",
     "card_rairity": "C",
@@ -943,7 +943,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/teddy_bear_cholla.svg",
     "card_rank": "Q",
     "card_rairity": "U",
@@ -989,7 +989,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/bobcat.svg",
     "card_rank": "Q",
     "card_rairity": "C",
@@ -1035,7 +1035,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/saguaro.svg",
     "card_rank": "K",
     "card_rairity": "C",
@@ -1081,7 +1081,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/mountain_lion.svg",
     "card_rank": "K",
     "card_rairity": "C",
@@ -1127,7 +1127,7 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "suite": "foundations",
+    "suite": "habitats",
     "card_illustration": "assets/svg/desert_ironwood_tree.svg",
     "card_rank": "A",
     "card_rairity": "U",
@@ -1173,7 +1173,7 @@
     "card_artist_name": ""
   },
   {
-    "suite": "organisms",
+    "suite": "fauna",
     "card_illustration": "assets/svg/roadrunner.svg",
     "card_rank": "A",
     "card_rairity": "C",
