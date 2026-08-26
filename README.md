@@ -3,13 +3,6 @@
 ## Collect the World's Wildlands. Discover Nature's Connections.
 Each expansion explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, habitat, or natural feature.
 
-## Usage Requirements
-
-The card viewer (`card_viewer.html`) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
-- Python: `python -m http.server` or `python3 -m http.server`
-- Node.js: `npx http-server`
-- PHP: `php -S localhost:8000`
-
 ### Standard Deck
 
 This section defines the structural and architectural model of the standard deck.
@@ -168,3 +161,12 @@ On your turn:
 
 - When a player draws the final card from the Draw Pile, that player completes their turn.
 - The game ends after that turn. score wins.
+
+## Tool Requirements
+
+The card viewer (`index.html`) and card editor (`card_json_form`) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
+- Python: `python -m http.server` or `python3 -m http.server`
+- Node.js: `npx http-server`
+- PHP: `php -S localhost:8000`
+
+
