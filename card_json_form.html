@@ -496,6 +496,31 @@
                 ];
 
 
+                const CARD_RANK_SORT_ORDER = {
+                        "2": 0,
+                        "3": 1,
+                        "4": 2,
+                        "5": 3,
+                        "6": 4,
+                        "7": 5,
+                        "8": 6,
+                        "9": 7,
+                        "10": 8,
+                        "J": 9,
+                        "Q": 10,
+                        "K": 11,
+                        "A": 12
+                };
+
+
+                const SUITE_SORT_ORDER = {
+                        dynamics: 0,
+                        foundations: 1,
+                        resources: 2,
+                        organisms: 3
+                };
+
+
                 /*
                  * Current card.
                  */
@@ -1114,10 +1139,43 @@
                                                                                         : ""
                                                                         );
 
-                                                                const comparison =
-                                                                        leftValue.localeCompare(
-                                                                                rightValue
-                                                                        );
+                                                                let comparison = 0;
+
+
+                                                                if (sortKey === "card_rank") {
+
+                                                                        const leftOrder =
+                                                                                CARD_RANK_SORT_ORDER[leftValue];
+
+                                                                        const rightOrder =
+                                                                                CARD_RANK_SORT_ORDER[rightValue];
+
+
+                                                                        comparison =
+                                                                                (leftOrder ?? Number.MAX_SAFE_INTEGER) -
+                                                                                (rightOrder ?? Number.MAX_SAFE_INTEGER);
+
+                                                                }
+                                                                else if (sortKey === "suite") {
+
+                                                                        const leftOrder =
+                                                                                SUITE_SORT_ORDER[leftValue];
+
+                                                                        const rightOrder =
+                                                                                SUITE_SORT_ORDER[rightValue];
+
+
+                                                                        comparison =
+                                                                                (leftOrder ?? Number.MAX_SAFE_INTEGER) -
+                                                                                (rightOrder ?? Number.MAX_SAFE_INTEGER);
+
+                                                                }
+                                                                else {
+
+                                                                        comparison =
+                                                                                leftValue.localeCompare(rightValue);
+
+                                                                }
 
 
                                                                 return comparison ||
