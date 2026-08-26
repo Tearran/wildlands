@@ -363,6 +363,34 @@
                         <input type="file" id="jsonFile" accept=".json,application/json">
 
 
+                        <div class="field" style="margin-top:15px;">
+
+                                <label for="sortKey">
+                                        Sort loaded cards by:
+                                </label>
+
+
+                                <select id="sortKey" name="sortKey">
+                                        <option value="suite">suite</option>
+                                        <option value="card_rank">card_rank</option>
+                                        <option value="card_rairity">card_rairity</option>
+                                        <option value="card_year">card_year</option>
+                                        <option value="card_expantion">card_expantion</option>
+                                </select>
+
+
+                                <button type="button" id="sortCards" disabled>
+                                        Sort Cards
+                                </button>
+
+
+                                <button type="button" id="downloadSortedJson" disabled>
+                                        Download Sorted JSON
+                                </button>
+
+                        </div>
+
+
                         <div id="loadStatus" style="margin-top:10px;"></div>
 
                 </div>
@@ -480,6 +508,76 @@
                  */
 
                 let cards = [];
+
+
+                /*
+                 * Original loaded JSON used only by the sorting controls.
+                 */
+
+                let rawLoadedDocument = null;
+
+                let loadedCardArray = null;
+
+                let loadedCardsAreRoot = false;
+
+
+                function setSortControlsEnabled(enabled) {
+
+                        document.getElementById(
+                                "sortCards"
+                        ).disabled = !enabled;
+
+                        document.getElementById(
+                                "downloadSortedJson"
+                        ).disabled = !enabled;
+
+                }
+
+
+                function clearLoadedDocument() {
+
+                        rawLoadedDocument = null;
+                        loadedCardArray = null;
+                        loadedCardsAreRoot = false;
+                        setSortControlsEnabled(false);
+
+                }
+
+
+                function preserveLoadedDocument(data) {
+
+                        if (Array.isArray(data)) {
+
+                                rawLoadedDocument = data;
+                                loadedCardArray = data;
+                                loadedCardsAreRoot = true;
+
+                        }
+                        else if (
+                                data &&
+                                typeof data === "object" &&
+                                Array.isArray(data.cards)
+                        ) {
+
+                                rawLoadedDocument = data;
+                                loadedCardArray = data.cards;
+                                loadedCardsAreRoot = false;
+
+                        }
+                        else {
+
+                                clearLoadedDocument();
+
+                                throw new Error(
+                                        'JSON root must be an array or an object with a "cards" array.'
+                                );
+
+                        }
+
+
+                        setSortControlsEnabled(true);
+
+                }
 
 
                 /* =========================================================
@@ -854,6 +952,8 @@
                         "click",
                         async function () {
 
+                                clearLoadedDocument();
+
                                 try {
 
                                         const response =
@@ -877,6 +977,8 @@
                                         const data =
                                                 await response.json();
 
+
+                                        preserveLoadedDocument(data);
 
                                         loadDeck(data);
 
@@ -916,6 +1018,9 @@
                                 }
 
 
+                                clearLoadedDocument();
+
+
                                 const reader =
                                         new FileReader();
 
@@ -930,6 +1035,8 @@
                                                                         reader.result
                                                                 );
 
+
+                                                        preserveLoadedDocument(data);
 
                                                         loadDeck(data);
 
@@ -949,6 +1056,148 @@
 
 
                                 reader.readAsText(file);
+
+                        }
+                );
+
+
+                /* =========================================================
+                   SORT AND DOWNLOAD ORIGINAL JSON
+                ========================================================= */
+
+                document.getElementById(
+                        "sortCards"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                if (!loadedCardArray) {
+
+                                        document.getElementById(
+                                                "loadStatus"
+                                        ).textContent =
+                                                "Load a valid JSON document before sorting.";
+
+                                        return;
+
+                                }
+
+
+                                const sortKey =
+                                        document.getElementById(
+                                                "sortKey"
+                                        ).value;
+
+
+                                const sortedCards =
+                                        loadedCardArray
+                                                .map(
+                                                        (card, index) => ({
+                                                                card,
+                                                                index
+                                                        })
+                                                )
+                                                .sort(
+                                                        (left, right) => {
+
+                                                                const leftValue =
+                                                                        String(
+                                                                                left.card && left.card[sortKey] != null
+                                                                                        ? left.card[sortKey]
+                                                                                        : ""
+                                                                        );
+
+                                                                const rightValue =
+                                                                        String(
+                                                                                right.card && right.card[sortKey] != null
+                                                                                        ? right.card[sortKey]
+                                                                                        : ""
+                                                                        );
+
+                                                                const comparison =
+                                                                        leftValue.localeCompare(
+                                                                                rightValue
+                                                                        );
+
+
+                                                                return comparison ||
+                                                                        left.index - right.index;
+
+                                                        }
+                                                )
+                                                .map(
+                                                        item => item.card
+                                                );
+
+
+                                if (loadedCardsAreRoot) {
+
+                                        rawLoadedDocument = sortedCards;
+
+                                }
+                                else {
+
+                                        rawLoadedDocument.cards = sortedCards;
+
+                                }
+
+
+                                loadedCardArray = sortedCards;
+
+
+                                document.getElementById(
+                                        "loadStatus"
+                                ).textContent =
+                                        `Sorted ${sortedCards.length} card(s) by ${sortKey}.`;
+
+                        }
+                );
+
+
+                document.getElementById(
+                        "downloadSortedJson"
+                ).addEventListener(
+                        "click",
+                        function () {
+
+                                if (!loadedCardArray) {
+                                        return;
+                                }
+
+
+                                const json =
+                                        JSON.stringify(
+                                                rawLoadedDocument,
+                                                null,
+                                                2
+                                        );
+
+
+                                const blob =
+                                        new Blob(
+                                                [json],
+                                                {
+                                                        type: "application/json"
+                                                }
+                                        );
+
+
+                                const url =
+                                        URL.createObjectURL(blob);
+
+
+                                const link =
+                                        document.createElement("a");
+
+
+                                link.href = url;
+                                link.download = "wildlands.sorted.json";
+
+
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(url);
 
                         }
                 );
@@ -2761,6 +3010,8 @@
                         )
                         .then(
                                 data => {
+
+                                        preserveLoadedDocument(data);
 
                                         loadDeck(data);
 
