@@ -1,4 +1,4 @@
-# Playing_cards
+# Wildlands
 
 ## Collect the World's Wildlands. Discover Nature's Connections.
 Each expansion explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, habitat, or natural feature.
