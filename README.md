@@ -4,7 +4,7 @@
 Each expansion explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, habitat, or natural feature.
 
 
-### Standard Deck
+## Standard Deck
 
 This section defines the structural and architectural model of the standard deck.
 
@@ -25,7 +25,7 @@ The shared 52-card architecture can optionally support conventional card games s
 
 ---
 
-# Keyword Reference
+## Keyword Reference
 
 ### Suite
 
@@ -166,7 +166,7 @@ On your turn:
 
 ## Tools Requirements
 
-The card viewer (`index.html`,`card_viewer.html` etc) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
+The card viewer (`index.html`, `card_viewer.html` etc.) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
 - Python: `python -m http.server` or `python3 -m http.server`
 - Node.js: `npx http-server`
 - PHP: `php -S localhost:8000`
