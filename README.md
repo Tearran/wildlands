@@ -1,67 +1,61 @@
-# Playing_cards
+# Wildlands
 
 ## Collect the World's Wildlands. Discover Nature's Connections.
 Each expansion explores a real landscape, beginning with the **Tonto Basin Ranger District** of **Tonto National Forest** in Arizona, USA. Every card represents a real species, habitat, or natural feature.
 
-## Usage Requirements
-
-The card viewer (`card_viewer.html`) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
-- Python: `python -m http.server` or `python3 -m http.server`
-- Node.js: `npx http-server`
-- PHP: `php -S localhost:8000`
 
 ### Standard Deck
 
 This section defines the structural and architectural model of the standard deck.
 
-Structurally, the standard deck model is **4 suits by 13 ranks**, producing **52 cards**. Suit is part of a card's identity and organization, alongside rank.
+Structurally, the standard deck model is **4 suites by 13 ranks**, producing **52 cards**. Suite is part of a card's identity and organization, alongside rank.
 
-The four suits are:
+The four suites are:
 
-| Suit | Definition |
-|------|------------|
-| Resources | Materials, food, energy sources, or other resources that can support an ecosystem. |
-| Foundations | Physical or ecological structures that form the base of an ecosystem, such as habitat, terrain, shelter, or persistent structures. |
-| Organisms | Living things within the ecosystem, including plants, animals, insects, fungi, and other organisms. |
-| Dynamics | Events, environmental changes, natural processes, weather, or other conditions that alter the state of the ecosystem. |
+| Suite        | Definition                                                                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Disturbances | Discrete, temporary environmental forces or weather events that alter ecosystem structures, resource availability, or the physical state of the terrain.      |
+| Soil Matrix  | The physical, chemical, and biological properties of the earth, mineral bedrock, and decomposing organic humus layers that establish the conditions for life. |
+| Producers    | Organic material and biomass available for consumption, including autotrophic plants, fungi, algae, and fractional biomass.                                   |
+| Consumers    | Organisms that cannot produce their own energy and must ingest other organic biomass to survive.                                                              |
 
-A complete deck has one card for every suit/rank combination, for a total of 52 cards.
+A complete deck has one card for every suite/rank combination, for a total of 52 cards.
 
-The shared 52-card architecture can optionally support conventional card games such as poker, rummy, or Go Fish, independently of Into the Wild rules. This does not mean that conventional card-game rules are Into the Wild rules.
+The shared 52-card architecture can optionally support conventional card games such as poker, rummy, or Go Fish, independently of Wildlands rules. This does not mean that conventional card-game rules are Wildlands rules.
 
 ---
 
 # Keyword Reference
 
-### Suit
+### Suite
 
-The four-suit taxonomy classification of a card, used for card identity and organization.
+The four-suite ecological taxonomy classification of a card, used for card identity and organization.
 
-The four suits are:
+The four suites are:
 
-- Resources
-- Foundations
-- Organisms
-- Dynamics
+* Disturbances
+* Soil Matrix
+* Producers
+* Consumers
 
 ---
 
 ### Type
 
-The four-suit taxonomy classification of a card.
+The four-suite ecological taxonomy classification of a card.
 
 ---
 
 ### Standard Deck Composition
 
-A standard deck contains exactly **52 cards**: 4 suits by 13 ranks.
+A standard deck contains exactly **52 cards**: 4 suites by 13 ranks.
 
-| Suit | Cards |
-|------|------:|
-| Resources | 13 |
-| Foundations | 13 |
-| Organisms | 13 |
-| Dynamics | 13 |
+| Suite        | Cards |
+| ------------ | ----: |
+| Disturbances |    13 |
+| Soil Matrix  |    13 |
+| Producers    |    13 |
+| Consumers    |    13 |
 
 Total: **52 cards**
 
@@ -69,23 +63,23 @@ Total: **52 cards**
 
 ### Rank Distribution
 
-Each suit contains exactly one card of every rank, 1 through 13.
+Each suite contains exactly one card of every rank, 1 through 13.
 
-| Rank | Resources | Foundations | Organisms | Dynamics |
-|-----:|:---------:|:-----------:|:---------:|:--------:|
-| 1 | x | x | x | x |
-| 2 | x | x | x | x |
-| 3 | x | x | x | x |
-| 4 | x | x | x | x |
-| 5 | x | x | x | x |
-| 6 | x | x | x | x |
-| 7 | x | x | x | x |
-| 8 | x | x | x | x |
-| 9 | x | x | x | x |
-| 10 | x | x | x | x |
-| 11 | x | x | x | x |
-| 12 | x | x | x | x |
-| 13 | x | x | x | x |
+| Rank | Disturbances | Soil Matrix | Producers | Consumers |
+| ---: | :----------: | :---------: | :-------: | :-------: |
+|    1 |       x      |      x      |     x     |     x     |
+|    2 |       x      |      x      |     x     |     x     |
+|    3 |       x      |      x      |     x     |     x     |
+|    4 |       x      |      x      |     x     |     x     |
+|    5 |       x      |      x      |     x     |     x     |
+|    6 |       x      |      x      |     x     |     x     |
+|    7 |       x      |      x      |     x     |     x     |
+|    8 |       x      |      x      |     x     |     x     |
+|    9 |       x      |      x      |     x     |     x     |
+|   10 |       x      |      x      |     x     |     x     |
+|   11 |       x      |      x      |     x     |     x     |
+|   12 |       x      |      x      |     x     |     x     |
+|   13 |       x      |      x      |     x     |     x     |
 
 ---
 
@@ -101,17 +95,17 @@ Each suit contains exactly one card of every rank, 1 through 13.
 
 ## Building Sets
 
-Sets are built from a **Dynamic** or **Foundation**.
+Sets are built from a **Disturbance** or **Soil Matrix**.
 
 The suit order is:
 
-**Dynamic → Foundation → Resource → Organism → Dynamic**
+**Disturbance → Soil Matrix → Producer → Consumer → Disturbance**
 
 A set must:
 
-- Must start with a **Dynamic** or **Foundation**.
+- Must start with a **Disturbance** or **Soil Matrix**.
 - Follow the suit order.
-- Runs may start or end with **Dynamic**.
+- Runs may start or end with **Disturbance**.
 - Contain no more than one card of the same suit.
 - Be a valid Run, N-of-a-Kind, or Double Pair.
 
@@ -166,4 +160,13 @@ On your turn:
 ## Game End
 
 - When a player draws the final card from the Draw Pile, that player completes their turn.
-- The game ends after that turn. score wins.
+- The game ends after that turn. 
+- High score wins.
+
+
+## Tools Requirements
+
+The card viewer (`index.html`,`card_viewer.html` etc) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
+- Python: `python -m http.server` or `python3 -m http.server`
+- Node.js: `npx http-server`
+- PHP: `php -S localhost:8000`
