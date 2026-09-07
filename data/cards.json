@@ -2,7 +2,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/mega_drought.svg",
+    "card_illustration": "assets/svg/disturbances_mega_drought.svg",
     "card_rank": "2",
     "card_rairity": "",
     "card_year": "2026",
@@ -26,7 +26,7 @@
   {
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/sonoran_desert_scrub.svg",
+    "card_illustration": "assets/svg/foundations_sonoran_desert_scrub.svg",
     "card_rank": "2",
     "card_rairity": "",
     "card_year": "2026",
@@ -50,7 +50,7 @@
   {
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/desert_grass.svg",
+    "card_illustration": "assets/svg/biomass_desert_grass.svg",
     "card_rank": "2",
     "card_rairity": "",
     "card_year": "2026",
@@ -74,7 +74,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/kangaroo_rat.svg",
+    "card_illustration": "assets/svg/consumers_kangaroo_rat.svg",
     "card_rank": "2",
     "card_rairity": "",
     "card_year": "2026",
@@ -96,11 +96,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/flash_flood.svg",
+    "card_illustration": "assets/svg/disturbances_flash_flood.svg",
     "card_rank": "3",
     "card_rairity": "",
     "card_year": "2026",
@@ -122,8 +120,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/semidesert_grassland.svg",
@@ -148,8 +144,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_bermuda_grass.svg",
@@ -174,8 +168,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/desert_cottontail.svg",
@@ -200,8 +192,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/monsoon_storm.svg",
@@ -226,8 +216,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/mesquite_bosque.svg",
@@ -252,11 +240,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/mesquite_beans.svg",
+    "card_illustration": "assets/svg/biomass_mesquite_beans.svg",
     "card_rank": "4",
     "card_rairity": "",
     "card_year": "2026",
@@ -278,8 +264,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/black_tailed_jackrabbit.svg",
@@ -304,11 +288,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/landslide.svg",
+    "card_illustration": "assets/svg/disturbances_landslide.svg",
     "card_rank": "5",
     "card_rairity": "",
     "card_year": "2026",
@@ -330,8 +312,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/interior_chaparral.svg",
@@ -356,11 +336,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/prickly_pear_tuna.svg",
+    "card_illustration": "assets/svg/biomass_prickly_pear_tuna.svg",
     "card_rank": "5",
     "card_rairity": "",
     "card_year": "2026",
@@ -382,8 +360,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/javelina.svg",
@@ -408,8 +384,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/brush_fire.svg",
@@ -434,8 +408,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/riparian_deciduous_forest.svg",
@@ -460,11 +432,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/jojoba_nut.svg",
+    "card_illustration": "assets/svg/biomass_jojoba_nut.svg",
     "card_rank": "6",
     "card_rairity": "",
     "card_year": "2026",
@@ -486,8 +456,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/round_tailed_ground_squirrel.svg",
@@ -512,8 +480,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/mega_drought.svg",
@@ -538,8 +504,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/desert_wash.svg",
@@ -564,8 +528,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_insects.svg",
@@ -590,8 +552,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/skunk.svg",
@@ -616,8 +576,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/disturbances_population_boom.svg",
@@ -642,8 +600,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/desert_slope.svg",
@@ -668,11 +624,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/bird_eggs.svg",
+    "card_illustration": "assets/svg/biomass_bird_eggs.svg",
     "card_rank": "8",
     "card_rairity": "",
     "card_year": "2026",
@@ -694,8 +648,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/gila_monster.svg",
@@ -720,8 +672,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/desert_rainfall.svg",
@@ -746,8 +696,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/roosevelt_lake_dam.svg",
@@ -772,8 +720,6 @@
     "card_artist_name": "Kim Tuttle"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_lizard.svg",
@@ -798,8 +744,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/ringtail.svg",
@@ -824,8 +768,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/disterbance_bloom.svg",
@@ -850,8 +792,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/mountain_crags.svg",
@@ -876,8 +816,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_peromyscus.svg",
@@ -902,8 +840,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/roadrunner.svg",
@@ -928,8 +864,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/disturbances_morning_frost.svg",
@@ -954,8 +888,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/rocky_canyon.svg",
@@ -980,8 +912,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_heteromyidae.svg",
@@ -1006,8 +936,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/gray_fox.svg",
@@ -1032,8 +960,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/disturbances_dust_devil.svg",
@@ -1058,8 +984,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/saguaro.svg",
@@ -1084,8 +1008,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/biomass_ground_squirrel.svg",
@@ -1110,11 +1032,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/bobcat.svg",
+    "card_illustration": "assets/svg/consumers_bobcat.svg",
     "card_rank": "Q",
     "card_rairity": "",
     "card_year": "2026",
@@ -1136,8 +1056,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/dust_storm.svg",
@@ -1162,11 +1080,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/desert_riparian_scrub.svg",
+    "card_illustration": "assets/svg/foundations_desert_riparian_scrub.svg",
     "card_rank": "K",
     "card_rairity": "",
     "card_year": "2026",
@@ -1188,11 +1104,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/leporidae.svg",
+    "card_illustration": "assets/svg/biomass_leporidae.svg",
     "card_rank": "K",
     "card_rairity": "",
     "card_year": "2026",
@@ -1214,8 +1128,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/desert_coyote.svg",
@@ -1240,8 +1152,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
     "card_illustration": "assets/svg/disturbances_arundo_donax_reeds.svg",
@@ -1266,8 +1176,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "soil_matrix",
     "card_suite_secondary": "clubs",
     "card_illustration": "assets/svg/diversion_dam.svg",
@@ -1292,11 +1200,9 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/gambels_quail.svg",
+    "card_illustration": "assets/svg/biomass_gambels_quail.svg",
     "card_rank": "A",
     "card_rairity": "",
     "card_year": "2026",
@@ -1318,8 +1224,6 @@
     "card_artist_name": "Tearran Studios"
   },
   {
-    "card_suite_primarty": "",
-    "card_suite_secondary": "",
     "suite": "consumers",
     "card_suite_secondary": "hearts",
     "card_illustration": "assets/svg/desert-nesting_bald_eagle.svg",
