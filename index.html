@@ -107,10 +107,11 @@
         <!-- Header & Menu -->
         <header>
                 <div class="logo">Wildlands</div>
-                <nav>
-                        <a href="./index.html">Card View</a>
+                <!-- hold for future        <nav>
                         <a href="./card_json_form.html">Card Editor</a>
+                        <a href="./card_viewer.html">Card Veiw</a>
                 </nav>
+        -->
         </header>
 
         <div id="status"></div>
@@ -417,6 +418,19 @@
                          * or
                          *
                          * "suite": "resources"
+                         * 
+                         * or
+                         * 
+                         * "suite": "disturbances"
+                         * 
+                         * or
+                         * 
+                         * "suite": "soil_matrix"
+                         * 
+                         * 
+                         * or 
+                         * 
+                         * "suite": "consumers"
                          */
                         setSuiteDisplay(
                                 svg,
@@ -442,10 +456,12 @@
 
                         const suites = [
 
-                                "organisms",
-                                "dynamics",
-                                "foundations",
-                                "resources"
+
+                                "disturbances",
+                                "soil_matrix",
+                                "resources",
+                                "consumers"
+
 
                         ];
 
