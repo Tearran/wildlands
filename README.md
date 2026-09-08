@@ -16,24 +16,13 @@ The four suits are:
 | Resources | Materials, food, energy sources, or other resources that can support an ecosystem. |
 | Consumers | Living things within the ecosystem, including plants, animals, insects, fungi, and other organisms. |
 
+---
 
 A complete deck has one card for every suit/rank combination, for a total of 52 cards.
 
 The shared 52-card architecture can optionally support conventional card games such as poker, rummy, or Go Fish, independently of Into the Wild rules. This does not mean that conventional card-game rules are Into the Wild rules.
 
 ---
-
-# Keyword Reference
-
-### Suit
-
-The four-suit taxonomy classification of a card, used for card identity and organization.
-
-The four suits are:
-
-**Dynamic → Foundation → Resource → Organism → Dynamic**
-
-
 ## Tools Requirements
 
 The card viewer (`card_viewer.html`) must be served through a local HTTP server because its relative fetch requests do not work when opened directly from disk (file:// protocol). You can use any local web server such as:
@@ -41,9 +30,3 @@ The card viewer (`card_viewer.html`) must be served through a local HTTP server 
 - Node.js: `npx http-server`
 - PHP: `php -S localhost:8000`
 
-| Four of a Kind | 4 | 5 |
-
-## Game End
-
-- When a player draws the final card from the Draw Pile, that player completes their turn.
-- The game ends after that turn. score wins.
