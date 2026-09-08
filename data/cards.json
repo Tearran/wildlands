@@ -25,7 +25,7 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
+    "card_suite_secondary": "spades",
     "card_illustration": "assets/svg/foundations_sonoran_desert_scrub.svg",
     "card_rank": "2",
     "card_rairity": "",
@@ -121,8 +121,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/semidesert_grassland.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_semidesert_grassland.svg",
     "card_rank": "3",
     "card_rairity": "",
     "card_year": "2026",
@@ -170,7 +170,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/desert_cottontail.svg",
+    "card_illustration": "assets/svg/consumers_desert_cottontail.svg",
     "card_rank": "3",
     "card_rairity": "",
     "card_year": "2026",
@@ -194,7 +194,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/monsoon_storm.svg",
+    "card_illustration": "assets/svg/disturbances_monsoon_storm.svg",
     "card_rank": "4",
     "card_rairity": "",
     "card_year": "2026",
@@ -217,8 +217,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/mesquite_bosque.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_mesquite_bosque.svg",
     "card_rank": "4",
     "card_rairity": "",
     "card_year": "2026",
@@ -266,7 +266,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/black_tailed_jackrabbit.svg",
+    "card_illustration": "assets/svg/consumers_black_tailed_jackrabbit.svg",
     "card_rank": "4",
     "card_rairity": "",
     "card_year": "2026",
@@ -313,8 +313,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/interior_chaparral.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_interior_chaparral.svg",
     "card_rank": "5",
     "card_rairity": "",
     "card_year": "2026",
@@ -362,7 +362,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/javelina.svg",
+    "card_illustration": "assets/svg/consumers_javelina.svg",
     "card_rank": "5",
     "card_rairity": "",
     "card_year": "2026",
@@ -386,7 +386,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/brush_fire.svg",
+    "card_illustration": "assets/svg/disturbances_brush_fire.svg",
     "card_rank": "6",
     "card_rairity": "",
     "card_year": "2026",
@@ -409,8 +409,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/riparian_deciduous_forest.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_riparian_deciduous_forest.svg",
     "card_rank": "6",
     "card_rairity": "",
     "card_year": "2026",
@@ -458,7 +458,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/round_tailed_ground_squirrel.svg",
+    "card_illustration": "assets/svg/consumers_round_tailed_ground_squirrel.svg",
     "card_rank": "6",
     "card_rairity": "",
     "card_year": "2026",
@@ -482,7 +482,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/mega_drought.svg",
+    "card_illustration": "assets/svg/disturbances_mega_drought.svg",
     "card_rank": "7",
     "card_rairity": "",
     "card_year": "2026",
@@ -505,9 +505,9 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/desert_wash.svg",
-    "card_rank": "K",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_desert_wash.svg",
+    "card_rank": "7",
     "card_rairity": "",
     "card_year": "2026",
     "fact_paragraph": "Desert washes are normally dry channels that can carry water during storms. They are important pathways through the desert and can support more vegetation where water collects or passes through.",
@@ -554,7 +554,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/skunk.svg",
+    "card_illustration": "assets/svg/consumers_skunk.svg",
     "card_rank": "7",
     "card_rairity": "",
     "card_year": "2026",
@@ -601,8 +601,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/desert_slope.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_desert_slope.svg",
     "card_rank": "8",
     "card_rairity": "",
     "card_year": "2026",
@@ -650,7 +650,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/gila_monster.svg",
+    "card_illustration": "assets/svg/consumers_gila_monster.svg",
     "card_rank": "8",
     "card_rairity": "",
     "card_year": "2026",
@@ -674,7 +674,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/desert_rainfall.svg",
+    "card_illustration": "assets/svg/disturbances_desert_rainfall.svg",
     "card_rank": "9",
     "card_rairity": "",
     "card_year": "2026",
@@ -697,8 +697,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/roosevelt_lake_dam.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_roosevelt_lake_dam.svg",
     "card_rank": "9",
     "card_rairity": "",
     "card_year": "2026",
@@ -722,7 +722,7 @@
   {
     "suite": "resources",
     "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/biomass_lizard.svg",
+    "card_illustration": "assets/svg/biomass_lizards.svg",
     "card_rank": "9",
     "card_rairity": "",
     "card_year": "2026",
@@ -746,7 +746,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/ringtail.svg",
+    "card_illustration": "assets/svg/consumers_ringtail.svg",
     "card_rank": "9",
     "card_rairity": "",
     "card_year": "2026",
@@ -770,7 +770,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/disterbance_bloom.svg",
+    "card_illustration": "assets/svg/disterbances_bloom.svg",
     "card_rank": "10",
     "card_rairity": "",
     "card_year": "2026",
@@ -793,8 +793,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/mountain_crags.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_mountain_crags.svg",
     "card_rank": "10",
     "card_rairity": "",
     "card_year": "2026",
@@ -842,7 +842,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/roadrunner.svg",
+    "card_illustration": "assets/svg/consumers_roadrunner.svg",
     "card_rank": "10",
     "card_rairity": "",
     "card_year": "2026",
@@ -889,8 +889,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/rocky_canyon.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_rocky_canyon.svg",
     "card_rank": "J",
     "card_rairity": "",
     "card_year": "2026",
@@ -938,7 +938,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/gray_fox.svg",
+    "card_illustration": "assets/svg/consumers_gray_fox.svg",
     "card_rank": "J",
     "card_rairity": "",
     "card_year": "2026",
@@ -985,8 +985,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/saguaro.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_saguaro.svg",
     "card_rank": "Q",
     "card_rairity": "",
     "card_year": "2026",
@@ -1058,7 +1058,7 @@
   {
     "suite": "disturbances",
     "card_suite_secondary": "diamond",
-    "card_illustration": "assets/svg/dust_storm.svg",
+    "card_illustration": "assets/svg/disturbances_dust_storm.svg",
     "card_rank": "K",
     "card_rairity": "",
     "card_year": "2026",
@@ -1081,7 +1081,7 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
+    "card_suite_secondary": "spades",
     "card_illustration": "assets/svg/foundations_desert_riparian_scrub.svg",
     "card_rank": "K",
     "card_rairity": "",
@@ -1130,7 +1130,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/desert_coyote.svg",
+    "card_illustration": "assets/svg/consumers_desert_coyote.svg",
     "card_rank": "K",
     "card_rairity": "",
     "card_year": "2026",
@@ -1177,8 +1177,8 @@
   },
   {
     "suite": "soil_matrix",
-    "card_suite_secondary": "clubs",
-    "card_illustration": "assets/svg/diversion_dam.svg",
+    "card_suite_secondary": "spades",
+    "card_illustration": "assets/svg/foundations_diversion_dam.svg",
     "card_rank": "A",
     "card_rairity": "",
     "card_year": "2026",
@@ -1226,7 +1226,7 @@
   {
     "suite": "consumers",
     "card_suite_secondary": "hearts",
-    "card_illustration": "assets/svg/desert-nesting_bald_eagle.svg",
+    "card_illustration": "assets/svg/consumers_bald_eagle.svg",
     "card_rank": "A",
     "card_rairity": "",
     "card_year": "2026",
