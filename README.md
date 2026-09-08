@@ -14,7 +14,7 @@ The four suits are:
 | Dynamics | Events, environmental changes, natural processes, weather, or other conditions that alter the state of the ecosystem. |
 | Foundations | Physical or ecological structures that form the base of an ecosystem, such as habitat, terrain, shelter, or persistent structures. |
 | Resources | Materials, food, energy sources, or other resources that can support an ecosystem. |
-| Consumers | Living things within the ecosystem, including plants, animals, insects, fungi, and other organisms. |
+| Consumers | Living things within the ecosystem |
 
 ---
 
