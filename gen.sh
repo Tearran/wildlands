@@ -4,7 +4,7 @@ import re
 import xml.etree.ElementTree as ET
 
 JSON_PATH = "data/cards.json"
-SVG_TEMPLATE_PATH = "card_template.svg"
+SVG_TEMPLATE_PATH = "test_template.svg"
 OUTPUT_DIR = "generated_cards"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)

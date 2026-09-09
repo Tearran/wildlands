@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="100%" height="100%">
+  <!-- ========================================== -->
+  <!-- 1. THE PARTS WAREHOUSE (DEFS)             -->
+  <!-- ========================================== -->
+  <defs>
+    <!-- Staging area for your card illustrations -->
+    <symbol id="current_card_art" viewBox="0 0 100 100" overflow="hidden">
+      <!-- Visual placeholder visible inside Inkscape until overwritten -->
+      <rect width="100" height="100" fill="#dedada" />
+      <line x1="0" y1="0" x2="100" y2="100" stroke="#b4afaf" stroke-width="1"/>
+      <line x1="100" y1="0" x2="0" y2="100" stroke="#b4afaf" stroke-width="1"/>
+    </symbol>
+
+    <!-- Lean, clean suit graphics groups -->
+    <g id="disturbances"><path d="M12 2L2 12l10 10 10-10L12 2z" fill="#b13434" /></g>
+    <g id="soil_matrix"><path d="M12 2s4.5 4.5 4.5 7.5c0 2.5-2 4.5-4.5 4.5S7.5 12 7.5 9.5C7.5 6.5 12 2 12 2z" fill="#2a3d30" /></g>
+    <g id="resources"><circle cx="12" cy="12" r="8" fill="#3b5e66" /></g>
+    <g id="consumers"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#d48c3f" /></g>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- 2. CARD GRAPHIC LAYERS                     -->
+  <!-- ========================================== -->
+  <!-- Outer Frame -->
+  <rect width="400" height="560" rx="24" fill="#000000" />
+  <rect x="20" y="20" width="360" height="520" rx="12" fill="#2d3732" />
+
+  <!-- Cropped Illustration Window viewport (Safe cover crop) -->
+  <use href="#current_card_art" x="40" y="76" width="320" height="200" preserveAspectRatio="xMidYMid slice" />
+
+  <!-- Text Block Box -->
+  <rect x="40" y="284" width="320" height="196" fill="#ffffff" rx="2" />
+
+  <!-- ========================================== -->
+  <!-- 3. IDENTIFIED LAYER FIELDS FOR PYTHON      -->
+  <!-- ========================================== -->
+  <!-- Using unique IDs makes it 100% stable for code and visually perfect for Inkscape editing -->
+  
+  <!-- Primary Card Title Header -->
+  <text id="card_primary_name" x="112" y="52" font-family="sans-serif" font-size="18" font-weight="bold" fill="#ffffff">Card Title Placeholder</text>
+  
+  <!-- Secondary Sub-Title Header -->
+  <text id="card_secondary_name" x="52" y="498" font-family="sans-serif" font-size="10" font-style="italic" fill="#a9b3ad">Secondary Text Placeholder</text>
+
+  <!-- Fact Paragraph Core Text Rows (Lines 1-6) -->
+  <text font-family="Monospace" font-size="9" font-weight="bold" fill="#111111">
+    <tspan id="line_1" x="52" y="304">Fact Paragraph line row number 1...</tspan>
+    <tspan id="line_2" x="52" y="318">Fact Paragraph line row number 2...</tspan>
+    <tspan id="line_3" x="52" y="332">Fact Paragraph line row number 3...</tspan>
+    <tspan id="line_4" x="52" y="346">Fact Paragraph line row number 4...</tspan>
+    <tspan id="line_5" x="52" y="360">Fact Paragraph line row number 5...</tspan>
+    <tspan id="line_6" x="52" y="374"></tspan>
+  </text>
+
+  <!-- Abilities/Effects Text Rows (Lines 7-10) -->
+  <text font-family="Monospace" font-size="9" font-weight="bold" fill="#2d3732">
+    <tspan id="line_7" x="52" y="402">Abilities/Effects block line number 1...</tspan>
+    <tspan id="line_8" x="52" y="416">Abilities/Effects block line number 2...</tspan>
+    <tspan id="line_9" x="52" y="430">Abilities/Effects block line number 3...</tspan>
+    <tspan id="line_10" x="52" y="444">Abilities/Effects block line number 4...</tspan>
+  </text>
+
+  <!-- Footer Metadata Labels -->
+  <text id="card_metadata" x="40" y="532" font-family="sans-serif" font-size="9" fill="#717d76">Expansion • Artist Name</text>
+  <text id="card_year" x="360" y="532" font-family="sans-serif" font-size="9" fill="#717d76" text-anchor="end">2026</text>
+
+  <!-- ========================================== -->
+  <!-- 4. INDICATORS & CORNER POINTERS           -->
+  <!-- ========================================== -->
+  <!-- Left Corner Number Frame Badge -->
+  <rect x="40" y="36" width="60" height="76" rx="6" fill="#ffffff" stroke="#000000" stroke-width="2" />
+  <text id="card_rank" x="70" y="68" font-family="sans-serif" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">A</text>
+  
+  <!-- Corner Suit Link Viewports (The script targets this specific href string directly) -->
+  <g transform="translate(58, 76)"><use id="suite_icon_top" href="#consumers" /></g>
+  
+  <rect x="296" y="464" width="64" height="52" rx="6" fill="#cecac3" stroke="#000000" stroke-width="2" />
+  <g transform="translate(316, 478)"><use id="suite_icon_bottom" href="#consumers" /></g>
+</svg>
