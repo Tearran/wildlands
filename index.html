@@ -107,11 +107,12 @@
         <!-- Header & Menu -->
         <header>
                 <div class="logo">Wildlands</div>
-                <!-- hold for future        <nav>
+                <nav>
                         <a href="./card_json_form.html">Card Editor</a>
                         <a href="./card_viewer.html">Card Veiw</a>
+                        <a href="./data/cards.json">json</a>
                 </nav>
-        -->
+
         </header>
 
         <div id="status"></div>
@@ -875,6 +876,14 @@
                         card,
                         index
                 ) {
+                        const expantion =
+                                card.card_expantion ||
+                                "expantion"
+
+                        const suite =
+                                card.suite ||
+                                "suite";
+
 
                         const rank =
                                 card.card_rank ||
@@ -887,7 +896,7 @@
 
 
                         let filename =
-                                `${rank}_${name}`;
+                                `${expantion}_${rank}_${suite}_${name}`;
 
 
                         /*
