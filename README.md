@@ -33,7 +33,7 @@ Two components are structurally compatible if their values match exactly ($n$) o
 
 `Track: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A ]`
 
-```ascii
+```text
          ┌──► [ Dynamics (♦) ] ──┐
          │                       ▼
    [ Consumers (♥) ]          [ Foundations (♠) ]
@@ -42,23 +42,10 @@ Two components are structurally compatible if their values match exactly ($n$) o
          └─── [ Resources (♣) ] ◄┘
 ```
 
-
----
-
----
-
 ## The Suit-Neighbor Architecture
 
 The loop sequence is intentionally mapped so that adjacent suits reflect direct real-world ecological dependencies. When any card is examined alongside its neighboring suits on the track, the text elements transition logically between geography, meteorology, botany, and biology.
 
-```text
-┌──► [ Dynamics (♦) ] ──┐
-         │                       ▼
-   [ Fauna (♥) ]          [ Foundations (♠) ]
-         ▲                       │
-         │                       ▼
-         └─── [ Resources (♣) ] ◄┘
-```
 ---
 
 
