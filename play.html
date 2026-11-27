@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wildlands — 2P Tabletop Prototype (vs. NPC)</title>
+<style>
+  :root {
+    --bg: #141815;
+    --bg-panel: #1c221e;
+    --bg-card: #f6efe2;
+    --border: #323c35;
+    --text: #eef1ea;
+    --muted: #9aa79c;
+    --accent: #e09f3e;
+    --accent-soft: rgba(224, 159, 62, 0.16);
+    --green: #4caf78;
+    --green-soft: rgba(76, 175, 120, 0.18);
+    --red: #e05a47;
+    --red-soft: rgba(224, 90, 71, 0.22);
+    --blue: #5aa9e6;
+    --blue-soft: rgba(90, 169, 230, 0.18);
+    --purple: #b884e6;
+    --purple-soft: rgba(184, 132, 230, 0.22);
+
+    --suit-S: #2f5d62;
+    --suit-C: #3b7a47;
+    --suit-H: #b54534;
+    --suit-D: #c46b1a;
+    --suit-J: #7a3fb5;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at 50% 0%, #232c25 0%, var(--bg) 68%);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 10px 18px;
+    background: rgba(16, 20, 17, 0.92);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; position: sticky; top: 0; z-index: 30;
+    backdrop-filter: blur(8px);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-title { font-weight: 800; letter-spacing: 0.08em; font-size: 1.05rem; color: var(--accent); }
+  .brand-sub { font-size: 0.78rem; color: var(--muted); border-left: 1px solid var(--border); padding-left: 10px; }
+
+  .scoreboard {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 999px; font-size: 0.85rem;
+  }
+  .score-pill { font-weight: 700; }
+  .score-you { color: var(--green); }
+  .score-npc { color: var(--red); }
+  .round-pill { color: var(--muted); font-size: 0.8rem; }
+
+  .phase-banner {
+    font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
+    padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--bg-panel);
+  }
+  .phase-DRAW { background: var(--blue-soft); border-color: var(--blue); color: #b7dfff; }
+  .phase-PLAY { background: var(--green-soft); border-color: var(--green); color: #b4f0cd; }
+  .phase-DISCARD { background: var(--accent-soft); border-color: var(--accent); color: #ffe0a8; }
+  .phase-NPC { background: var(--red-soft); border-color: var(--red); color: #ffc7be; }
+  .phase-OVER { background: var(--purple-soft); border-color: var(--purple); color: #ead2ff; }
+
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  button {
+    background: var(--bg-panel); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 12px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: transform 0.12s, background 0.15s, border-color 0.15s;
+  }
+  button:hover:not(:disabled) { background: #28322b; border-color: #536658; }
+  button:active:not(:disabled) { transform: scale(0.97); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: #2c6e49; border-color: var(--green); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #348357; }
+  .btn-danger { background: #7f2b21; border-color: var(--red); color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #9b3529; }
+  .btn-blue { background: #225478; border-color: var(--blue); color: #fff; }
+  .btn-blue:hover:not(:disabled) { background: #2b6996; }
+  .btn-amber { background: #7c5419; border-color: var(--accent); color: #fff; }
+  .btn-amber:hover:not(:disabled) { background: #986720; }
+  .btn-purple { background: #582d82; border-color: var(--purple); color: #fff; }
+  .btn-purple:hover:not(:disabled) { background: #6f3aa3; }
+
+  /* LAYOUT */
+  .layout {
+    flex: 1; display: grid; grid-template-columns: 1fr 310px;
+    gap: 14px; padding: 14px 18px 18px;
+    max-width: 1520px; width: 100%; margin: 0 auto;
+  }
+  @media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } }
+
+  .tabletop { display: flex; flex-direction: column; gap: 12px; }
+  .zone {
+    background: rgba(28, 34, 30, 0.85);
+    border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px;
+  }
+  .zone-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .zone-title {
+    font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .hint-chip {
+    font-size: 0.76rem; padding: 3px 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); color: #d6dfd7;
+    border: 1px solid rgba(255,255,255,0.09);
+  }
+  .hint-chip.good { background: var(--green-soft); border-color: var(--green); color: #c7f7db; }
+  .hint-chip.warn { background: var(--accent-soft); border-color: var(--accent); color: #ffe5b8; }
+  .hint-chip.danger { background: var(--red-soft); border-color: var(--red); color: #ffd0c8; }
+
+  .player-board { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .board-group { display: flex; flex-direction: column; gap: 5px; }
+  .group-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .card-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .center-zone {
+    background: linear-gradient(135deg, rgba(35, 44, 37, 0.9), rgba(26, 33, 29, 0.92));
+    border-color: #3f4e43;
+  }
+  .market-row { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; }
+  .market-divider { width: 1px; height: 158px; background: var(--border); align-self: center; }
+
+  .slot-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .slot-caption { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); text-transform: uppercase; }
+
+  /* CARDS */
+  .card {
+    width: 112px; height: 160px; border-radius: 10px;
+    background: var(--bg-card); color: #1f2420;
+    border: 2px solid #d5cab5; box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    display: flex; flex-direction: column; position: relative;
+    overflow: hidden; user-select: none;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+    flex-shrink: 0;
+  }
+  .card.small { width: 88px; height: 124px; }
+  .card.mini { width: 68px; height: 98px; }
+  .card.clickable { cursor: pointer; }
+  .card.clickable:hover { transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  .card.selected {
+    transform: translateY(-10px); border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(224,159,62,0.55), 0 12px 22px rgba(0,0,0,0.55);
+  }
+  .card.draw-glow {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(90,169,230,0.5), 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .card.play-disc-glow {
+    border-color: var(--green);
+    box-shadow: 0 0 0 2px rgba(76,175,120,0.5), 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .card.target-glow {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(224,90,71,0.75), 0 0 18px rgba(224,90,71,0.5);
+    animation: pulseRed 1.1s infinite;
+  }
+  .card.replace-glow {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(224,159,62,0.7), 0 0 14px rgba(224,159,62,0.4);
+  }
+  .card.wild-glow {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(184,132,230,0.75), 0 0 16px rgba(184,132,230,0.45);
+  }
+  .card.discard-glow { border-color: var(--accent); }
+  .card.unstable-glow { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(184,132,230,0.65); }
+  .card.just-landed {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(224,159,62,0.85), 0 0 22px rgba(224,159,62,0.55);
+  }
+  .slot-caption.next-drop { color: var(--accent); }
+
+  @keyframes pulseRed {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(224,90,71,0.7), 0 0 10px rgba(224,90,71,0.4); }
+    50% { box-shadow: 0 0 0 4px rgba(224,90,71,0.95), 0 0 20px rgba(224,90,71,0.75); }
+  }
+
+  .card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 7px 3px; color: #fff; font-weight: 800; font-size: 0.85rem; line-height: 1;
+  }
+  .card.small .card-top { padding: 3px 5px; font-size: 0.74rem; }
+  .card.mini .card-top { padding: 2px 4px; font-size: 0.66rem; }
+
+  .suit-S .card-top { background: var(--suit-S); }
+  .suit-C .card-top { background: var(--suit-C); }
+  .suit-H .card-top { background: var(--suit-H); }
+  .suit-D .card-top { background: var(--suit-D); }
+  .suit-J .card-top { background: linear-gradient(135deg, #6b2fa0, #b85d19); }
+
+  .suit-tag { font-size: 0.6rem; font-weight: 700; opacity: 0.9; letter-spacing: 0.03em; }
+  .card.small .suit-tag, .card.mini .suit-tag { display: none; }
+
+  .card-art {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 4px; overflow: hidden; background: #fbf7ee; position: relative;
+  }
+  .card-art img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+  .card-art .poker-pip { font-size: 2.8rem; line-height: 1; }
+  .card.small .card-art .poker-pip { font-size: 2.1rem; }
+  .card.mini .card-art .poker-pip { font-size: 1.6rem; }
+  .suit-S .poker-pip { color: var(--suit-S); }
+  .suit-C .poker-pip { color: var(--suit-C); }
+  .suit-H .poker-pip { color: var(--suit-H); }
+  .suit-D .poker-pip { color: var(--suit-D); }
+  .suit-J .poker-pip { color: var(--suit-J); }
+
+  .card-name {
+    padding: 4px 5px 5px; font-size: 0.69rem; font-weight: 700; text-align: center;
+    line-height: 1.15; background: #efe6d4; border-top: 1px solid #dfd2ba; color: #242924;
+    min-height: 29px; display: flex; align-items: center; justify-content: center;
+  }
+  .card.small .card-name { font-size: 0.6rem; min-height: 24px; padding: 2px 3px; }
+  .card.mini .card-name { font-size: 0.54rem; min-height: 20px; padding: 2px; }
+
+  .card-badge {
+    position: absolute; bottom: 31px; left: 4px; right: 4px;
+    text-align: center; font-size: 0.58rem; font-weight: 800;
+    padding: 2px 4px; border-radius: 4px; letter-spacing: 0.03em; pointer-events: none;
+  }
+  .card.small .card-badge { bottom: 25px; font-size: 0.53rem; }
+  .badge-win { background: #1e7e47; color: #fff; }
+  .badge-fit { background: #266b9e; color: #fff; }
+  .badge-hit { background: #b83324; color: #fff; }
+  .badge-wild { background: #6b2fa0; color: #fff; }
+  .badge-replace { background: #a86b15; color: #fff; }
+  .badge-muted { background: #4a534c; color: #d8e0d9; }
+
+  .card-back {
+    background: repeating-linear-gradient(45deg, #27382d, #27382d 8px, #202f25 8px, #202f25 16px);
+    border: 2px solid #59725f; color: #d6c59f;
+    align-items: center; justify-content: center; text-align: center; padding: 8px;
+  }
+  .card-back-title { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: var(--accent); }
+  .card-back-count { font-size: 1.5rem; font-weight: 800; margin: 4px 0; color: #fff; }
+  .card-back-sub { font-size: 0.65rem; color: #c2cdb8; }
+
+  .spent-box {
+    width: 96px; height: 160px; border-radius: 10px;
+    border: 1px dashed #6b4c30; background: rgba(196,107,26,0.08);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 8px; color: #d9a773; gap: 4px;
+  }
+  .spent-count { font-size: 1.4rem; font-weight: 800; color: #f6c992; }
+
+  .card-slot {
+    width: 88px; height: 124px; border-radius: 10px;
+    border: 2px dashed #3e4c42; background: rgba(255,255,255,0.025);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #6f8074; font-size: 0.72rem; text-align: center; padding: 6px; gap: 3px;
+    transition: border-color 0.14s, background 0.14s, transform 0.14s;
+  }
+  .card-slot.big { width: 112px; height: 160px; }
+  .card-slot.slot-ready {
+    border-color: var(--green); background: rgba(76,175,120,0.14);
+    color: #c7f7db; cursor: pointer;
+  }
+  .card-slot.slot-ready:hover { transform: translateY(-4px); }
+  .card-slot.slot-wild {
+    border-color: var(--purple); background: rgba(184,132,230,0.16);
+    color: #ecd6ff; cursor: pointer;
+  }
+  .card-slot.slot-wild:hover { transform: translateY(-4px); }
+  .card-slot .slot-icon { font-size: 1.4rem; opacity: 0.75; }
+
+  .locked-cluster {
+    display: flex; gap: 4px; padding: 6px; border-radius: 10px;
+    background: rgba(76,175,120,0.1); border: 1px solid rgba(76,175,120,0.45);
+    position: relative;
+  }
+  .locked-tag {
+    position: absolute; top: -8px; right: 6px; background: #236c42; color: #e3ffef;
+    font-size: 0.6rem; font-weight: 800; padding: 1px 6px; border-radius: 999px;
+  }
+
+  .action-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 10px 14px; margin-bottom: 10px; border-radius: 10px;
+    background: rgba(15,20,17,0.78); border: 1px solid var(--border);
+    min-height: 48px; flex-wrap: wrap; transition: border-color 0.15s;
+  }
+  .action-bar.flash-warn { border-color: var(--accent); background: rgba(224,159,62,0.14); }
+  .action-prompt { font-size: 0.85rem; color: #dce5dd; }
+  .action-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .reserve-box {
+    padding: 8px 10px; border-radius: 12px;
+    background: rgba(122,63,181,0.12); border: 1px dashed rgba(184,132,230,0.5);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .reserve-spent { opacity: 0.4; filter: grayscale(0.8); }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 12px; }
+  .inspector {
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px;
+  }
+  .inspector-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .inspector-title { font-weight: 800; font-size: 1rem; color: #fff; }
+  .inspector-rank { font-weight: 800; font-size: 0.85rem; padding: 3px 9px; border-radius: 6px; color: #fff; }
+  .inspector-sub { font-size: 0.76rem; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
+  .inspector-art {
+    width: 100%; height: 118px; background: #fbf7ee; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; padding: 6px; margin-bottom: 10px;
+  }
+  .inspector-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .inspector-block { font-size: 0.78rem; line-height: 1.42; color: #cfd9d1; margin-bottom: 8px; }
+  .inspector-block strong { color: #fff; display: block; margin-bottom: 2px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .log-panel {
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 14px; flex: 1;
+    display: flex; flex-direction: column; min-height: 220px; max-height: 360px;
+  }
+  .log-list { overflow-y: auto; display: flex; flex-direction: column; gap: 5px; margin-top: 8px; font-size: 0.76rem; line-height: 1.35; }
+  .log-item { padding: 5px 8px; border-radius: 6px; background: rgba(255,255,255,0.035); border-left: 3px solid #526458; }
+  .log-item.you { border-left-color: var(--green); }
+  .log-item.npc { border-left-color: var(--red); }
+  .log-item.sys { border-left-color: var(--accent); color: #f6ddb0; }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+    display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #1b221d; border: 1px solid #445348; border-radius: 16px;
+    max-width: 590px; width: 100%; padding: 20px 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.65); max-height: 90vh; overflow-y: auto;
+  }
+  .modal h2 { margin: 0 0 6px; color: var(--accent); font-size: 1.2rem; }
+  .modal p { margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; line-height: 1.45; }
+  .setting-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .setting-row label { font-size: 0.78rem; font-weight: 700; color: #d7e2d9; }
+  .setting-row select {
+    background: #121714; color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; font-size: 0.84rem;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+
+  .win-banner {
+    display: none;
+    background: linear-gradient(135deg, rgba(44,110,73,0.35), rgba(224,159,62,0.25));
+    border: 2px solid var(--accent); border-radius: 14px; padding: 16px 18px;
+    align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  }
+  .win-banner.show { display: flex; }
+  .win-banner.lost {
+    background: linear-gradient(135deg, rgba(160,48,38,0.35), rgba(35,35,40,0.45));
+    border-color: var(--red);
+  }
+  .rules-list { font-size: 0.83rem; line-height: 1.5; color: #d5dfd7; padding-left: 18px; }
+  .rules-list li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-title">WILDLANDS</span>
+    <span class="brand-sub" id="modeBadge">2P · 2-Card Discard Pile · Unlocked Slots</span>
+  </div>
+  <div class="scoreboard">
+    <span class="score-pill score-you" id="scoreYou">You: 0/1</span>
+    <span>vs</span>
+    <span class="score-pill score-npc" id="scoreNpc">NPC: 0/1</span>
+    <span class="round-pill" id="roundPill">Round 1</span>
+  </div>
+  <div class="phase-banner phase-DRAW" id="phaseBanner">DRAW PHASE</div>
+  <div class="controls">
+    <button id="btnStyle">Style: Wildlands Art</button>
+    <button id="btnHints">Hints: ON</button>
+    <button id="btnRules">How to Play</button>
+    <button id="btnSettings" class="btn-amber">Rules / New Game</button>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="tabletop">
+    <section class="win-banner" id="winBanner">
+      <div>
+        <div style="font-size:1.15rem;font-weight:800;" id="winTitle">You Built a Thriving Ecosystem!</div>
+        <div style="font-size:0.84rem;color:#dde5de;margin-top:3px;" id="winStats"></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-primary" id="btnRematch">Rematch (Swap 1st Player)</button>
+        <button id="btnChangeRules">Change Rules</button>
+      </div>
+    </section>
+
+    <!-- NPC ZONE -->
+    <section class="zone" id="npcZone">
+      <div class="zone-header">
+        <div class="zone-title">
+          <span>Opponent (NPC)</span>
+          <span class="hint-chip" id="npcHandCount">Hand: 3</span>
+          <span class="hint-chip" id="npcStatusChip">Standing By</span>
+        </div>
+        <div class="hint-chip warn" id="npcLastMove">Game started. Your turn!</div>
+      </div>
+      <div class="player-board">
+        <div class="board-group">
+          <div class="group-label">NPC Active Board (Select ♦ or Wild in Play Phase to discard a card!)</div>
+          <div class="card-row" id="npcActive"></div>
+        </div>
+        <div class="board-group" id="npcLockedWrap">
+          <div class="group-label">NPC Completed Sets</div>
+          <div class="card-row" id="npcLocked"></div>
+        </div>
+        <div class="board-group" id="npcReserveWrap" style="display:none;">
+          <div class="group-label">NPC Wild Reserve</div>
+          <div id="npcReserve"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENTER ZONE (2-Card Discard Pile OR 4-Card Market) -->
+    <section class="zone center-zone">
+      <div class="zone-header">
+        <div class="zone-title"><span id="centerTitle">Center Table — Shared Deck &amp; 2-Card Playable Discard Pile</span></div>
+        <span class="hint-chip" id="marketHint">Draw from Deck or Discard A/B · Or Play directly from Discard A/B!</span>
+      </div>
+      <div class="market-row" id="centerRow"></div>
+    </section>
+
+    <!-- PLAYER ZONE -->
+    <section class="zone" id="youZone">
+      <div class="zone-header">
+        <div class="zone-title">
+          <span>Your Ecosystem (Unlocked — Play On Top Of Old Cards Anytime!)</span>
+          <span class="hint-chip good" id="youNeedHint">Fill ♠, ♣, and ♥ within ±1</span>
+        </div>
+        <span class="hint-chip" id="youHandMeta">Hand: 3 / 3</span>
+      </div>
+
+      <div class="player-board" style="margin-bottom:12px;">
+        <div class="board-group">
+          <div class="group-label">Your Active Board (Click a highlighted slot to place or overwrite!)</div>
+          <div class="card-row" id="youActive"></div>
+        </div>
+        <div class="board-group" id="youLockedWrap">
+          <div class="group-label">Your Completed Sets</div>
+          <div class="card-row" id="youLocked"></div>
+        </div>
+        <div class="board-group" id="youReserveWrap" style="display:none;">
+          <div class="group-label">Personal Wild (Any Card · 1×)</div>
+          <div id="youReserve"></div>
+        </div>
+      </div>
+
+      <div class="action-bar" id="actionBar">
+        <div class="action-prompt" id="actionPrompt">Draw 1 card to begin Turn 1.</div>
+        <div class="action-buttons" id="actionButtons"></div>
+      </div>
+
+      <div class="board-group">
+        <div class="group-label">Your Hand</div>
+        <div class="card-row" id="youHand"></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="sidebar">
+    <section class="inspector" id="inspector">
+      <div class="zone-title" style="margin-bottom:8px;">Field Guide Inspector</div>
+      <div id="inspectorBody" style="color:var(--muted);font-size:0.8rem;line-height:1.45;">
+        Hover or click any card to inspect its Tonto Basin scientific facts, ecological role, and rank range.
+      </div>
+    </section>
+
+    <section class="log-panel">
+      <div class="zone-title">Table Activity Log</div>
+      <div class="log-list" id="logList"></div>
+    </section>
+  </aside>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h2>Wildlands 2P Rules &amp; New Game</h2>
+    <p>Compare the streamlined 2-Card Playable Discard Pile against the 4-Card Market, and tune any rule live.</p>
+
+    <div class="setting-row">
+      <label for="optCenterMode">Center Table Rule</label>
+      <select id="optCenterMode">
+        <option value="2disc" selected>2-Card Playable Discard Pile (Open Market from Discard A &amp; B — ♠/♣/♥/★ playable!)</option>
+        <option value="2disc_all">2-Card Playable Discard Pile — Allow Picking Up ♦ Storms Too</option>
+        <option value="market4">4-Card Open Market ("The Wilds" auto-refilling row + 1 Discard Pile)</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optSetRule">Valid 3-Card Set Rule (♠ Foundations, ♣ Resources, ♥ Consumers)</label>
+      <select id="optSetRule">
+        <option value="wildlands_pm1" selected>Wildlands ±1 Ecosystem — ♠ within ±1 of ♣ and ♣ within ±1 of ♥ (e.g. 5♠-5♣-5♥ or 4♠-5♣-6♥)</option>
+        <option value="rummy_any_run">Flexible Rummy — 3-of-a-Kind (♠♣♥) OR any 3-card run (2-3-4, 6-7-8) across your 3 slots</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optDRule">Diamond (♦) Disturbance Rule</label>
+      <select id="optDRule">
+        <option value="any" selected>Any ♦ discards ANY 1 opponent card on the table</option>
+        <option value="pm1">Wildlands ±1 Rank Only — ♦ of rank n breaks opponent cards of rank n−1, n, or n+1</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optJokerMode">Jackalope Wild Card Mode ("Play As Any Card")</label>
+      <select id="optJokerMode">
+        <option value="symmetric" selected>1 Jackalope Each (Symmetric — 52-card pure-science deck, 0 Joker draw RNG, True Wild!)</option>
+        <option value="deck_true_wild">2 True Wilds in Deck (54 cards — Jackalope &amp; Mirage shuffled in; play as ANY card!)</option>
+        <option value="none">Pure Science Only (0 Jokers / 52 cards)</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optWinMode">Victory Condition</label>
+      <select id="optWinMode">
+        <option value="2_lock" selected>First to 2 Complete Sets (Classic 2-Set Match)</option>
+        <option value="1_instant">1 Complete Set — Instant Win (Quick Sprint)</option>
+        <option value="1_survive">1 Complete Set — Survive 1 Opponent Turn</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optHandLimit">Hand Limit</label>
+      <select id="optHandLimit">
+        <option value="3" selected>3 Cards</option>
+        <option value="4">4 Cards</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optNpcLevel">NPC Skill</label>
+      <select id="optNpcLevel">
+        <option value="smart" selected>Tactical NPC</option>
+        <option value="casual">Casual NPC</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optFirst">Who Goes First?</label>
+      <select id="optFirst">
+        <option value="0" selected>You go first</option>
+        <option value="1">NPC goes first</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <label for="optTurn1Nerf">Turn 1 Draw Rule</label>
+      <select id="optTurn1Nerf">
+        <option value="2" selected>Always Draw 2 (including Turn 1)</option>
+        <option value="1">1st Player Balance — Draw 1 on Turn 1, then Draw 2 every turn after</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button id="btnCloseSettings">Cancel</button>
+      <button id="btnStartNew" class="btn-primary">Deal New Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY MODAL -->
+<div class="modal-backdrop" id="rulesModal">
+  <div class="modal">
+    <h2>How to Play — 2-Card Playable Discard Edition</h2>
+    <ul class="rules-list">
+      <li><strong>No 4-Card Market — Just Deck + 2 Playable Discard Piles (A &amp; B):</strong>
+        <ul>
+          <li>In <strong>Draw Phase</strong>, draw 2 cards from the <strong>Draw Deck</strong> and/or take the top <code>♠/♣/♥/★</code> card off <strong>Discard Pile A or B</strong>.</li>
+          <li>In <strong>Play Phase</strong>, you can play a card from your <strong>Hand / Jackalope</strong> — <strong>OR click Discard Pile A or B directly</strong> to play that discarded <code>♠/♣/♥/★</code> card straight onto your board!</li>
+          <li><em>Anti-loop rule:</em> Played <code>♦</code> Disturbances go to the <strong>Spent Storms</strong> stack (reshuffled when the Deck runs out) so Diamonds can't be ping-ponged back and forth every turn.</li>
+        </ul>
+      </li>
+      <li><strong>Unlocked 3-Slot Ecosystem:</strong> Play any <code>♠</code>, <code>♣</code>, or <code>♥</code> into its slot — empty or <strong>right on top of an old card</strong> (discarding the old card onto Discard A/B).</li>
+      <li><strong>Diamonds (♦) &amp; True-Wild Jackalope (★):</strong> Play <code>♦</code> to discard an opponent's played card (or Refresh to Draw 2). Play your <strong>Jackalope</strong> as <em>ANY</em> card — any Ecosystem slot (even overwriting) or a Wild Disturbance!</li>
+    </ul>
+    <div class="modal-actions">
+      <button id="btnCloseRules" class="btn-primary">Got It</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE_CATALOG = [{"id": "2D", "rank": 2, "rankLabel": "2", "suit": "D", "name": "Climate Shift", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_mega_drought.svg", "fact": "Climate shifts can change temperature and rainfall patterns, altering when plants grow, flower, and produce seeds. Even small changes can affect water availability and seasonal events.", "ability": "Changes in climate can shift the conditions an ecosystem can support. Prolonged heat or changing rainfall can stress plants, reduce water supplies, and alter where species can survive."}, {"id": "2S", "rank": 2, "rankLabel": "2", "suit": "S", "name": "Sonoran Desert Scrub", "sub": "", "img": "assets/svg/foundations_sonoran_desert_scrub.svg", "fact": "Sonoran Desert Scrub mixes cacti, trees, shrubs, and flowers. Plants use different strategies to survive cycles of rain and drought. Some store water, while others rely on deep or shallow roots.", "ability": "This community provides living space and resources for desert wildlife. Plants offer food, cover, nesting sites, and shelter across the landscape."}, {"id": "2C", "rank": 2, "rankLabel": "2", "suit": "C", "name": "Desert Grass", "sub": "plant biomass", "img": "assets/svg/biomass_desert_grass.svg", "fact": "Native grasses occur across Tonto's semidesert grasslands and other plant communities. Their growth varies with rainfall, soil, elevation, and season. Grasses help stabilize soil and provide food for many desert animals.", "ability": "Grass leaves and seeds provide food for herbivores, birds, and rodents. Roots help hold soil in place and can reduce erosion from wind and water."}, {"id": "2H", "rank": 2, "rankLabel": "2", "suit": "H", "name": "Kangaroo Rat", "sub": "", "img": "assets/svg/consumers_kangaroo_rat.svg", "fact": "They can survive without drinking water. Moisture from the seeds they eat provides what they need, while their kidneys conserve water by producing highly concentrated urine.", "ability": "Their powerful hind legs let them leap several feet in a single bound. Their long tails act like rudders, helping them change direction in midair while escaping predators."}, {"id": "3D", "rank": 3, "rankLabel": "3", "suit": "D", "name": "Flash flood", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_flash_flood.svg", "fact": "Tonto Basin receives rain in two main seasons, but intense summer thunderstorms can drop large amounts of water in a short time. Dry desert ground can quickly become flooded.", "ability": "Flash floods can rapidly move water, rocks, soil, and debris through normally dry washes. They can rearrange drainages and create temporary floodplains."}, {"id": "3S", "rank": 3, "rankLabel": "3", "suit": "S", "name": "Semidesert Grassland", "sub": "", "img": "assets/svg/foundations_semidesert_grassland.svg", "fact": "Open grasslands occur higher on the slopes where desert vegetation gives way to grasses. They can include saguaro, cholla, sotol, agave, globemallow, snakeweed, jojoba, and many native grasses.", "ability": "The open vegetation provides space for foraging animals and supports grasses, wildflowers, shrubs, and desert wildlife."}, {"id": "3C", "rank": 3, "rankLabel": "3", "suit": "C", "name": "Bermuda Grass", "sub": "plant biomass", "img": "assets/svg/biomass_bermuda_grass.svg", "fact": "Bermuda grass is a warm-season perennial that spreads by aboveground stolons and underground rhizomes. In Arizona it grows especially well where moisture collects, including stream banks and disturbed areas.", "ability": "It can spread rapidly from stems and rhizomes that root where they grow. It can provide forage where moisture allows dense growth."}, {"id": "3H", "rank": 3, "rankLabel": "3", "suit": "H", "name": "Cottontail", "sub": "Sylvilagus audubonii", "img": "assets/svg/consumers_desert_cottontail.svg", "fact": "Most of their water comes from the plants they eat, and they rarely drink free water. They can eat grasses, weeds, twigs, and even cactus when other foods are scarce.", "ability": "They can produce several litters each year. Young are born helpless but develop quickly, becoming independent at about three weeks old."}, {"id": "4D", "rank": 4, "rankLabel": "4", "suit": "D", "name": "Monsoon", "sub": "Ecosystem refresh", "img": "assets/svg/disturbances_monsoon_storm.svg", "fact": "The Arizona monsoon is part of a seasonal shift in wind patterns that brings moisture into the Southwest. In the Tonto Basin, monsoon storms provide a major portion of annual rainfall.", "ability": "Monsoon thunderstorms can produce intense rainfall, lightning, strong winds, and flash flooding. Their rainfall can rapidly transform dry desert washes into waterways."}, {"id": "4S", "rank": 4, "rankLabel": "4", "suit": "S", "name": "Mesquite Bosque", "sub": "", "img": "assets/svg/foundations_mesquite_bosque.svg", "fact": "Mesquite bosques are small woodlands that reach their greatest development near rivers or where deep roots can reach groundwater. They support many insects, birds, and mammals.", "ability": "Deep roots help mesquite survive dry conditions. Their flowers provide nectar and pollen, while their pods feed many animals."}, {"id": "4C", "rank": 4, "rankLabel": "4", "suit": "C", "name": "Mesquite Beans", "sub": "plant biomass", "img": "assets/svg/biomass_mesquite_beans.svg", "fact": "Velvet mesquite produces long seedpods after flowering. The beans inside are a major food resource for desert wildlife. Mesquite beans were also an important traditional food, and the seeds contain about 35 percent protein.", "ability": "Pods provide food for mammals and other animals when they are available. The tree's flowers also provide nectar and pollen for insects."}, {"id": "4H", "rank": 4, "rankLabel": "4", "suit": "H", "name": "Jackrabbit", "sub": "", "img": "assets/svg/consumers_black_tailed_jackrabbit.svg", "fact": "They live in open areas with little cover and may travel several miles at night to find food before returning to their home range during the day.", "ability": "They can reach speeds of up to 35 miles per hour and use powerful leaps, speed, and excellent hearing to escape predators."}, {"id": "5D", "rank": 5, "rankLabel": "5", "suit": "D", "name": "Landslide", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_landslide.svg", "fact": "Landslides occur when rock, soil, or debris moves downhill. In Arizona, intense rainfall can trigger slope failures and debris flows, especially on steep terrain.", "ability": "A debris flow can race downhill at more than 35 miles per hour, carrying mud, rocks, trees, and other large objects with enormous force."}, {"id": "5S", "rank": 5, "rankLabel": "5", "suit": "S", "name": "Interior Chaparral", "sub": "", "img": "assets/svg/foundations_interior_chaparral.svg", "fact": "Interior chaparral is dominated by woody evergreen shrubs on mountain foothills and lower slopes. Mountain mahogany, manzanita, ceanothus, and cliffrose are common plants.", "ability": "Dense shrubs provide cover and nesting places while their roots help hold soil on slopes."}, {"id": "5C", "rank": 5, "rankLabel": "5", "suit": "C", "name": "Prickly pear", "sub": "plant biomass", "img": "assets/svg/biomass_prickly_pear_tuna.svg", "fact": "Prickly pear pads are modified branches that store water and perform photosynthesis. Flowers develop into red or purple fruits called tunas. Both pads and fruit can provide food and moisture in the desert. The fruit ripens during the warmer season.", "ability": "Fleshy pads store water for the plant and continue photosynthesis. Fruit provides moisture and energy to animals when other food is scarce."}, {"id": "5H", "rank": 5, "rankLabel": "5", "suit": "H", "name": "Javelina", "sub": "", "img": "assets/svg/consumers_javelina.svg", "fact": "They look like pigs, but they are not pigs or wild boars. They belong to a different family and are smaller, with different teeth and no large tusks.", "ability": "They live in family groups of three to twenty animals. Each herd has its own scent from musk secretions, helping members recognize one another."}, {"id": "6D", "rank": 6, "rankLabel": "6", "suit": "D", "name": "Wild Fires", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_brush_fire.svg", "fact": "The Sonoran Desert did not evolve with frequent large wildfires. Native cacti, shrubs, and trees can be vulnerable when fires burn through desert vegetation.", "ability": "Fire can rapidly consume dry vegetation and spread across a landscape. Repeated fires can favor nonnative grasses that grow quickly and provide more continuous fuel."}, {"id": "6S", "rank": 6, "rankLabel": "6", "suit": "S", "name": "Riparian Deciduous Forest", "sub": "", "img": "assets/svg/foundations_riparian_deciduous_forest.svg", "fact": "A small riparian forest survives where permanent water is available in Cave Canyon. Netleaf hackberry, Arizona sycamore, ash, and walnut grow there, creating a leafy desert oasis.", "ability": "Permanent water supports tall trees, shade-loving plants, and animals that could not survive in the surrounding dry desert."}, {"id": "6C", "rank": 6, "rankLabel": "6", "suit": "C", "name": "Jojoba Nut", "sub": "plant biomass", "img": "assets/svg/biomass_jojoba_nut.svg", "fact": "Jojoba is a drought-resistant evergreen shrub found in Sonoran Desert scrub. Its nuts are eaten by ground squirrels, mice, rabbits, birds, and other mammals. Jojoba foliage also provides forage for mule deer, especially in fall and winter.", "ability": "Nuts provide concentrated food for rodents, birds, rabbits, and mammals. Evergreen foliage remains available as forage through dry periods."}, {"id": "6H", "rank": 6, "rankLabel": "6", "suit": "H", "name": "Ground Squirrel", "sub": "", "img": "assets/svg/consumers_round_tailed_ground_squirrel.svg", "fact": "They prefer flat, open desert with sandy soil, where they dig burrows. They are abundant in desert regions and live in colonies similar to prairie dogs.", "ability": "When summer days become too hot and vegetation dries out, they enter a resting state called aestivation and sleep through the hottest part of summer."}, {"id": "7D", "rank": 7, "rankLabel": "7", "suit": "D", "name": "Drought", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_mega_drought.svg", "fact": "Tonto Basin has experienced severe droughts throughout its history. A prolonged drought in the past reduced available resources and contributed to major changes in how people lived in the basin.", "ability": "Drought reduces available water and can stress plants and animals. When drought persists, vegetation may die back and water-dependent resources can become scarce."}, {"id": "7S", "rank": 7, "rankLabel": "7", "suit": "S", "name": "Open Desert Wash Systems", "sub": "Arroyo Networks", "img": "assets/svg/foundations_desert_wash.svg", "fact": "Desert washes are normally dry channels that can carry water during storms. They are important pathways through the desert and can support more vegetation where water collects or passes through.", "ability": "Stormwater can rapidly move through washes, carrying water, soil, rocks, and organic debris while reshaping the channel."}, {"id": "7C", "rank": 7, "rankLabel": "7", "suit": "C", "name": "Insects", "sub": "Insect Biomass", "img": "assets/svg/biomass_insects.svg", "fact": "Insects are among the most diverse animals in the Sonoran Desert. Tonto National Monument documented more than 340 terrestrial invertebrate species in one survey, with insects and arachnids forming a major part.", "ability": "Insects pollinate plants and transfer pollen between flowers. They also provide food for reptiles, birds, mammals, and other animals."}, {"id": "7H", "rank": 7, "rankLabel": "7", "suit": "H", "name": "Striped Skunk", "sub": "", "img": "assets/svg/consumers_skunk.svg", "fact": "They are nocturnal and eat seeds, roots, berries, and small mammals. They are one of the most widespread and common mammals in North America.", "ability": "They can spray a strong-smelling defensive fluid up to about 12 feet. They usually have enough fluid for five or six separate volleys."}, {"id": "8D", "rank": 8, "rankLabel": "8", "suit": "D", "name": "Population Boom", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_population_boom.svg", "fact": "When conditions are favorable, animal populations can increase quickly. More food, water, shelter, or fewer predators can allow a population to grow beyond its usual level.", "ability": "A rapidly growing population can consume available food and water faster than those resources are replaced. Competition can increase as resources become scarce."}, {"id": "8S", "rank": 8, "rankLabel": "8", "suit": "S", "name": "Desert Slope", "sub": "", "img": "assets/svg/foundations_desert_slope.svg", "fact": "North- and south-facing slopes can have very different plant communities because they receive different amounts of sunlight. These differences create local microclimates across the same mountain.", "ability": "Slope direction changes sunlight and moisture, helping determine which plants can grow and where animals can find suitable conditions."}, {"id": "8C", "rank": 8, "rankLabel": "8", "suit": "C", "name": "Bird eggs", "sub": "fowl Biomass", "img": "assets/svg/biomass_bird_eggs.svg", "fact": "Bird eggs contain the nutrients needed for an embryo to develop before hatching. At Tonto, eggs are part of the food web and are eaten by predators including Gila monsters and snakes. Nesting birds can therefore become food before hatching.", "ability": "Eggs store nutrients that support embryonic growth until hatching. They can also transfer energy through the food web when predators eat them."}, {"id": "8H", "rank": 8, "rankLabel": "8", "suit": "H", "name": "Gila monster", "sub": "", "img": "assets/svg/consumers_gila_monster.svg", "fact": "They are the largest lizard native to the United States and one of only a few venomous lizards in the world. They spend most of their time underground.", "ability": "They store fat in their tails, allowing them to survive for an entire year on only three to four meals."}, {"id": "9D", "rank": 9, "rankLabel": "9", "suit": "D", "name": "Desert Rain", "sub": "Ecosystem refresh", "img": "assets/svg/disturbances_desert_rainfall.svg", "fact": "The Tonto Basin receives most of its precipitation during winter and the summer monsoon. Rainfall is highly variable, and some storms produce only brief, intense bursts.", "ability": "Rain can rapidly wet dry desert soil and washes. When enough rain falls, dormant seeds can germinate and temporary pools and flowing water can appear."}, {"id": "9S", "rank": 9, "rankLabel": "9", "suit": "S", "name": "Roosevelt Lake Dam", "sub": "Reservoir", "img": "assets/svg/foundations_roosevelt_lake_dam.svg", "fact": "Roosevelt Dam was completed in 1911 and created Lake Roosevelt. The reservoir can hold more than 1.6 million acre-feet of water. Changing water levels continually reshape riparian vegetation around the lake.", "ability": "The reservoir stores water and controls river flow. Its changing water levels create and remove riparian habitat, while providing aquatic and shoreline environments for wildlife."}, {"id": "9C", "rank": 9, "rankLabel": "9", "suit": "C", "name": "Lizards", "sub": "Reptile biomass", "img": "assets/svg/biomass_lizards.svg", "fact": "Reptiles are an important part of the Sonoran Desert food web. Tonto National Monument has at least 32 reptile species. Lizards and snakes help control insect and rodent populations, while reptiles also become food for birds and mammals.", "ability": "Reptile biomass transfers energy from insects and rodents to larger predators. Lizards and snakes can help regulate populations of their prey."}, {"id": "9H", "rank": 9, "rankLabel": "9", "suit": "H", "name": "Ringtail", "sub": "", "img": "assets/svg/consumers_ringtail.svg", "fact": "Their long tail has 14 to 16 black and white rings. They are nocturnal and spend the day resting in caves, crevices, and hollow trees.", "ability": "They can rotate their hind feet 180 degrees, allowing them to climb down steep rocks, cliffs, and tree trunks headfirst."}, {"id": "10D", "rank": 10, "rankLabel": "10", "suit": "D", "name": "Floral Blooms", "sub": "", "img": "assets/svg/disturbances_bloom.svg", "fact": "Good wildflower years depend on the right combination of rain and temperature. Some desert seeds can remain dormant for a decade or more while waiting for suitable conditions.", "ability": "A favorable season can trigger widespread flowering across the desert. Flowers provide food for insects and other animals, while seeds can later be spread by wind, water, and animals."}, {"id": "10S", "rank": 10, "rankLabel": "10", "suit": "S", "name": "Mountain Crags", "sub": "Montane Apex Wilderness", "img": "assets/svg/foundations_mountain_crags.svg", "fact": "The Tonto Basin is surrounded by rugged mountains, including the Mazatzal, Sierra Ancha, Superstition Mountains, and Mogollon Rim. Elevation creates strong changes in climate and vegetation.", "ability": "Higher elevations can provide cooler and wetter conditions than the desert basin below, allowing different plant communities and wildlife to occur."}, {"id": "10C", "rank": 10, "rankLabel": "10", "suit": "C", "name": "Desert Mice", "sub": "Mammal Biomass", "img": "assets/svg/biomass_peromyscus.svg", "fact": "Peromyscus is a genus of small mice found in desert environments. Species in this group eat seeds, fruits, vegetation, and sometimes insects. They are prey for larger animals and help move energy through food webs.", "ability": "These mice convert seeds and other plant foods into animal biomass. Their bodies provide food for snakes, raptors, foxes, and other predators."}, {"id": "10H", "rank": 10, "rankLabel": "10", "suit": "H", "name": "Roadrunner", "sub": "", "img": "assets/svg/consumers_roadrunner.svg", "fact": "They are built for life on the ground, with long legs and a long tail that helps them balance while running. They can reach speeds of about 20 miles per hour.", "ability": "They can catch and kill young rattlesnakes\ndespite having no immunity to the venom.\nThey use their speed and agility to avoid\nthe snake's strikes before grabbing it."}, {"id": "JD", "rank": 11, "rankLabel": "J", "suit": "D", "name": "Morning Frost", "sub": "Ecosystem refresh", "img": "assets/svg/disturbances_morning_frost.svg", "fact": "Cold temperatures can limit where some Sonoran Desert plants grow. Saguaro, for example, are restricted by elevation and freezing temperatures and are more common on warmer south-facing slopes.", "ability": "Frost can damage plants that are not adapted to freezing temperatures. A cold microclimate can prevent warm-desert species from growing."}, {"id": "JS", "rank": 11, "rankLabel": "J", "suit": "S", "name": "Rocky Canyons", "sub": "Chaparral Transition Zone", "img": "assets/svg/foundations_rocky_canyon.svg", "fact": "Canyons provide shelter from extreme heat and create cooler microclimates. Their rocks formed from ancient sediments and have been shaped by erosion over very long periods.", "ability": "Steep cliffs and caves provide shelter, while canyon walls create shaded areas where plants and animals can avoid the hottest conditions."}, {"id": "JC", "rank": 11, "rankLabel": "J", "suit": "C", "name": "Seed Mice", "sub": "Mammal Biomass", "img": "assets/svg/biomass_heteromyidae.svg", "fact": "Heteromyidae includes pocket mice, kangaroo rats, and related rodents. Many species eat seeds and store food in burrows or caches. Their activity can move seeds through desert habitats and make them available to other animals.", "ability": "They harvest and transport seeds through desert environments. Cached seeds can be moved away from parent plants and later become food."}, {"id": "JH", "rank": 11, "rankLabel": "J", "suit": "H", "name": "Gray Fox", "sub": "Urocyon cinereoargenteus", "img": "assets/svg/consumers_gray_fox.svg", "fact": "They are smaller than coyotes and eat rodents, birds, eggs, fruit, and nuts. Their gray coat has reddish fur around the ears, neck, legs, and underside.", "ability": "They are the only canid known to climb trees. Their strong, hooked claws help them climb trunks to escape danger or reach fruit."}, {"id": "QD", "rank": 12, "rankLabel": "Q", "suit": "D", "name": "Dust Devil", "sub": "Ecosystem refresh", "img": "assets/svg/disturbances_dust_devil.svg", "fact": "Dust devils are small rotating columns of air that form when strong surface heating makes warm air rise. They are not associated with thunderstorms.", "ability": "Dust devils can lift and carry loose dust and debris. In Arizona, some have produced winds strong enough to break branches and cause minor to moderate damage."}, {"id": "QS", "rank": 12, "rankLabel": "Q", "suit": "S", "name": "Saguaro Cactus Forest", "sub": "Low Desert Basins", "img": "assets/svg/foundations_saguaro.svg", "fact": "Saguaro forests are found only in the Sonoran Desert. Their range is limited by elevation and winter freezing temperatures, so they grow more commonly on warm, sun-facing slopes.", "ability": "Saguaros provide food, nesting cavities, and hunting platforms for many animals. Birds excavate cavities that other animals later use."}, {"id": "QC", "rank": 12, "rankLabel": "Q", "suit": "C", "name": "Ground Squirrels", "sub": "Mammal Biomass", "img": "assets/svg/biomass_ground_squirrel.svg", "fact": "Ground squirrels eat seeds, vegetation, insects, and other available foods. Several species occur in the Tonto region. They can be important prey for larger predators while also consuming plant material and invertebrates.", "ability": "They convert plant and animal foods into living animal biomass. They also transfer energy to predators that feed on them."}, {"id": "QH", "rank": 12, "rankLabel": "Q", "suit": "H", "name": "Bobcat", "sub": "Lynx rufus", "img": "assets/svg/consumers_bobcat.svg", "fact": "They are the only wild cats in Arizona with naturally short tails. They are common across the state but are seldom seen because they are mostly nocturnal.", "ability": "They hunt by stealth, often hiding beside a game trail and waiting for prey to approach. They can also climb trees and leap onto prey from above."}, {"id": "KD", "rank": 13, "rankLabel": "K", "suit": "D", "name": "Dust Storm", "sub": "Ecosystem refresh", "img": "assets/svg/disturbances_dust_storm.svg", "fact": "Arizona dust storms are especially common during the summer monsoon season. Strong outflow winds from thunderstorms can lift loose soil and create walls of dust.", "ability": "Dust storms can reduce visibility to near zero and produce strong winds. The moving dust can travel across large areas, making roads and outdoor conditions hazardous."}, {"id": "KS", "rank": 13, "rankLabel": "K", "suit": "S", "name": "Desert Riparian Scrub", "sub": "", "img": "assets/svg/foundations_desert_riparian_scrub.svg", "fact": "Riparian scrub grows in canyon bottoms and washes where water passes through or collects. It can support mesquite, jojoba, and cat-claw acacia in an otherwise dry landscape.", "ability": "Stored or flowing water allows larger plants to grow and creates cooler, shaded places used by wildlife."}, {"id": "KC", "rank": 13, "rankLabel": "K", "suit": "C", "name": "Leporidae", "sub": "Mammal Biomass", "img": "assets/svg/biomass_leporidae.svg", "fact": "Leporidae is the family containing rabbits and hares. Tonto's cottontails and jackrabbits feed mainly on green vegetation. They are common herbivores and important prey for predators in the Sonoran Desert.", "ability": "They convert green vegetation into animal biomass available to predators. Their grazing transfers plant energy through the desert food web."}, {"id": "KH", "rank": 13, "rankLabel": "K", "suit": "H", "name": "Coyote", "sub": "Canis latrans", "img": "assets/svg/consumers_desert_coyote.svg", "fact": "They can live in almost any habitat, from cactus forests to cities. Their diet is equally varied, including mammals, birds, fruit, carrion, and even saguaro fruit.", "ability": "They are excellent runners and can reach about 40 miles per hour. They can also leap up to 14 feet in a single bound."}, {"id": "AD", "rank": 14, "rankLabel": "A", "suit": "D", "name": "Arundo Invasion", "sub": "Ecosystem reset", "img": "assets/svg/disturbances_arundo_donax_reeds.svg", "fact": "Giant reed is a nonnative invasive plant found along the Verde and Lower Salt Rivers. Dense stands can crowd riverbanks and alter habitat used by native plants.", "ability": "Giant reed can spread from pieces of its stems and rhizomes. Floodwaters can carry these pieces downstream, helping new stands become established."}, {"id": "AS", "rank": 14, "rankLabel": "A", "suit": "S", "name": "Diversion Dam", "sub": "Riparian corridor", "img": "assets/svg/foundations_diversion_dam.svg", "fact": "Riparian corridors form where water meets the surrounding land. They support more plant and animal biomass than most upland areas and provide water, food, shelter, and travel routes for wildlife.", "ability": "The diversion dam alters the flow and availability of water. This creates a managed aquatic and riparian setting that can support wildlife."}, {"id": "AC", "rank": 14, "rankLabel": "A", "suit": "C", "name": "Ground Birds", "sub": "fowl Biomass", "img": "assets/svg/biomass_gambels_quail.svg", "fact": "Ground-feeding birds are common across the desert. Gambel's quail feed on seeds, leaves, and insects. In fall, large coveys can gather to feed on seeds, especially those produced by grasses.", "ability": "They convert seeds, leaves, and insects into animal biomass. Their feeding also moves plant energy into the animal food web."}, {"id": "AH", "rank": 14, "rankLabel": "A", "suit": "H", "name": "Desert Bald Eagle", "sub": "", "img": "assets/svg/consumers_bald_eagle.svg", "fact": "They are found near lakes and rivers in Arizona, where they feed mainly on fish and waterfowl. They also eat carrion when it is available.", "ability": "They can spot prey from high above and use powerful talons to catch it. They are also capable of carrying prey while flying."}];
+
+const JACKALOPE_SVG = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 140">
+  <rect width="220" height="140" fill="#fbf7ee"/>
+  <circle cx="110" cy="70" r="56" fill="#f1e4ff" stroke="#7a3fb5" stroke-width="3" stroke-dasharray="6 4"/>
+  <path d="M96 46 C86 24, 72 20, 62 16 M80 28 L76 14 M88 34 L94 20" stroke="#7a4b25" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M124 46 C134 24, 148 20, 158 16 M140 28 L144 14 M132 34 L126 20" stroke="#7a4b25" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <ellipse cx="97" cy="48" rx="7" ry="20" transform="rotate(-18 97 48)" fill="#c9a57a" stroke="#4a3525" stroke-width="2.5"/>
+  <ellipse cx="123" cy="48" rx="7" ry="20" transform="rotate(18 123 48)" fill="#c9a57a" stroke="#4a3525" stroke-width="2.5"/>
+  <ellipse cx="110" cy="78" rx="26" ry="23" fill="#d9b990" stroke="#4a3525" stroke-width="3"/>
+  <circle cx="100" cy="74" r="3.5" fill="#231c16"/>
+  <circle cx="120" cy="74" r="3.5" fill="#231c16"/>
+  <polygon points="106,84 114,84 110,89" fill="#b54534"/>
+  <path d="M104 92 Q110 96 116 92" stroke="#4a3525" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <text x="110" y="126" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="800" fill="#6b2fa0" letter-spacing="1.2">TRUE WILD · CRPV</text>
+</svg>`);
+
+const MIRAGE_SVG = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 140">
+  <rect width="220" height="140" fill="#fbf7ee"/>
+  <circle cx="110" cy="70" r="56" fill="#e6f4ff" stroke="#3676a8" stroke-width="3" stroke-dasharray="6 4"/>
+  <circle cx="110" cy="48" r="16" fill="#e09f3e"/>
+  <path d="M58 76 Q84 62 110 74 T162 72 L162 96 L58 96 Z" fill="#c78b4e"/>
+  <path d="M64 88 Q88 80 110 88 T156 88 Q134 102 110 100 T64 88 Z" fill="#5aa9e6" opacity="0.85"/>
+  <path d="M78 93 Q110 97 142 93" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.8"/>
+  <text x="110" y="126" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="800" fill="#2a5c8a" letter-spacing="1.2">TRUE WILD · OPTICS</text>
+</svg>`);
+
+const JOKER_DEFS = {
+  J1: {
+    id: "J1", rank: 0, rankLabel: "★", suit: "J",
+    name: "Jackalope",
+    sub: "Folklore · Shope Papillomavirus (CRPV)",
+    img: JACKALOPE_SVG,
+    fact: "North American legends of horned desert rabbits were likely inspired by wild cottontails and jackrabbits infected with Shope papillomavirus (CRPV). Discovered in 1933 by Dr. Richard Shope, CRPV causes horn-like keratin growths and was the first DNA virus proven to cause cancer in mammals, helping launch modern HPV research.",
+    ability: "TRUE WILD: Play as ANY card! Drop into any of your 3 Ecosystem slots (even on top of an old card), OR play as a Wild Disturbance to discard any opponent card on the table, OR Refresh (Draw 2)."
+  },
+  J2: {
+    id: "J2", rank: 0, rankLabel: "★", suit: "J",
+    name: "Desert Mirage",
+    sub: "Folklore · Atmospheric Refraction",
+    img: MIRAGE_SVG,
+    fact: "Shimmering phantom lakes across hot Sonoran basins are inferior mirages: superheated air near desert ground bends cool-sky light upward into the observer's eyes, mimicking water where none exists.",
+    ability: "TRUE WILD: Play as ANY card! Drop into any of your 3 Ecosystem slots (even on top of an old card), OR play as a Wild Disturbance to discard any opponent card on the table, OR Refresh (Draw 2)."
+  }
+};
+
+const SUIT_META = {
+  S: { sym: "♠", label: "Foundation", color: "#2f5d62" },
+  C: { sym: "♣", label: "Resource",   color: "#3b7a47" },
+  H: { sym: "♥", label: "Consumer",   color: "#b54534" },
+  D: { sym: "♦", label: "Disturbance",color: "#c46b1a" },
+  J: { sym: "★", label: "True Wild",  color: "#7a3fb5" }
+};
+const RANK_LABELS = {2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"8",9:"9",10:"10",11:"J",12:"Q",13:"K",14:"A"};
+const SLOT_KEYS = ["S", "C", "H"];
+
+function isJoker(c) { return !!c && c.suit === "J"; }
+function isDisturbance(c) { return !!c && c.suit === "D"; }
+function isEco(c) { return !!c && (c.suit === "S" || c.suit === "C" || c.suit === "H"); }
+function is2DiscMode() { return cfg.centerMode === "2disc" || cfg.centerMode === "2disc_all"; }
+function canPickFromDiscard(c) {
+  if (!c) return false;
+  if (cfg.centerMode === "2disc_all") return true;
+  return isEco(c) || isJoker(c);
+}
+
+function suitToSlotIdx(suit) {
+  return suit === "S" ? 0 : (suit === "C" ? 1 : (suit === "H" ? 2 : -1));
+}
+
+function isBoardComplete(slots, setRule) {
+  if (!slots[0] || !slots[1] || !slots[2]) return false;
+  if (slots.some(isDisturbance)) return false;
+  const ecos = slots.map((c, idx) => ({ c, idx })).filter(x => isEco(x.c));
+  const nj = 3 - ecos.length;
+  if (nj >= 2) return true;
+
+  if (setRule === "wildlands_pm1") {
+    if (nj === 0) {
+      return Math.abs(slots[0].rank - slots[1].rank) <= 1 && Math.abs(slots[1].rank - slots[2].rank) <= 1;
+    }
+    const byIdx = {};
+    ecos.forEach(x => { byIdx[x.idx] = x.c.rank; });
+    if (0 in byIdx && 1 in byIdx) return Math.abs(byIdx[0] - byIdx[1]) <= 1;
+    if (1 in byIdx && 2 in byIdx) return Math.abs(byIdx[1] - byIdx[2]) <= 1;
+    return Math.abs(byIdx[0] - byIdx[2]) <= 2;
+  } else {
+    if (nj === 0) {
+      const ranks = slots.map(c => c.rank).sort((a, b) => a - b);
+      const distinctSuits = new Set(slots.map(c => c.suit)).size;
+      const trips = (ranks[0] === ranks[1] && ranks[1] === ranks[2] && distinctSuits === 3);
+      const run = (ranks[1] === ranks[0] + 1 && ranks[2] === ranks[1] + 1);
+      return trips || run;
+    }
+    const [a, b] = ecos.map(x => x.c);
+    const diff = Math.abs(a.rank - b.rank);
+    if (diff === 0) return a.suit !== b.suit;
+    return diff === 1 || diff === 2;
+  }
+}
+
+function pairAligned(idxA, cA, idxB, cB, setRule) {
+  if (!cA || !cB) return false;
+  if (isJoker(cA) || isJoker(cB)) return true;
+  if (setRule === "wildlands_pm1") {
+    const lo = Math.min(idxA, idxB), hi = Math.max(idxA, idxB);
+    if (lo === 0 && hi === 1) return Math.abs(cA.rank - cB.rank) <= 1;
+    if (lo === 1 && hi === 2) return Math.abs(cA.rank - cB.rank) <= 1;
+    return Math.abs(cA.rank - cB.rank) <= 2;
+  } else {
+    const diff = Math.abs(cA.rank - cB.rank);
+    if (diff === 0) return cA.suit !== cB.suit;
+    return diff === 1 || diff === 2;
+  }
+}
+
+function boardScore(slots, setRule) {
+  if (isBoardComplete(slots, setRule)) return 30;
+  const filled = slots.map((c, i) => ({ c, i })).filter(x => x.c !== null);
+  if (filled.length === 0) return 0;
+  if (filled.length === 1) return 5;
+  let best = 6;
+  for (let a = 0; a < filled.length; a++) {
+    for (let b = a + 1; b < filled.length; b++) {
+      if (pairAligned(filled[a].i, filled[a].c, filled[b].i, filled[b].c, setRule)) {
+        best = Math.max(best, (isJoker(filled[a].c) || isJoker(filled[b].c)) ? 17 : 15);
+      }
+    }
+  }
+  return best;
+}
+
+function validSlotsForCard(card, setRule) {
+  if (isJoker(card)) return [0, 1, 2];
+  if (isDisturbance(card)) return [];
+  if (setRule === "wildlands_pm1") return [suitToSlotIdx(card.suit)];
+  return [0, 1, 2];
+}
+
+function canDisruptTarget(attackCard, targetCard, dRule) {
+  if (!attackCard || !targetCard) return false;
+  if (isJoker(attackCard)) return true;
+  if (!isDisturbance(attackCard)) return false;
+  if (dRule === "any" || isJoker(targetCard)) return true;
+  return Math.abs(attackCard.rank - targetCard.rank) <= 1;
+}
+
+function simulateSlotPlay(slots, idx, card) {
+  const next = slots.slice();
+  next[idx] = card;
+  return next;
+}
+
+function describeBoardNeed(slots, setRule) {
+  if (isBoardComplete(slots, setRule)) return "★ Set Complete! Survive NPC's turn to win!";
+  const filled = slots.map((c, i) => ({ c, i })).filter(x => x.c !== null);
+  if (filled.length === 0) {
+    return setRule === "wildlands_pm1"
+      ? "Play any ♠ Foundation, ♣ Resource, or ♥ Consumer (overwrite any slot later!)"
+      : "Play any ♠, ♣, or ♥ into any slot (play on top of old cards anytime!)";
+  }
+  const slotHints = [];
+  for (let idx = 0; idx < 3; idx++) {
+    const reqSuit = setRule === "wildlands_pm1" ? SLOT_KEYS[idx] : null;
+    const validRanks = [];
+    for (let r = 2; r <= 14; r++) {
+      if (setRule === "rummy_any_run") {
+        if (SLOT_KEYS.some(s => isBoardComplete(simulateSlotPlay(slots, idx, { suit: s, rank: r }), setRule))) validRanks.push(RANK_LABELS[r]);
+      } else {
+        if (isBoardComplete(simulateSlotPlay(slots, idx, { suit: reqSuit, rank: r }), setRule)) validRanks.push(RANK_LABELS[r]);
+      }
+    }
+    if (validRanks.length > 0) {
+      const action = slots[idx]
+        ? `Replace ${setRule === "wildlands_pm1" ? SUIT_META[reqSuit].sym : `Slot ${idx+1}`}`
+        : `Play ${setRule === "wildlands_pm1" ? SUIT_META[reqSuit].sym : `Slot ${idx+1}`}`;
+      slotHints.push(`${action} (${validRanks.join("/")})`);
+    }
+  }
+  if (slotHints.length > 0) return `★ 1 card away! ${slotHints.slice(0, 2).join(" OR ")} (or Wild) to COMPLETE!`;
+  if (filled.length === 1) {
+    const c = filled[0].c;
+    if (isJoker(c)) return "Wild placed — add any 2 compatible Ecosystem cards!";
+    const lo = Math.max(2, c.rank - 1), hi = Math.min(14, c.rank + 1);
+    return `Build near ${c.rankLabel} (${RANK_LABELS[lo]}–${RANK_LABELS[hi]}) — or overwrite any slot anytime!`;
+  }
+  return "Ranks misaligned — play a matching card right ON TOP OF an old card to align!";
+}
+
+// === CONFIG & STATE ===
+let cfg = {
+  centerMode: "2disc",     // "2disc" (default!) | "2disc_all" | "market4"
+  setRule: "wildlands_pm1",
+  dRule: "any",
+  jokerMode: "symmetric",
+  winMode: "2_lock",       // First to 2 Complete Sets!
+  handLimit: 3,
+  turn1Draw: 2,            // Always Draw 2 by default
+  npcLevel: "smart",
+  firstPlayer: 0,
+  cardStyle: "art",
+  showHints: true
+};
+
+let G = null;
+let gameSeq = 0;
+
+function scheduleNpc(fn, ms) {
+  const seq = gameSeq;
+  setTimeout(() => {
+    if (seq !== gameSeq || !G || G.phase === "OVER") return;
+    fn();
+  }, ms);
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function makeDeckForConfig(c) {
+  const d = BASE_CATALOG.map(x => ({ ...x }));
+  if (c.jokerMode === "deck_true_wild") {
+    d.push({ ...JOKER_DEFS.J1 });
+    d.push({ ...JOKER_DEFS.J2 });
+  }
+  return shuffle(d);
+}
+
+function targetSetsCount() { return cfg.winMode === "2_lock" ? 2 : 1; }
+function usesSurviveRound() { return cfg.winMode === "1_survive"; }
+
+function startNewGame() {
+  gameSeq++;
+  const deck = makeDeckForConfig(cfg);
+  const hands = [[], []];
+  for (let i = 0; i < cfg.handLimit; i++) {
+    hands[0].push(deck.pop());
+    hands[1].push(deck.pop());
+  }
+
+  let market = [];
+  let discards = [[], []];
+  const spentStorms = [];
+
+  if (cfg.centerMode === "market4") {
+    market = [deck.pop(), deck.pop(), deck.pop(), deck.pop()];
+    discards = [[deck.pop()]];
+  } else {
+    // Flip 2 Ecosystem/Wild cards to seed Discard Pile A & Discard Pile B cleanly!
+    const seed = [];
+    const deferred = [];
+    while (seed.length < 2 && deck.length > 0) {
+      const c = deck.pop();
+      if (canPickFromDiscard(c)) seed.push(c);
+      else deferred.push(c);
+    }
+    if (deferred.length) { deck.push(...deferred); deck.splice(0, deck.length, ...shuffle(deck)); }
+    discards = [seed[0] ? [seed[0]] : [], seed[1] ? [seed[1]] : []];
+  }
+
+  const reserve = cfg.jokerMode === "symmetric"
+    ? [{ ...JOKER_DEFS.J1, id: "JP0" }, { ...JOKER_DEFS.J1, id: "JP1" }]
+    : [null, null];
+
+  G = {
+    deck, market, discards, spentStorms,
+    nextDiscardPile: 0,
+    lastDiscardedPile: -1,
+    hands, reserve,
+    active: [[null, null, null], [null, null, null]],
+    locked: [[], []],
+    turn: cfg.firstPlayer,
+    round: 1,
+    turnsTaken: 0,
+    phase: "DRAW",
+    drawsLeft: cfg.turn1Draw,
+    selSource: null,     // "hand" | "reserve" | "discard0" | "discard1" | null
+    selectedId: null,
+    flashNotice: null,
+    winner: null,
+    breaks: 0,
+    overwrites: 0,
+    refreshes: 0,
+    discardPlays: 0,
+    logs: []
+  };
+
+  const firstName = cfg.firstPlayer === 0
+    ? `You go first (Draw ${cfg.turn1Draw}).`
+    : `NPC goes first (Draw ${cfg.turn1Draw}).`;
+  addLog(`New game dealt! ${firstName}`, "sys");
+  setNpcStatus(cfg.firstPlayer === 0 ? "Waiting for your turn..." : "NPC taking Turn 1...");
+  render();
+
+  if (G.turn === 1) {
+    G.phase = "NPC";
+    render();
+    scheduleNpc(runNpcTurn, 650);
+  }
+}
+
+function drawFromDeck() {
+  if (G.deck.length === 0) {
+    const pool = G.spentStorms.splice(0, G.spentStorms.length);
+    G.discards.forEach(pl => {
+      if (pl.length > 1) {
+        const buried = pl.splice(0, pl.length - 1);
+        pool.push(...buried);
+      }
+    });
+    if (pool.length === 0) return null;
+    G.deck = shuffle(pool);
+    addLog("Deck empty — buried Discards & Spent Storms reshuffled into a fresh Deck!", "sys");
+  }
+  return G.deck.pop();
+}
+
+function refillMarket() {
+  if (cfg.centerMode !== "market4") return;
+  while (G.market.length < 4) {
+    const c = drawFromDeck();
+    if (!c) break;
+    G.market.push(c);
+  }
+}
+
+function nextDiscardTargetIdx() {
+  if (!is2DiscMode()) return 0;
+  if (G.discards[0].length === 0) return 0;
+  if (G.discards[1].length === 0) return 1;
+  return G.nextDiscardPile;
+}
+
+function putToDiscard(card, isPlayedStorm = false) {
+  if (!card) return;
+  if (is2DiscMode()) {
+    const idx = nextDiscardTargetIdx();
+    G.discards[idx].push(card);
+    G.lastDiscardedPile = idx;
+    G.nextDiscardPile = 1 - idx;
+  } else {
+    G.discards[0].push(card);
+    G.lastDiscardedPile = 0;
+  }
+}
+
+function topOfDiscard(pileIdx) {
+  const pl = G.discards[pileIdx];
+  return (pl && pl.length > 0) ? pl[pl.length - 1] : null;
+}
+
+function addLog(msg, cls = "sys") {
+  G.logs.unshift({ msg, cls, round: G ? G.round : 1 });
+  if (G.logs.length > 50) G.logs.pop();
+}
+
+function setNpcStatus(msg) {
+  const el = document.getElementById("npcLastMove");
+  if (el) el.textContent = msg;
+}
+
+function cardShort(c) {
+  if (!c) return "empty";
+  if (isJoker(c)) return `★ ${c.name}`;
+  return `${c.rankLabel}${SUIT_META[c.suit].sym} ${c.name}`;
+}
+
+function checkStartOfTurnWin(p) {
+  if (usesSurviveRound() && isBoardComplete(G.active[p], cfg.setRule)) {
+    const set = G.active[p].slice();
+    G.locked[p].push(set);
+    G.active[p] = [null, null, null];
+    addLog(`${p === 0 ? "Your" : "NPC's"} complete set survived the round!`, p === 0 ? "you" : "npc");
+    if (G.locked[p].length >= targetSetsCount()) {
+      finishGame(p);
+      return true;
+    }
+  }
+  return false;
+}
+
+function finishGame(winner) {
+  G.winner = winner;
+  G.phase = "OVER";
+  clearSelection();
+  addLog(winner === 0 ? "🏆 YOU WIN! Complete Ecosystem achieved!" : "💥 NPC WINS! Opponent completed first.", "sys");
+  render();
+}
+
+function clearSelection() {
+  G.selSource = null;
+  G.selectedId = null;
+  G.flashNotice = null;
+}
+
+function getSelectedCard() {
+  if (!G.selSource) return null;
+  if (G.selSource === "reserve") return G.reserve[0];
+  if (G.selSource === "discard0") return topOfDiscard(0);
+  if (G.selSource === "discard1") return topOfDiscard(1);
+  return G.hands[0].find(c => c.id === G.selectedId) || null;
+}
+
+function removeSelectedCard() {
+  let c = null;
+  if (G.selSource === "reserve") {
+    c = G.reserve[0]; G.reserve[0] = null;
+  } else if (G.selSource === "discard0") {
+    c = G.discards[0].pop(); G.discardPlays++;
+  } else if (G.selSource === "discard1") {
+    c = G.discards[1].pop(); G.discardPlays++;
+  } else {
+    const idx = G.hands[0].findIndex(x => x.id === G.selectedId);
+    if (idx >= 0) c = G.hands[0].splice(idx, 1)[0];
+  }
+  clearSelection();
+  return c;
+}
+
+// === PLAYER ACTIONS ===
+function playerDrawDeck(count = 1) {
+  if (G.phase !== "DRAW" || G.turn !== 0 || G.drawsLeft <= 0) return;
+  G.flashNotice = null;
+  const n = Math.min(count, G.drawsLeft);
+  const drawn = [];
+  for (let i = 0; i < n; i++) {
+    const card = drawFromDeck();
+    if (card) {
+      G.hands[0].push(card);
+      drawn.push(card);
+    }
+    G.drawsLeft--;
+  }
+  if (drawn.length) {
+    addLog(`You drew ${drawn.map(cardShort).join(" & ")} from the Deck.`, "you");
+    inspectCard(drawn[drawn.length - 1]);
+  }
+  if (G.drawsLeft <= 0) G.phase = "PLAY";
+  render();
+}
+
+function playerDrawMarket(idx) {
+  if (G.phase !== "DRAW" || G.turn !== 0 || G.drawsLeft <= 0) return;
+  G.flashNotice = null;
+  const card = G.market.splice(idx, 1)[0];
+  G.hands[0].push(card);
+  refillMarket();
+  G.drawsLeft--;
+  addLog(`You drafted ${cardShort(card)} from The Wilds.`, "you");
+  inspectCard(card);
+  if (G.drawsLeft <= 0) G.phase = "PLAY";
+  render();
+}
+
+function playerClickDiscardPile(pileIdx) {
+  const card = topOfDiscard(pileIdx);
+  if (!card) return;
+  inspectCard(card);
+  if (G.turn !== 0 || !is2DiscMode() || !canPickFromDiscard(card)) return;
+
+  if (G.phase === "DRAW" && G.drawsLeft > 0) {
+    G.flashNotice = null;
+    G.lastDiscardedPile = -1;
+    G.discards[pileIdx].pop();
+    G.hands[0].push(card);
+    G.drawsLeft--;
+    addLog(`You drew ${cardShort(card)} from Discard Pile ${pileIdx === 0 ? "A" : "B"}.`, "you");
+    if (G.drawsLeft <= 0) G.phase = "PLAY";
+    render();
+  } else if (G.phase === "PLAY") {
+    const src = pileIdx === 0 ? "discard0" : "discard1";
+    if (G.selSource === src) clearSelection();
+    else { G.selSource = src; G.selectedId = card.id; G.flashNotice = null; }
+    render();
+  }
+}
+
+function playerClickCard(card, fromReserve = false) {
+  inspectCard(card);
+  if (G.turn !== 0) return;
+  if (G.phase === "DRAW") {
+    G.flashNotice = `Finish Draw Phase first! Pick ${G.drawsLeft} more card${G.drawsLeft > 1 ? "s" : ""} from ${is2DiscMode() ? "the Deck or Discard Pile A/B" : "The Wilds or Deck"}.`;
+    render();
+    return;
+  }
+  if (G.phase === "PLAY") {
+    const src = fromReserve ? "reserve" : "hand";
+    if (G.selSource === src && G.selectedId === card.id) clearSelection();
+    else { G.selSource = src; G.selectedId = card.id; G.flashNotice = null; }
+    render();
+  } else if (G.phase === "DISCARD" && !fromReserve) {
+    const idx = G.hands[0].findIndex(c => c.id === card.id);
+    if (idx >= 0) {
+      const [dc] = G.hands[0].splice(idx, 1);
+      const pileIdx = nextDiscardTargetIdx();
+      putToDiscard(dc, false);
+      const pName = is2DiscMode() ? ` onto Discard ${pileIdx === 0 ? "A" : "B"}` : "";
+      addLog(`You discarded ${cardShort(dc)}${pName}.`, "you");
+      if (G.hands[0].length <= cfg.handLimit) endPlayerTurn();
+      else render();
+    }
+  }
+}
+
+function playerPlaceInSlot(slotIdx) {
+  if (G.phase !== "PLAY" || G.turn !== 0) return;
+  const card = getSelectedCard();
+  if (!card || !validSlotsForCard(card, cfg.setRule).includes(slotIdx)) return;
+  const fromDisc = G.selSource === "discard0" || G.selSource === "discard1";
+  const discName = G.selSource === "discard0" ? "Discard A" : "Discard B";
+  removeSelectedCard();
+  const prev = G.active[0][slotIdx];
+  if (prev) {
+    putToDiscard(prev, false);
+    G.overwrites++;
+    addLog(`You played ${cardShort(card)}${fromDisc ? ` (straight from ${discName}!)` : ""} ON TOP OF ${cardShort(prev)}.`, "you");
+  } else {
+    addLog(`You played ${cardShort(card)}${fromDisc ? ` straight from ${discName}!` : " onto your board."}`, "you");
+  }
+  G.active[0][slotIdx] = card;
+  handlePostBoardChange(0);
+}
+
+function handlePostBoardChange(p) {
+  if (isBoardComplete(G.active[p], cfg.setRule)) {
+    if (usesSurviveRound()) {
+      addLog(`${p === 0 ? "Your" : "NPC's"} 3-card set is COMPLETE — must survive 1 opponent turn!`, "sys");
+    } else {
+      const finished = G.active[p].slice();
+      G.locked[p].push(finished);
+      G.active[p] = [null, null, null];
+      addLog(`★ ${p === 0 ? "You" : "NPC"} completed a full Ecosystem Set! (${G.locked[p].length}/${targetSetsCount()})`, p === 0 ? "you" : "npc");
+      if (G.locked[p].length >= targetSetsCount()) {
+        finishGame(p);
+        return;
+      }
+    }
+  }
+  if (p === 0) finishPlayerPlayPhase();
+}
+
+function playerDisruptTarget(slotIdx) {
+  if (G.phase !== "PLAY" || G.turn !== 0) return;
+  const atk = getSelectedCard();
+  const tgt = G.active[1][slotIdx];
+  if (!atk || !tgt || !canDisruptTarget(atk, tgt, cfg.dRule)) return;
+  removeSelectedCard();
+  putToDiscard(atk, true);
+  G.active[1][slotIdx] = null;
+  putToDiscard(tgt, false);
+  G.breaks++;
+  addLog(`⚡ You played ${cardShort(atk)} to DISCARD NPC's ${cardShort(tgt)}!`, "you");
+  setNpcStatus(`Disturbed! Your ${cardShort(atk)} discarded NPC's ${cardShort(tgt)}.`);
+  finishPlayerPlayPhase();
+}
+
+function playerRefreshSelected() {
+  if (G.phase !== "PLAY" || G.turn !== 0) return;
+  const card = getSelectedCard();
+  if (!card || (!isDisturbance(card) && !isJoker(card))) return;
+  removeSelectedCard();
+  putToDiscard(card, true);
+  const drawn = [];
+  for (let i = 0; i < 2; i++) {
+    const c = drawFromDeck();
+    if (c) { G.hands[0].push(c); drawn.push(c); }
+  }
+  G.refreshes++;
+  addLog(`🍃 Weather Passes: discarded ${cardShort(card)} to draw ${drawn.map(cardShort).join(" & ")}.`, "you");
+  finishPlayerPlayPhase();
+}
+
+function playerPassPlay() {
+  if (G.phase !== "PLAY" || G.turn !== 0) return;
+  clearSelection();
+  addLog("You passed your Play Phase.", "you");
+  finishPlayerPlayPhase();
+}
+
+function finishPlayerPlayPhase() {
+  clearSelection();
+  if (G.phase === "OVER") return;
+  if (G.hands[0].length > cfg.handLimit) {
+    G.phase = "DISCARD";
+    render();
+  } else {
+    endPlayerTurn();
+  }
+}
+
+function endPlayerTurn() {
+  G.turnsTaken++;
+  if (G.turnsTaken % 2 === 0) G.round++;
+  G.turn = 1;
+  G.phase = "NPC";
+  clearSelection();
+  render();
+  scheduleNpc(runNpcTurn, 1050);
+}
+
+// === NPC AI ENGINE ===
+function evalOpenCardForNpc(card) {
+  const hand = G.hands[1];
+  const mySl = G.active[1];
+  const oppSl = G.active[0];
+  if (isJoker(card)) return 190;
+  if (isDisturbance(card)) {
+    const oppSc = boardScore(oppSl, cfg.setRule);
+    const hits = oppSl.some(tc => tc && canDisruptTarget(card, tc, cfg.dRule));
+    if (hits) return oppSc === 30 ? 240 : (oppSc >= 15 ? 75 : 18);
+    return hand.filter(isDisturbance).length === 0 ? 12 : 4;
+  }
+  const curSc = boardScore(mySl, cfg.setRule);
+  for (const idx of validSlotsForCard(card, cfg.setRule)) {
+    const nxt = simulateSlotPlay(mySl, idx, card);
+    if (isBoardComplete(nxt, cfg.setRule)) return 230;
+    if (boardScore(nxt, cfg.setRule) > curSc) return 65;
+  }
+  let sc = hand.filter(h => isEco(h) && h.suit !== card.suit && Math.abs(h.rank - card.rank) <= 1).length * 14;
+  for (const idx of validSlotsForCard(card, cfg.setRule)) {
+    if (isBoardComplete(simulateSlotPlay(oppSl, idx, card), cfg.setRule)) sc += 60;
+  }
+  return sc;
+}
+
+function npcStepDraw(rem) {
+  if (G.phase === "OVER") return;
+  if (rem <= 0) { scheduleNpc(npcStepPlay, 480); return; }
+  const smart = cfg.npcLevel === "smart";
+  let picked = null, srcLabel = "the Deck";
+
+  if (cfg.centerMode === "market4" && G.market.length > 0) {
+    if (smart) {
+      let bi = -1, bs = 8;
+      G.market.forEach((mc, i) => { const sc = evalOpenCardForNpc(mc); if (sc > bs) { bs = sc; bi = i; } });
+      if (bi >= 0) { picked = G.market.splice(bi, 1)[0]; refillMarket(); srcLabel = "The Wilds"; }
+    } else if (Math.random() < 0.5) {
+      const i = Math.floor(Math.random() * G.market.length);
+      picked = G.market.splice(i, 1)[0]; refillMarket(); srcLabel = "The Wilds";
+    }
+  } else if (is2DiscMode()) {
+    const avail = [0, 1].map(i => ({ i, c: topOfDiscard(i) })).filter(x => x.c && canPickFromDiscard(x.c));
+    if (avail.length > 0) {
+      if (smart) {
+        let best = null, bs = 14;
+        avail.forEach(x => { const sc = evalOpenCardForNpc(x.c); if (sc > bs) { bs = sc; best = x; } });
+        if (best) {
+          picked = G.discards[best.i].pop();
+          srcLabel = `Discard Pile ${best.i === 0 ? "A" : "B"}`;
+        }
+      } else if (Math.random() < 0.35) {
+        const x = avail[Math.floor(Math.random() * avail.length)];
+        picked = G.discards[x.i].pop();
+        srcLabel = `Discard Pile ${x.i === 0 ? "A" : "B"}`;
+      }
+    }
+  }
+
+  if (!picked) picked = drawFromDeck();
+  if (picked) {
+    G.hands[1].push(picked);
+    const txt = srcLabel === "the Deck" ? "NPC drew a card from the Deck." : `NPC took ${cardShort(picked)} from ${srcLabel}.`;
+    addLog(txt, "npc");
+    setNpcStatus(txt);
+  }
+  G.lastDiscardedPile = -1;
+  render();
+  scheduleNpc(() => npcStepDraw(rem - 1), 760);
+}
+
+function npcStepPlay() {
+  if (G.phase === "OVER") return;
+  const smart = cfg.npcLevel === "smart";
+  const hand = G.hands[1];
+  const mySl = G.active[1];
+  const oppSl = G.active[0];
+  const ecos = hand.filter(isEco);
+  const joks = hand.filter(isJoker);
+  const ds = hand.filter(isDisturbance);
+  const discOpts = is2DiscMode()
+    ? [0, 1].map(i => ({ pile: i, c: topOfDiscard(i) })).filter(x => x.c && canPickFromDiscard(x.c))
+    : [];
+  let played = false;
+
+  // Priority 0: Stop Player waiting to win (Survive 1 Round)
+  if (usesSurviveRound() && isBoardComplete(oppSl, cfg.setRule)) {
+    let hit = null;
+    for (let i = 0; i < 3 && !hit; i++) {
+      const dc = ds.find(d => canDisruptTarget(d, oppSl[i], cfg.dRule));
+      if (dc) hit = { atk: dc, idx: i, fromRes: false };
+    }
+    if (!hit && joks.length) hit = { atk: joks[0], idx: 1, fromRes: false };
+    if (!hit && G.reserve[1]) hit = { atk: G.reserve[1], idx: 1, fromRes: true };
+    if (hit) {
+      if (hit.fromRes) G.reserve[1] = null;
+      else hand.splice(hand.indexOf(hit.atk), 1);
+      const tgt = oppSl[hit.idx];
+      oppSl[hit.idx] = null;
+      putToDiscard(hit.atk, true);
+      putToDiscard(tgt, false);
+      G.breaks++;
+      const msg = `⚡ NPC played ${cardShort(hit.atk)} to DISCARD your ${cardShort(tgt)}!`;
+      addLog(msg, "npc"); setNpcStatus(msg);
+      played = true;
+    }
+  }
+
+  // Priority 1: Complete NPC's own board (from hand, directly from Discard A/B, or Wild!)
+  if (!played) {
+    for (const c of ecos) {
+      for (const idx of validSlotsForCard(c, cfg.setRule)) {
+        if (isBoardComplete(simulateSlotPlay(mySl, idx, c), cfg.setRule)) {
+          hand.splice(hand.indexOf(c), 1);
+          const prev = mySl[idx];
+          if (prev) { putToDiscard(prev, false); G.overwrites++; }
+          mySl[idx] = c;
+          const msg = prev ? `NPC played ${cardShort(c)} on top of ${cardShort(prev)} to COMPLETE!` : `NPC played ${cardShort(c)} to COMPLETE!`;
+          addLog(msg, "npc"); setNpcStatus(msg);
+          played = true;
+          handlePostBoardChange(1);
+          if (G.phase === "OVER") return;
+          break;
+        }
+      }
+      if (played) break;
+    }
+    if (!played && discOpts.length) {
+      for (const opt of discOpts) {
+        for (const idx of validSlotsForCard(opt.c, cfg.setRule)) {
+          if (isBoardComplete(simulateSlotPlay(mySl, idx, opt.c), cfg.setRule)) {
+            G.discards[opt.pile].pop(); G.discardPlays++;
+            const prev = mySl[idx];
+            if (prev) { putToDiscard(prev, false); G.overwrites++; }
+            mySl[idx] = opt.c;
+            const msg = `NPC played ${cardShort(opt.c)} straight from Discard ${opt.pile === 0 ? "A" : "B"} to COMPLETE!`;
+            addLog(msg, "npc"); setNpcStatus(msg);
+            played = true;
+            handlePostBoardChange(1);
+            if (G.phase === "OVER") return;
+            break;
+          }
+        }
+        if (played) break;
+      }
+    }
+    if (!played && (joks.length || G.reserve[1])) {
+      const wc = joks.length ? joks[0] : G.reserve[1];
+      const fromRes = !joks.length;
+      for (const idx of [0, 1, 2]) {
+        if (isBoardComplete(simulateSlotPlay(mySl, idx, wc), cfg.setRule)) {
+          if (fromRes) G.reserve[1] = null;
+          else hand.splice(hand.indexOf(wc), 1);
+          const prev = mySl[idx];
+          if (prev) { putToDiscard(prev, false); G.overwrites++; }
+          mySl[idx] = wc;
+          const msg = `NPC played Wild ${cardShort(wc)} to COMPLETE its set!`;
+          addLog(msg, "npc"); setNpcStatus(msg);
+          played = true;
+          handlePostBoardChange(1);
+          if (G.phase === "OVER") return;
+          break;
+        }
+      }
+    }
+  }
+
+  // Priority 2: Disrupt Player if threatening
+  if (!played && ds.length > 0) {
+    const oppSc = boardScore(oppSl, cfg.setRule);
+    const oppFilled = [0, 1, 2].filter(i => oppSl[i] !== null);
+    let hit = null;
+    for (const i of oppFilled) {
+      const dc = ds.find(d => canDisruptTarget(d, oppSl[i], cfg.dRule));
+      if (dc) { hit = { dc, idx: i }; break; }
+    }
+    if (hit && ((!smart && Math.random() < 0.5) || (smart && (oppSc >= 15 || oppFilled.length >= 2)))) {
+      hand.splice(hand.indexOf(hit.dc), 1);
+      const tgt = oppSl[hit.idx];
+      oppSl[hit.idx] = null;
+      putToDiscard(hit.dc, true);
+      putToDiscard(tgt, false);
+      G.breaks++;
+      const msg = `⚡ NPC played ${cardShort(hit.dc)} to DISCARD your ${cardShort(tgt)}!`;
+      addLog(msg, "npc"); setNpcStatus(msg);
+      played = true;
+    }
+  }
+
+  // Priority 3: Build/overwrite from Hand OR directly from Discard A/B
+  if (!played && (ecos.length > 0 || discOpts.length > 0)) {
+    const curSc = boardScore(mySl, cfg.setRule);
+    let best = null, bestGain = 0;
+    for (const c of ecos) {
+      for (const idx of validSlotsForCard(c, cfg.setRule)) {
+        const nxt = simulateSlotPlay(mySl, idx, c);
+        let gain = boardScore(nxt, cfg.setRule) - curSc;
+        if (mySl[idx] === null) gain += 2 + ecos.filter(h => h !== c && h.suit !== c.suit && Math.abs(h.rank - c.rank) <= 1).length;
+        if (!smart) gain = Math.random() * 10;
+        if (gain > bestGain) { bestGain = gain; best = { src: "hand", c, idx }; }
+      }
+    }
+    for (const opt of discOpts) {
+      if (isEco(opt.c)) {
+        for (const idx of validSlotsForCard(opt.c, cfg.setRule)) {
+          const nxt = simulateSlotPlay(mySl, idx, opt.c);
+          let gain = boardScore(nxt, cfg.setRule) - curSc + (mySl[idx] === null ? 2 : 0);
+          if (!smart) gain = Math.random() * 8;
+          if (gain > bestGain) { bestGain = gain; best = { src: "disc", pile: opt.pile, c: opt.c, idx }; }
+        }
+      }
+    }
+    if (best) {
+      if (best.src === "hand") hand.splice(hand.indexOf(best.c), 1);
+      else { G.discards[best.pile].pop(); G.discardPlays++; }
+      const prev = mySl[best.idx];
+      if (prev) { putToDiscard(prev, false); G.overwrites++; }
+      mySl[best.idx] = best.c;
+      const fromTxt = best.src === "disc" ? ` straight from Discard ${best.pile === 0 ? "A" : "B"}` : "";
+      const msg = prev
+        ? `NPC played ${cardShort(best.c)}${fromTxt} on top of ${cardShort(prev)}.`
+        : `NPC played ${cardShort(best.c)}${fromTxt} onto its board.`;
+      addLog(msg, "npc"); setNpcStatus(msg);
+      played = true;
+    }
+  }
+
+  // Priority 4: Dual-Use D Refresh
+  if (!played && ds.length > 0) {
+    const dc = ds[0];
+    hand.splice(hand.indexOf(dc), 1);
+    putToDiscard(dc, true);
+    for (let i = 0; i < 2; i++) {
+      const c = drawFromDeck();
+      if (c) hand.push(c);
+    }
+    G.refreshes++;
+    const msg = `🍃 NPC used ${cardShort(dc)} to Refresh (Draw 2).`;
+    addLog(msg, "npc"); setNpcStatus(msg);
+    played = true;
+  }
+
+  if (!played) {
+    addLog("NPC passed its Play Phase.", "npc");
+    setNpcStatus("NPC passed Play Phase.");
+  }
+
+  render();
+  scheduleNpc(npcStepDiscard, 780);
+}
+
+function npcStepDiscard() {
+  if (G.phase === "OVER") return;
+  const smart = cfg.npcLevel === "smart";
+  const hand = G.hands[1];
+  const mySl = G.active[1];
+  const oppSl = G.active[0];
+  const dropped = [];
+  while (hand.length > cfg.handLimit) {
+    let dc;
+    if (smart) {
+      const keepSc = (c) => {
+        if (isJoker(c)) return 300;
+        if (isDisturbance(c)) return oppSl.some(tc => tc && canDisruptTarget(c, tc, cfg.dRule)) ? 28 : 10;
+        for (const idx of validSlotsForCard(c, cfg.setRule)) {
+          if (isBoardComplete(simulateSlotPlay(mySl, idx, c), cfg.setRule)) return 200;
+        }
+        const cur = boardScore(mySl, cfg.setRule);
+        const maxGain = Math.max(...validSlotsForCard(c, cfg.setRule).map(i => boardScore(simulateSlotPlay(mySl, i, c), cfg.setRule) - cur));
+        // Slight penalty for keeping cards that don't help us, plus avoid gifting player an instant win if possible!
+        let oppGift = 0;
+        for (const idx of validSlotsForCard(c, cfg.setRule)) {
+          if (isBoardComplete(simulateSlotPlay(oppSl, idx, c), cfg.setRule)) oppGift = 80;
+        }
+        return maxGain + oppGift + hand.filter(h => isEco(h) && h !== c && h.suit !== c.suit && Math.abs(h.rank - c.rank) <= 1).length * 4;
+      };
+      dc = hand.reduce((w, c) => keepSc(c) < keepSc(w) ? c : w, hand[0]);
+    } else {
+      dc = hand[Math.floor(Math.random() * hand.length)];
+    }
+    hand.splice(hand.indexOf(dc), 1);
+    putToDiscard(dc, false);
+    dropped.push(dc);
+  }
+  if (dropped.length) addLog(`NPC discarded ${dropped.map(cardShort).join(", ")}.`, "npc");
+
+  G.turnsTaken++;
+  if (G.turnsTaken % 2 === 0) G.round++;
+  G.turn = 0;
+  if (checkStartOfTurnWin(0)) return;
+  G.phase = "DRAW";
+  G.drawsLeft = 2;
+  render();
+}
+
+function runNpcTurn() {
+  if (G.phase === "OVER") return;
+  if (checkStartOfTurnWin(1)) return;
+  npcStepDraw(G.turnsTaken === 0 ? cfg.turn1Draw : 2);
+}
+
+// === RENDERING ===
+function inspectCard(card) {
+  const el = document.getElementById("inspectorBody");
+  if (!card || !el) return;
+  const sm = SUIT_META[card.suit];
+  el.innerHTML = `
+    <div class="inspector-head">
+      <div class="inspector-title">${card.name}</div>
+      <div class="inspector-rank" style="background:${sm.color}">${card.rankLabel}${sm.sym} ${sm.label}</div>
+    </div>
+    ${card.sub ? `<div class="inspector-sub">${card.sub}</div>` : ""}
+    <div class="inspector-art">
+      ${cfg.cardStyle === "art"
+        ? `<img src="${card.img}" alt="${card.name}" onerror="this.style.display='none'">`
+        : `<span class="poker-pip" style="font-size:3.2rem;color:${sm.color}">${card.rankLabel}${sm.sym}</span>`}
+    </div>
+    <div class="inspector-block"><strong>Scientific Natural History</strong>${card.fact}</div>
+    <div class="inspector-block"><strong>Ecological Role / Card Effect</strong>${card.ability}</div>
+  `;
+}
+
+function createCardEl(card, opts = {}) {
+  const sm = SUIT_META[card.suit];
+  const div = document.createElement("div");
+  div.className = `card suit-${card.suit}` + (opts.size ? ` ${opts.size}` : "") + (opts.extraClass ? ` ${opts.extraClass}` : "");
+  const artHtml = (cfg.cardStyle === "art" && card.img)
+    ? `<img src="${card.img}" alt="${card.name}" loading="lazy">`
+    : `<div class="poker-pip">${sm.sym}</div>`;
+  div.innerHTML = `
+    <div class="card-top">
+      <span>${card.rankLabel}${sm.sym}</span>
+      <span class="suit-tag">${sm.label}</span>
+    </div>
+    <div class="card-art">${artHtml}</div>
+    ${opts.badge ? `<div class="card-badge ${opts.badge.cls}">${opts.badge.text}</div>` : ""}
+    <div class="card-name">${card.name}</div>
+  `;
+  div.addEventListener("mouseenter", () => inspectCard(card));
+  if (opts.onClick) {
+    div.classList.add("clickable");
+    div.addEventListener("click", opts.onClick);
+  }
+  return div;
+}
+
+function openCardBadgeForPlayer(card, isPlayDirect = false) {
+  if (!cfg.showHints) return null;
+  if (isJoker(card)) return { text: isPlayDirect ? "★ PLAY DIRECT" : "★ TRUE WILD", cls: "badge-wild" };
+  if (isDisturbance(card)) {
+    if (G.active[1].some(tc => tc && canDisruptTarget(card, tc, cfg.dRule))) return { text: "⚡ DISCARDS NPC", cls: "badge-hit" };
+    return null;
+  }
+  const cur = boardScore(G.active[0], cfg.setRule);
+  for (const idx of validSlotsForCard(card, cfg.setRule)) {
+    const nxt = simulateSlotPlay(G.active[0], idx, card);
+    if (isBoardComplete(nxt, cfg.setRule)) return { text: isPlayDirect ? "★ PLAY TO WIN!" : "★ COMPLETES!", cls: "badge-win" };
+    if (boardScore(nxt, cfg.setRule) > cur) return { text: isPlayDirect ? "▶ PLAY DIRECT" : (G.active[0][idx] ? "↻ UPGRADES" : "+ FITS"), cls: "badge-fit" };
+  }
+  return isPlayDirect ? { text: "▶ PLAYABLE", cls: "badge-muted" } : null;
+}
+
+function renderLockedSets(container, sets) {
+  container.innerHTML = "";
+  if (sets.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "card-slot";
+    empty.innerHTML = `<span class="slot-icon">✓</span><span>None yet</span>`;
+    container.appendChild(empty);
+    return;
+  }
+  sets.forEach((set, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "locked-cluster";
+    wrap.innerHTML = `<span class="locked-tag">SET ${idx + 1}</span>`;
+    set.forEach(c => wrap.appendChild(createCardEl(c, { size: "mini" })));
+    container.appendChild(wrap);
+  });
+}
+
+function slotCaption(idx) {
+  if (cfg.setRule === "wildlands_pm1") return ["♠ Foundation", "♣ Resource", "♥ Consumer"][idx];
+  return `Slot ${idx + 1}`;
+}
+
+function renderCenter() {
+  const row = document.getElementById("centerRow");
+  row.innerHTML = "";
+
+  // 1. Draw Deck
+  const deckCol = document.createElement("div");
+  deckCol.className = "board-group";
+  deckCol.innerHTML = `<div class="group-label">Draw Deck</div>`;
+  const deckDiv = document.createElement("div");
+  const canDraw = G.phase === "DRAW" && G.turn === 0;
+  deckDiv.className = "card card-back" + (canDraw ? " clickable draw-glow" : "");
+  deckDiv.innerHTML = `
+    <div class="card-back-title">WILDLANDS</div>
+    <div class="card-back-count">${G.deck.length}</div>
+    <div class="card-back-sub">${canDraw ? "Click to Draw" : "Shared Deck"}</div>
+  `;
+  if (canDraw) deckDiv.addEventListener("click", () => playerDrawDeck(1));
+  deckCol.appendChild(deckDiv);
+  row.appendChild(deckCol);
+
+  const div1 = document.createElement("div");
+  div1.className = "market-divider";
+  row.appendChild(div1);
+
+  if (is2DiscMode()) {
+    document.getElementById("centerTitle").textContent = "Center Table — Shared Deck & 2-Card Playable Discard Market";
+    document.getElementById("marketHint").textContent =
+      canDraw
+        ? `Draw Phase: take ${G.drawsLeft} from Deck or Discard A/B`
+        : (G.phase === "PLAY" && G.turn === 0
+            ? "Play Phase: click Discard A or B to play it straight onto your board!"
+            : (G.phase === "DISCARD" && G.turn === 0
+                ? `Discard Phase: next card lands face-up on Discard ${nextDiscardTargetIdx() === 0 ? "A" : "B"}`
+                : "All discards land face-up on Discard A & B — Draw or Play directly!"));
+
+    const pilesGroup = document.createElement("div");
+    pilesGroup.className = "board-group";
+    pilesGroup.innerHTML = `<div class="group-label">2-Card Playable Discard Market (Every Discard Lands Face-Up Here!)</div>`;
+    const pilesRow = document.createElement("div");
+    pilesRow.className = "card-row";
+    const nextIdx = nextDiscardTargetIdx();
+
+    [0, 1].forEach(pi => {
+      const col = document.createElement("div");
+      col.className = "slot-col";
+      const count = G.discards[pi].length;
+      const isNextDrop = G.phase === "DISCARD" && G.turn === 0 && pi === nextIdx;
+      const cap = document.createElement("span");
+      cap.className = "slot-caption" + (isNextDrop ? " next-drop" : "");
+      cap.textContent = isNextDrop
+        ? `Discard ${pi === 0 ? "A" : "B"} (${count}) ← NEXT`
+        : `Discard ${pi === 0 ? "A" : "B"} (${count})`;
+      col.appendChild(cap);
+
+      const top = topOfDiscard(pi);
+      if (top) {
+        const pickable = canPickFromDiscard(top);
+        const isSel = G.selSource === (pi === 0 ? "discard0" : "discard1");
+        const canActNow = pickable && G.turn === 0 && (G.phase === "DRAW" || G.phase === "PLAY");
+        let extra = isSel ? "selected" : (G.lastDiscardedPile === pi ? "just-landed" : "");
+        if (!isSel && canActNow) extra = G.phase === "DRAW" ? "draw-glow" : "play-disc-glow";
+        const badge = pickable
+          ? openCardBadgeForPlayer(top, G.phase === "PLAY" && G.turn === 0)
+          : { text: "♦ Spent Storm", cls: "badge-muted" };
+        col.appendChild(createCardEl(top, {
+          extraClass: extra,
+          badge,
+          onClick: () => playerClickDiscardPile(pi)
+        }));
+      } else {
+        const empty = document.createElement("div");
+        empty.className = "card-slot big";
+        empty.innerHTML = `<span class="slot-icon">○</span><span>Empty<br>Discard ${pi === 0 ? "A" : "B"}</span>`;
+        col.appendChild(empty);
+      }
+      pilesRow.appendChild(col);
+    });
+    pilesGroup.appendChild(pilesRow);
+    row.appendChild(pilesGroup);
+  } else {
+    document.getElementById("centerTitle").textContent = "The Wilds — Shared Deck & 4-Card Open Market";
+    document.getElementById("marketHint").textContent = canDraw
+      ? `Pick ${G.drawsLeft} card${G.drawsLeft > 1 ? "s" : ""} from The Wilds or Deck`
+      : "Open 4-card Market (refills on every draft)";
+
+    const mktGroup = document.createElement("div");
+    mktGroup.className = "board-group";
+    mktGroup.style.flex = "1";
+    mktGroup.innerHTML = `<div class="group-label">The Wilds (Face-Up Market — Refills Immediately)</div>`;
+    const mktRow = document.createElement("div");
+    mktRow.className = "card-row";
+    G.market.forEach((mc, i) => {
+      mktRow.appendChild(createCardEl(mc, {
+        extraClass: canDraw ? "draw-glow" : "",
+        badge: openCardBadgeForPlayer(mc, false),
+        onClick: canDraw ? () => playerDrawMarket(i) : () => inspectCard(mc)
+      }));
+    });
+    mktGroup.appendChild(mktRow);
+    row.appendChild(mktGroup);
+
+    const div2 = document.createElement("div");
+    div2.className = "market-divider";
+    row.appendChild(div2);
+
+    const discGroup = document.createElement("div");
+    discGroup.className = "board-group";
+    discGroup.innerHTML = `<div class="group-label">Discard Pile (${G.discards[0].length})</div>`;
+    const top = topOfDiscard(0);
+    if (top) discGroup.appendChild(createCardEl(top));
+    else {
+      const empty = document.createElement("div");
+      empty.className = "card-slot big";
+      empty.textContent = "Discard";
+      discGroup.appendChild(empty);
+    }
+    row.appendChild(discGroup);
+  }
+}
+
+function render() {
+  const tSets = targetSetsCount();
+  const modeStr = [
+    "2P",
+    is2DiscMode() ? "2-Card Discard Market" : "4-Card Market",
+    cfg.setRule === "wildlands_pm1" ? "Wildlands ±1" : "Rummy",
+    cfg.dRule === "any" ? "Any ♦ Discards" : "♦ ±1 Rank",
+    { symmetric: "1 True Wild Each", deck_true_wild: "2 True Wilds in Deck", none: "Pure 52" }[cfg.jokerMode],
+    { "1_instant": "1 Set Win", "2_lock": "First to 2", "1_survive": "1 Set (Survive)" }[cfg.winMode]
+  ].join(" · ");
+  document.getElementById("modeBadge").textContent = modeStr;
+  document.getElementById("scoreYou").textContent = `You: ${G.locked[0].length}/${tSets}`;
+  document.getElementById("scoreNpc").textContent = `NPC: ${G.locked[1].length}/${tSets}`;
+  document.getElementById("roundPill").textContent = `Round ${G.round}`;
+  document.getElementById("btnStyle").textContent = cfg.cardStyle === "art" ? "Style: Wildlands Art" : "Style: Classic Poker";
+  document.getElementById("btnHints").textContent = cfg.showHints ? "Hints: ON" : "Hints: OFF";
+
+  const showLocked = targetSetsCount() > 1 || G.locked[0].length > 0 || G.locked[1].length > 0;
+  document.getElementById("npcLockedWrap").style.display = showLocked ? "flex" : "none";
+  document.getElementById("youLockedWrap").style.display = showLocked ? "flex" : "none";
+
+  const pb = document.getElementById("phaseBanner");
+  pb.textContent = {
+    DRAW: `DRAW PHASE (${G.drawsLeft} left)`,
+    PLAY: "PLAY PHASE (Choose 1 Action)",
+    DISCARD: `DISCARD PHASE (Drop ${Math.max(0, G.hands[0].length - cfg.handLimit)})`,
+    NPC: "NPC TURN...",
+    OVER: G.winner === 0 ? "VICTORY!" : "NPC VICTORY"
+  }[G.phase];
+  pb.className = `phase-banner phase-${G.phase}`;
+
+  const wb = document.getElementById("winBanner");
+  if (G.phase === "OVER") {
+    wb.className = "win-banner show" + (G.winner === 1 ? " lost" : "");
+    document.getElementById("winTitle").textContent = G.winner === 0 ? "🏆 You Won the Wildlands Match!" : "💥 NPC Completed Its Ecosystem First!";
+    document.getElementById("winStats").textContent = `Finished on Round ${G.round} · ${G.breaks} Breaks · ${G.overwrites} Overwrites · ${G.discardPlays} Direct Discard Plays`;
+  } else {
+    wb.className = "win-banner";
+  }
+
+  // NPC Zone
+  document.getElementById("npcHandCount").textContent = `Hand: ${G.hands[1].length}`;
+  const npcWaiting = usesSurviveRound() && isBoardComplete(G.active[1], cfg.setRule);
+  document.getElementById("npcStatusChip").textContent = npcWaiting ? "⚠ Complete — Break Now!" : (G.turn === 1 ? "Thinking..." : "Standing By");
+  document.getElementById("npcStatusChip").className = "hint-chip" + (npcWaiting ? " danger" : "");
+
+  const selCard = getSelectedCard();
+  const npcActEl = document.getElementById("npcActive");
+  npcActEl.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const col = document.createElement("div");
+    col.className = "slot-col";
+    col.innerHTML = `<span class="slot-caption">${slotCaption(i)}</span>`;
+    const c = G.active[1][i];
+    if (c) {
+      const targetable = G.phase === "PLAY" && G.turn === 0 && selCard && canDisruptTarget(selCard, c, cfg.dRule);
+      col.appendChild(createCardEl(c, {
+        size: "small",
+        extraClass: targetable ? "target-glow" : (npcWaiting ? "unstable-glow" : ""),
+        badge: targetable ? { text: "⚡ CLICK TO DISCARD", cls: "badge-hit" } : null,
+        onClick: targetable ? () => playerDisruptTarget(i) : () => inspectCard(c)
+      }));
+    } else {
+      const slot = document.createElement("div");
+      slot.className = "card-slot";
+      slot.innerHTML = `<span class="slot-icon">${cfg.setRule === "wildlands_pm1" ? ["♠","♣","♥"][i] : (i+1)}</span><span>Open</span>`;
+      col.appendChild(slot);
+    }
+    npcActEl.appendChild(col);
+  }
+  renderLockedSets(document.getElementById("npcLocked"), G.locked[1]);
+
+  // Reserves
+  const showRes = cfg.jokerMode === "symmetric";
+  document.getElementById("npcReserveWrap").style.display = showRes ? "flex" : "none";
+  document.getElementById("youReserveWrap").style.display = showRes ? "flex" : "none";
+  if (showRes) {
+    const nr = document.getElementById("npcReserve");
+    nr.innerHTML = "";
+    const nBox = document.createElement("div");
+    nBox.className = "reserve-box" + (G.reserve[1] ? "" : " reserve-spent");
+    if (G.reserve[1]) nBox.appendChild(createCardEl(G.reserve[1], { size: "mini" }));
+    else nBox.innerHTML = `<div class="card-slot" style="width:68px;height:98px;"><span>Spent</span></div>`;
+    nr.appendChild(nBox);
+
+    const yr = document.getElementById("youReserve");
+    yr.innerHTML = "";
+    const yBox = document.createElement("div");
+    yBox.className = "reserve-box" + (G.reserve[0] ? "" : " reserve-spent");
+    if (G.reserve[0]) {
+      const isSel = G.selSource === "reserve";
+      yBox.appendChild(createCardEl(G.reserve[0], {
+        size: "small",
+        extraClass: isSel ? "selected" : "",
+        badge: (cfg.showHints && G.phase === "PLAY" && G.turn === 0) ? { text: "★ ANY CARD", cls: "badge-wild" } : null,
+        onClick: () => playerClickCard(G.reserve[0], true)
+      }));
+    } else {
+      yBox.innerHTML = `<div class="card-slot"><span>Jackalope<br>Spent</span></div>`;
+    }
+    yr.appendChild(yBox);
+  }
+
+  renderCenter();
+
+  // Player Active Board
+  document.getElementById("youHandMeta").textContent = `Hand: ${G.hands[0].length} / ${cfg.handLimit}`;
+  document.getElementById("youNeedHint").textContent = describeBoardNeed(G.active[0], cfg.setRule);
+
+  const youActEl = document.getElementById("youActive");
+  youActEl.innerHTML = "";
+  const validSlotsForSel = (G.phase === "PLAY" && G.turn === 0 && selCard) ? validSlotsForCard(selCard, cfg.setRule) : [];
+  for (let i = 0; i < 3; i++) {
+    const col = document.createElement("div");
+    col.className = "slot-col";
+    col.innerHTML = `<span class="slot-caption">${slotCaption(i)}</span>`;
+    const c = G.active[0][i];
+    const canDropHere = validSlotsForSel.includes(i);
+    if (c) {
+      const willComplete = canDropHere && isBoardComplete(simulateSlotPlay(G.active[0], i, selCard), cfg.setRule);
+      let extra = "", badge = null;
+      if (canDropHere) {
+        extra = isJoker(selCard) ? "wild-glow" : "replace-glow";
+        badge = willComplete
+          ? { text: "★ REPLACE & WIN!", cls: "badge-win" }
+          : { text: isJoker(selCard) ? "★ WILD HERE" : "↻ PLAY ON TOP", cls: isJoker(selCard) ? "badge-wild" : "badge-replace" };
+      }
+      col.appendChild(createCardEl(c, {
+        size: "small",
+        extraClass: extra,
+        badge,
+        onClick: canDropHere ? () => playerPlaceInSlot(i) : () => inspectCard(c)
+      }));
+    } else {
+      const slot = document.createElement("div");
+      slot.className = "card-slot" + (canDropHere ? (isJoker(selCard) ? " slot-wild" : " slot-ready") : "");
+      const willComplete = canDropHere && isBoardComplete(simulateSlotPlay(G.active[0], i, selCard), cfg.setRule);
+      slot.innerHTML = `
+        <span class="slot-icon">${cfg.setRule === "wildlands_pm1" ? ["♠","♣","♥"][i] : (i+1)}</span>
+        <span>${willComplete ? "★ COMPLETE!" : (canDropHere ? (isJoker(selCard) ? "Click: Wild" : "Click to Play") : "Open")}</span>
+      `;
+      if (canDropHere) slot.addEventListener("click", () => playerPlaceInSlot(i));
+      col.appendChild(slot);
+    }
+    youActEl.appendChild(col);
+  }
+  renderLockedSets(document.getElementById("youLocked"), G.locked[0]);
+
+  // Action Bar
+  const ab = document.getElementById("actionBar");
+  ab.className = "action-bar" + (G.flashNotice ? " flash-warn" : "");
+  const prompt = document.getElementById("actionPrompt");
+  const btns = document.getElementById("actionButtons");
+  btns.innerHTML = "";
+
+  if (G.phase === "DRAW" && G.turn === 0) {
+    if (G.flashNotice) {
+      prompt.innerHTML = `<strong>⚠ ${G.flashNotice}</strong>`;
+    } else {
+      const srcTxt = is2DiscMode() ? "the <em>Draw Deck</em> or <em>Discard Pile A / B</em>" : "<em>The Wilds</em> or the <em>Draw Deck</em>";
+      prompt.innerHTML = `<strong>Draw Phase:</strong> Draw <strong>${G.drawsLeft}</strong> card${G.drawsLeft > 1 ? "s" : ""} from ${srcTxt}.`;
+    }
+    const bDeck = document.createElement("button");
+    bDeck.className = "btn-blue";
+    bDeck.textContent = G.drawsLeft >= 2 ? "Draw 2 From Deck" : "Draw 1 From Deck";
+    bDeck.addEventListener("click", () => playerDrawDeck(G.drawsLeft));
+    btns.appendChild(bDeck);
+  } else if (G.phase === "DISCARD" && G.turn === 0) {
+    const needDrop = G.hands[0].length - cfg.handLimit;
+    prompt.innerHTML = `<strong>Discard Phase:</strong> Click <strong>${needDrop}</strong> card${needDrop > 1 ? "s" : ""} in your hand to discard down to ${cfg.handLimit}.`;
+  } else if (G.phase === "NPC") {
+    prompt.innerHTML = `<strong>NPC's Turn:</strong> Watching opponent's move...`;
+  } else if (G.phase === "OVER") {
+    prompt.innerHTML = `<strong>Match Complete.</strong> Click Rematch or tweak rules above.`;
+  } else if (G.phase === "PLAY" && G.turn === 0) {
+    if (!selCard) {
+      const discTip = is2DiscMode() ? ", OR click Discard A / B to play directly from discard" : "";
+      prompt.innerHTML = `<strong>Play Phase:</strong> Select a card in your hand${G.reserve[0] ? " or your Jackalope Wild" : ""}${discTip}.`;
+    } else if (isDisturbance(selCard)) {
+      const targets = [0, 1, 2].filter(i => G.active[1][i] && canDisruptTarget(selCard, G.active[1][i], cfg.dRule));
+      const rangeNote = cfg.dRule === "any" ? "any NPC card" : `ranks ${RANK_LABELS[Math.max(2, selCard.rank-1)]}–${RANK_LABELS[Math.min(14, selCard.rank+1)]}`;
+      prompt.innerHTML = `Selected <strong>${cardShort(selCard)}</strong> (discards ${rangeNote}):`;
+      targets.forEach(idx => {
+        const b = document.createElement("button");
+        b.className = "btn-danger";
+        b.textContent = `⚡ Discard NPC's ${cardShort(G.active[1][idx])}`;
+        b.addEventListener("click", () => playerDisruptTarget(idx));
+        btns.appendChild(b);
+      });
+      const br = document.createElement("button");
+      br.className = "btn-blue";
+      br.textContent = "🍃 Refresh (Discard ♦ → Draw 2)";
+      br.addEventListener("click", playerRefreshSelected);
+      btns.appendChild(br);
+    } else if (isJoker(selCard)) {
+      const fromTxt = G.selSource === "discard0" ? " (from Discard A)" : (G.selSource === "discard1" ? " (from Discard B)" : "");
+      prompt.innerHTML = `Selected True Wild <strong>${selCard.name}${fromTxt}</strong> — play as <em>ANY</em> card!`;
+      [0, 1, 2].forEach(idx => {
+        const prev = G.active[0][idx];
+        const comp = isBoardComplete(simulateSlotPlay(G.active[0], idx, selCard), cfg.setRule);
+        const b = document.createElement("button");
+        b.className = comp ? "btn-primary" : "btn-purple";
+        b.textContent = comp
+          ? `★ Wild in ${slotCaption(idx)} (COMPLETE!)`
+          : (prev ? `★ Wild over ${cardShort(prev)}` : `★ Wild in ${slotCaption(idx)}`);
+        b.addEventListener("click", () => playerPlaceInSlot(idx));
+        btns.appendChild(b);
+      });
+      [0, 1, 2].filter(i => G.active[1][i]).forEach(idx => {
+        const b = document.createElement("button");
+        b.className = "btn-danger";
+        b.textContent = `⚡ Wild: Discard NPC's ${cardShort(G.active[1][idx])}`;
+        b.addEventListener("click", () => playerDisruptTarget(idx));
+        btns.appendChild(b);
+      });
+      const br = document.createElement("button");
+      br.className = "btn-blue";
+      br.textContent = "🍃 Wild: Draw 2";
+      br.addEventListener("click", playerRefreshSelected);
+      btns.appendChild(br);
+    } else {
+      const fromTxt = G.selSource === "discard0" ? " (from Discard A)" : (G.selSource === "discard1" ? " (from Discard B)" : "");
+      const slots = validSlotsForCard(selCard, cfg.setRule);
+      prompt.innerHTML = `Selected <strong>${cardShort(selCard)}${fromTxt}</strong> — click a glowing slot or button:`;
+      slots.forEach(idx => {
+        const prev = G.active[0][idx];
+        const comp = isBoardComplete(simulateSlotPlay(G.active[0], idx, selCard), cfg.setRule);
+        const b = document.createElement("button");
+        b.className = comp ? "btn-primary" : (prev ? "btn-amber" : "btn-primary");
+        b.textContent = comp
+          ? (prev ? `★ Play on top of ${cardShort(prev)} (COMPLETE!)` : `★ Play to ${slotCaption(idx)} (COMPLETE!)`)
+          : (prev ? `↻ Play on top of ${cardShort(prev)}` : `Play to ${slotCaption(idx)}`);
+        b.addEventListener("click", () => playerPlaceInSlot(idx));
+        btns.appendChild(b);
+      });
+    }
+    const passBtn = document.createElement("button");
+    passBtn.textContent = "Pass Play";
+    passBtn.addEventListener("click", playerPassPlay);
+    btns.appendChild(passBtn);
+  }
+
+  // Player Hand
+  const handEl = document.getElementById("youHand");
+  handEl.innerHTML = "";
+  G.hands[0].forEach(c => {
+    const isSel = G.selSource === "hand" && G.selectedId === c.id;
+    let extra = isSel ? "selected" : "";
+    if (G.phase === "DISCARD" && G.turn === 0) extra = "discard-glow";
+    let badge = null;
+    if (cfg.showHints && G.phase === "PLAY" && G.turn === 0) {
+      if (isJoker(c)) badge = { text: "★ ANY CARD", cls: "badge-wild" };
+      else if (isDisturbance(c) && G.active[1].some(tc => tc && canDisruptTarget(c, tc, cfg.dRule))) badge = { text: "⚡ DISCARDS NPC", cls: "badge-hit" };
+      else if (isEco(c)) {
+        const slots = validSlotsForCard(c, cfg.setRule);
+        const cur = boardScore(G.active[0], cfg.setRule);
+        if (slots.some(i => isBoardComplete(simulateSlotPlay(G.active[0], i, c), cfg.setRule))) badge = { text: "★ COMPLETES!", cls: "badge-win" };
+        else if (slots.some(i => boardScore(simulateSlotPlay(G.active[0], i, c), cfg.setRule) > cur)) {
+          badge = slots.every(i => G.active[0][i] !== null) ? { text: "↻ UPGRADE", cls: "badge-replace" } : { text: "+ FITS", cls: "badge-fit" };
+        }
+      }
+    }
+    handEl.appendChild(createCardEl(c, {
+      extraClass: extra,
+      badge,
+      onClick: () => playerClickCard(c, false)
+    }));
+  });
+
+  const logEl = document.getElementById("logList");
+  logEl.innerHTML = "";
+  G.logs.forEach(item => {
+    const d = document.createElement("div");
+    d.className = `log-item ${item.cls}`;
+    d.textContent = `[R${item.round}] ${item.msg}`;
+    logEl.appendChild(d);
+  });
+}
+
+// === UI WIRING ===
+document.getElementById("btnStyle").addEventListener("click", () => {
+  cfg.cardStyle = cfg.cardStyle === "art" ? "poker" : "art";
+  render();
+});
+document.getElementById("btnHints").addEventListener("click", () => {
+  cfg.showHints = !cfg.showHints;
+  render();
+});
+document.getElementById("btnSettings").addEventListener("click", () => {
+  document.getElementById("optCenterMode").value = cfg.centerMode;
+  document.getElementById("optSetRule").value = cfg.setRule;
+  document.getElementById("optDRule").value = cfg.dRule;
+  document.getElementById("optJokerMode").value = cfg.jokerMode;
+  document.getElementById("optWinMode").value = cfg.winMode;
+  document.getElementById("optHandLimit").value = String(cfg.handLimit);
+  document.getElementById("optNpcLevel").value = cfg.npcLevel;
+  document.getElementById("optFirst").value = String(cfg.firstPlayer);
+  document.getElementById("optTurn1Nerf").value = String(cfg.turn1Draw);
+  document.getElementById("settingsModal").classList.add("open");
+});
+document.getElementById("btnChangeRules").addEventListener("click", () => document.getElementById("btnSettings").click());
+document.getElementById("btnCloseSettings").addEventListener("click", () => document.getElementById("settingsModal").classList.remove("open"));
+document.getElementById("btnStartNew").addEventListener("click", () => {
+  cfg.centerMode = document.getElementById("optCenterMode").value;
+  cfg.setRule = document.getElementById("optSetRule").value;
+  cfg.dRule = document.getElementById("optDRule").value;
+  cfg.jokerMode = document.getElementById("optJokerMode").value;
+  cfg.winMode = document.getElementById("optWinMode").value;
+  cfg.handLimit = parseInt(document.getElementById("optHandLimit").value, 10);
+  cfg.npcLevel = document.getElementById("optNpcLevel").value;
+  cfg.firstPlayer = parseInt(document.getElementById("optFirst").value, 10);
+  cfg.turn1Draw = parseInt(document.getElementById("optTurn1Nerf").value, 10);
+  document.getElementById("settingsModal").classList.remove("open");
+  startNewGame();
+});
+document.getElementById("btnRematch").addEventListener("click", () => {
+  cfg.firstPlayer = 1 - cfg.firstPlayer;
+  startNewGame();
+});
+document.getElementById("btnRules").addEventListener("click", () => document.getElementById("rulesModal").classList.add("open"));
+document.getElementById("btnCloseRules").addEventListener("click", () => document.getElementById("rulesModal").classList.remove("open"));
+["settingsModal", "rulesModal"].forEach(id => {
+  document.getElementById(id).addEventListener("click", e => {
+    if (e.target.id === id) e.target.classList.remove("open");
+  });
+});
+
+startNewGame();
+</script>
+</body>
+</html>
