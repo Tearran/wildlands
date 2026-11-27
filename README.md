@@ -129,6 +129,7 @@ Each card's facts come first, and its place on the track follows from them.
 ## Project Structure
 
 * [`play.html`](./play.html) — Standalone 2-player vs. NPC playable tabletop prototype.
+* [`SCIENTIFIC_AUDIT.md`](./SCIENTIFIC_AUDIT.md) — Full 52-card scientific audit across all four suit boundaries (`2` through `A`), data-integrity notes, and realignment recommendations.
 * [`index.html`](./index.html) — Interactive SVG deck viewer & card downloader.
 * [`data/tonto_basin_alpha.json`](./data/tonto_basin_alpha.json) — 52-card Tonto Basin Alpha deck dataset.
 * [`card_template.svg`](./card_template.svg) — Master SVG card layout template.
