@@ -26,10 +26,10 @@ This repository includes a standalone **2-player vs. NPC tabletop prototype** in
 The core system uses the physical and mathematical layout of a standard **52-card poker deck** — **4 suits × 13 cards per suit** — plus **2 optional Myth-vs-Science Jokers**.
 
 ### The 4 Suits
-* **Dynamics** → **Diamonds (`♦`)** — Weather events, environmental changes, or natural disturbances that disrupt or refresh the ecosystem.
+* **Dynamics / Disturbances** → **Diamonds (`♦`)** — Cross-landscape weather events, climate shifts, and ecological disturbances that act across habitats, biomass, and wildlife.
 * **Foundations** → **Spades (`♠`)** — Habitats and biomes where resources live or grow, forming the ecological base of the landscape.
-* **Resources / Biomass** → **Clubs (`♣`)** — Plants, invertebrates, and prey biomass sustaining the ecosystem.
-* **Consumers** → **Hearts (`♥`)** — Living wildlife feeding across the food web.
+* **Resources / Biomass** → **Clubs (`♣`)** — Forage plants and **prey guilds / taxonomic families** (e.g., *Leporidae*, *Seed Mice / Heteromyidae*, *Ground Squirrels*, *Lizards*, *Insects*) sustaining the ecosystem.
+* **Consumers** → **Hearts (`♥`)** — **Individual wildlife species** (e.g., *Desert Cottontail*, *Black-tailed Jackrabbit*, *Merriam's Kangaroo Rat*, *Bobcat*) feeding across the food web.
 
 ### The 13 Cards Per Suit
 Numbers **2 through 10**, followed by **Jack (`J`)**, **Queen (`Q`)**, **King (`K`)**, and **Ace (`A`)**.
@@ -86,23 +86,27 @@ Card values do not represent a vertical ranking, power level, or hierarchy. A ca
 
 `Track: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A ]`
 
-Every card is based on reality: the documented scientific consensus on how the species, resources, habitats, and events of the ecosystem actually relate. Because the cards follow nature, real relationships land close together on the track. Related cards in neighboring suits share the same value ($n$) or sit one step apart ($n-1$ or $n+1$):
+The deck's design goal is to ground every card in reality — the documented scientific consensus on how the species, resources, habitats, and disturbances of the ecosystem actually relate — so real ecological dependencies land close together on the track:
 
-* What a **Consumer** (`♥`) eats sits within $\pm1$ of it among the **Resources** (`♣`).
-* Where that resource lives or grows sits within $\pm1$ of it among the **Foundations** (`♠`), the habitats and biomes.
+1. **The `±1` Ecosystem Dependency Chain (`♥ → ♣ → ♠`):** In the target architecture, related cards in adjacent ecosystem suits share the same value ($n$) or sit one step apart ($n-1$ or $n+1$):
+   * What an individual **Consumer species (`♥`)** eats is aimed within $\pm1$ of it among the **Resources (`♣`)**.
+   * Where that **Resource (`♣`)** lives or grows is aimed within $\pm1$ of it among the **Foundations (`♠`)**, the habitats and biomes.
+2. **Individual Species (`♥`) vs. Prey Families / Guilds (`♣`):** Consumers (`♥`) represent **individual species** (such as `3♥` Desert Cottontail and `4♥` Black-tailed Jackrabbit), whereas animal Resources (`♣`) intentionally represent **taxonomic families or prey guilds** (such as `K♣` *Leporidae*, `J♣` *Heteromyidae*, and `Q♣` *Ground Squirrels*). That lets the same animals appear individually as herbivores at low ranks and collectively as prey guilds for predators (`Q♥`, `K♥`, `A♥`) at high ranks.
+3. **Cross-Landscape Disturbances (`♠ ← ♦ → ♥` and `♣`):** Dynamics/Disturbances (`♦`) sit on the track near habitats where they commonly occur, **not** as strict $\pm1$-only locks. In real ecology—and especially under modern climate change (such as wildfire jumping from chaparral into Sonoran Desert scrub during Tonto National Forest's 2020 Bush Fire)—disturbances are cross-cutting and interchangeable across habitats, acting *into* Foundations (`♠`), Consumers (`♥`), and Resources (`♣`) across the whole basin.
+
+*(Note: Tonto Basin Alpha is an active work-in-progress dataset — not every game-valid $\pm1$ set is yet a verified ecological relationship. See [`SCIENTIFIC_AUDIT.md`](./SCIENTIFIC_AUDIT.md) for the full 52-card verification table and known Alpha exceptions such as `6♣`–`6♠` and `9♣`–`9♠`.)*
 
 ```text
-         ┌──► [ Dynamics (♦) ] ──┐
-         │                       ▼
-   [ Consumers (♥) ]          [ Foundations (♠) ]
-         ▲                       │
-         │                       ▼
-         └─── [ Resources (♣) ] ◄┘
+   [ Consumers (♥) ] ──eats──► [ Resources (♣) ] ──lives in──► [ Foundations (♠) ]
+  (individual species)        (forage/prey guilds)              (habitats & biomes)
+          ▲                           ▲                                  ▲
+          └─────────── [ Dynamics / Disturbances (♦) ] ──────────────────┘
+                 (cross-landscape forces acting across the whole chain)
 ```
 
-### The Suit-Neighbor Architecture
+### The Suit-Dependency Architecture
 
-The loop sequence is intentionally mapped so that adjacent suits reflect direct real-world ecological dependencies. When any card is examined alongside its neighboring suits on the track, the card facts transition logically between meteorology/disturbance, habitat ecology, botany/biomass, and wildlife biology.
+The dependency chain (`♥ → ♣ → ♠`) links individual wildlife species to the forage/prey guilds they consume and the habitats/biomes that sustain them, while **Dynamics (`♦`)** act across the entire chain as landscape-scale weather, climate, and disturbance forces.
 
 ### Examples and Evidence
 
@@ -129,7 +133,7 @@ Each card's facts come first, and its place on the track follows from them.
 ## Project Structure
 
 * [`play.html`](./play.html) — Standalone 2-player vs. NPC playable tabletop prototype.
-* [`SCIENTIFIC_AUDIT.md`](./SCIENTIFIC_AUDIT.md) — Full 52-card scientific audit across all four suit boundaries (`2` through `A`), data-integrity notes, and realignment recommendations.
+* [`SCIENTIFIC_AUDIT.md`](./SCIENTIFIC_AUDIT.md) — Full 52-card scientific audit across the `♥ → ♣ → ♠` dependency chain and cross-landscape `♦` disturbances (`2` through `A`), data-integrity notes, and realignment recommendations.
 * [`index.html`](./index.html) — Interactive SVG deck viewer & card downloader.
 * [`data/tonto_basin_alpha.json`](./data/tonto_basin_alpha.json) — 52-card Tonto Basin Alpha deck dataset.
 * [`card_template.svg`](./card_template.svg) — Master SVG card layout template.

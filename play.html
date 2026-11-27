@@ -155,7 +155,8 @@
   .card.small { width: 88px; height: 124px; }
   .card.mini { width: 68px; height: 98px; }
   .card.clickable { cursor: pointer; }
-  .card.clickable:hover { transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  .card.clickable:hover, .card.clickable:focus-visible { transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  .card.clickable:focus-visible, .card-slot[role="button"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .card.selected {
     transform: translateY(-10px); border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(224,159,62,0.55), 0 12px 22px rgba(0,0,0,0.55);
@@ -855,7 +856,6 @@ function startNewGame() {
 
   let market = [];
   let discards = [[], []];
-  const spentStorms = [];
 
   if (cfg.centerMode === "market4") {
     market = [deck.pop(), deck.pop(), deck.pop(), deck.pop()];
@@ -878,7 +878,7 @@ function startNewGame() {
     : [null, null];
 
   G = {
-    deck, market, discards, spentStorms,
+    deck, market, discards,
     nextDiscardPile: 0,
     lastDiscardedPile: -1,
     hands, reserve,
@@ -916,7 +916,7 @@ function startNewGame() {
 
 function drawFromDeck() {
   if (G.deck.length === 0) {
-    const pool = G.spentStorms.splice(0, G.spentStorms.length);
+    const pool = [];
     G.discards.forEach(pl => {
       if (pl.length > 1) {
         const buried = pl.splice(0, pl.length - 1);
@@ -925,7 +925,7 @@ function drawFromDeck() {
     });
     if (pool.length === 0) return null;
     G.deck = shuffle(pool);
-    addLog("Deck empty — buried Discards & Spent Storms reshuffled into a fresh Deck!", "sys");
+    addLog("Deck empty — buried Discards reshuffled into a fresh Deck!", "sys");
   }
   return G.deck.pop();
 }
@@ -946,7 +946,7 @@ function nextDiscardTargetIdx() {
   return G.nextDiscardPile;
 }
 
-function putToDiscard(card, isPlayedStorm = false) {
+function putToDiscard(card) {
   if (!card) return;
   if (is2DiscMode()) {
     const idx = nextDiscardTargetIdx();
@@ -1108,7 +1108,7 @@ function playerClickCard(card, fromReserve = false) {
     if (idx >= 0) {
       const [dc] = G.hands[0].splice(idx, 1);
       const pileIdx = nextDiscardTargetIdx();
-      putToDiscard(dc, false);
+      putToDiscard(dc);
       const pName = is2DiscMode() ? ` onto Discard ${pileIdx === 0 ? "A" : "B"}` : "";
       addLog(`You discarded ${cardShort(dc)}${pName}.`, "you");
       if (G.hands[0].length <= cfg.handLimit) endPlayerTurn();
@@ -1126,7 +1126,7 @@ function playerPlaceInSlot(slotIdx) {
   removeSelectedCard();
   const prev = G.active[0][slotIdx];
   if (prev) {
-    putToDiscard(prev, false);
+    putToDiscard(prev);
     G.overwrites++;
     addLog(`You played ${cardShort(card)}${fromDisc ? ` (straight from ${discName}!)` : ""} ON TOP OF ${cardShort(prev)}.`, "you");
   } else {
@@ -1160,9 +1160,9 @@ function playerDisruptTarget(slotIdx) {
   const tgt = G.active[1][slotIdx];
   if (!atk || !tgt || !canDisruptTarget(atk, tgt, cfg.dRule)) return;
   removeSelectedCard();
-  putToDiscard(atk, true);
+  putToDiscard(atk);
   G.active[1][slotIdx] = null;
-  putToDiscard(tgt, false);
+  putToDiscard(tgt);
   G.breaks++;
   addLog(`⚡ You played ${cardShort(atk)} to DISCARD NPC's ${cardShort(tgt)}!`, "you");
   setNpcStatus(`Disturbed! Your ${cardShort(atk)} discarded NPC's ${cardShort(tgt)}.`);
@@ -1174,7 +1174,7 @@ function playerRefreshSelected() {
   const card = getSelectedCard();
   if (!card || (!isDisturbance(card) && !isJoker(card))) return;
   removeSelectedCard();
-  putToDiscard(card, true);
+  putToDiscard(card);
   const drawn = [];
   for (let i = 0; i < 2; i++) {
     const c = drawFromDeck();
@@ -1311,8 +1311,8 @@ function npcStepPlay() {
       else hand.splice(hand.indexOf(hit.atk), 1);
       const tgt = oppSl[hit.idx];
       oppSl[hit.idx] = null;
-      putToDiscard(hit.atk, true);
-      putToDiscard(tgt, false);
+      putToDiscard(hit.atk);
+      putToDiscard(tgt);
       G.breaks++;
       const msg = `⚡ NPC played ${cardShort(hit.atk)} to DISCARD your ${cardShort(tgt)}!`;
       addLog(msg, "npc"); setNpcStatus(msg);
@@ -1327,7 +1327,7 @@ function npcStepPlay() {
         if (isBoardComplete(simulateSlotPlay(mySl, idx, c), cfg.setRule)) {
           hand.splice(hand.indexOf(c), 1);
           const prev = mySl[idx];
-          if (prev) { putToDiscard(prev, false); G.overwrites++; }
+          if (prev) { putToDiscard(prev); G.overwrites++; }
           mySl[idx] = c;
           const msg = prev ? `NPC played ${cardShort(c)} on top of ${cardShort(prev)} to COMPLETE!` : `NPC played ${cardShort(c)} to COMPLETE!`;
           addLog(msg, "npc"); setNpcStatus(msg);
@@ -1345,7 +1345,7 @@ function npcStepPlay() {
           if (isBoardComplete(simulateSlotPlay(mySl, idx, opt.c), cfg.setRule)) {
             G.discards[opt.pile].pop(); G.discardPlays++;
             const prev = mySl[idx];
-            if (prev) { putToDiscard(prev, false); G.overwrites++; }
+            if (prev) { putToDiscard(prev); G.overwrites++; }
             mySl[idx] = opt.c;
             const msg = `NPC played ${cardShort(opt.c)} straight from Discard ${opt.pile === 0 ? "A" : "B"} to COMPLETE!`;
             addLog(msg, "npc"); setNpcStatus(msg);
@@ -1366,7 +1366,7 @@ function npcStepPlay() {
           if (fromRes) G.reserve[1] = null;
           else hand.splice(hand.indexOf(wc), 1);
           const prev = mySl[idx];
-          if (prev) { putToDiscard(prev, false); G.overwrites++; }
+          if (prev) { putToDiscard(prev); G.overwrites++; }
           mySl[idx] = wc;
           const msg = `NPC played Wild ${cardShort(wc)} to COMPLETE its set!`;
           addLog(msg, "npc"); setNpcStatus(msg);
@@ -1392,8 +1392,8 @@ function npcStepPlay() {
       hand.splice(hand.indexOf(hit.dc), 1);
       const tgt = oppSl[hit.idx];
       oppSl[hit.idx] = null;
-      putToDiscard(hit.dc, true);
-      putToDiscard(tgt, false);
+      putToDiscard(hit.dc);
+      putToDiscard(tgt);
       G.breaks++;
       const msg = `⚡ NPC played ${cardShort(hit.dc)} to DISCARD your ${cardShort(tgt)}!`;
       addLog(msg, "npc"); setNpcStatus(msg);
@@ -1428,7 +1428,7 @@ function npcStepPlay() {
       if (best.src === "hand") hand.splice(hand.indexOf(best.c), 1);
       else { G.discards[best.pile].pop(); G.discardPlays++; }
       const prev = mySl[best.idx];
-      if (prev) { putToDiscard(prev, false); G.overwrites++; }
+      if (prev) { putToDiscard(prev); G.overwrites++; }
       mySl[best.idx] = best.c;
       const fromTxt = best.src === "disc" ? ` straight from Discard ${best.pile === 0 ? "A" : "B"}` : "";
       const msg = prev
@@ -1443,7 +1443,7 @@ function npcStepPlay() {
   if (!played && ds.length > 0) {
     const dc = ds[0];
     hand.splice(hand.indexOf(dc), 1);
-    putToDiscard(dc, true);
+    putToDiscard(dc);
     for (let i = 0; i < 2; i++) {
       const c = drawFromDeck();
       if (c) hand.push(c);
@@ -1493,7 +1493,7 @@ function npcStepDiscard() {
       dc = hand[Math.floor(Math.random() * hand.length)];
     }
     hand.splice(hand.indexOf(dc), 1);
-    putToDiscard(dc, false);
+    putToDiscard(dc);
     dropped.push(dc);
   }
   if (dropped.length) addLog(`NPC discarded ${dropped.map(cardShort).join(", ")}.`, "npc");
@@ -1553,7 +1553,18 @@ function createCardEl(card, opts = {}) {
   div.addEventListener("mouseenter", () => inspectCard(card));
   if (opts.onClick) {
     div.classList.add("clickable");
+    div.tabIndex = 0;
+    div.setAttribute("role", "button");
+    div.setAttribute("aria-label", cardShort(card) + (opts.badge ? ` — ${opts.badge.text}` : ""));
+    div.dataset.focusKey = opts.focusKey || card.id;
+    div.addEventListener("focus", () => inspectCard(card));
     div.addEventListener("click", opts.onClick);
+    div.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        opts.onClick(e);
+      }
+    });
   }
   return div;
 }
@@ -1613,7 +1624,19 @@ function renderCenter() {
     <div class="card-back-count">${G.deck.length}</div>
     <div class="card-back-sub">${canDraw ? "Click to Draw" : "Shared Deck"}</div>
   `;
-  if (canDraw) deckDiv.addEventListener("click", () => playerDrawDeck(1));
+  if (canDraw) {
+    deckDiv.tabIndex = 0;
+    deckDiv.setAttribute("role", "button");
+    deckDiv.setAttribute("aria-label", `Draw from Shared Deck (${G.deck.length} cards left)`);
+    deckDiv.dataset.focusKey = "shared-deck";
+    deckDiv.addEventListener("click", () => playerDrawDeck(1));
+    deckDiv.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        playerDrawDeck(1);
+      }
+    });
+  }
   deckCol.appendChild(deckDiv);
   row.appendChild(deckCol);
 
@@ -1718,6 +1741,7 @@ function renderCenter() {
 }
 
 function render() {
+  const prevFocusKey = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.focusKey : null;
   const tSets = targetSetsCount();
   const modeStr = [
     "2P",
@@ -1858,7 +1882,19 @@ function render() {
         <span class="slot-icon">${cfg.setRule === "wildlands_pm1" ? ["♠","♣","♥"][i] : (i+1)}</span>
         <span>${willComplete ? "★ COMPLETE!" : (canDropHere ? (isJoker(selCard) ? "Click: Wild" : "Click to Play") : "Open")}</span>
       `;
-      if (canDropHere) slot.addEventListener("click", () => playerPlaceInSlot(i));
+      if (canDropHere) {
+        slot.tabIndex = 0;
+        slot.setAttribute("role", "button");
+        slot.setAttribute("aria-label", `Play selected card in ${slotCaption(i)}`);
+        slot.dataset.focusKey = `you-slot-${i}`;
+        slot.addEventListener("click", () => playerPlaceInSlot(i));
+        slot.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            playerPlaceInSlot(i);
+          }
+        });
+      }
       col.appendChild(slot);
     }
     youActEl.appendChild(col);
@@ -1994,6 +2030,11 @@ function render() {
     d.textContent = `[R${item.round}] ${item.msg}`;
     logEl.appendChild(d);
   });
+
+  if (prevFocusKey) {
+    const nextEl = document.querySelector(`[data-focus-key="${prevFocusKey.replace(/"/g, '\\"')}"]`);
+    if (nextEl) nextEl.focus({ preventScroll: true });
+  }
 }
 
 // === UI WIRING ===
