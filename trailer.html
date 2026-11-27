@@ -1,0 +1,3103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WILDLANDS — The Living Deck (Procedural Motion Film)</title>
+<style>
+  :root {
+    --bg: #080b0e;
+    --panel: #11171b;
+    --border: #243038;
+    --gold: #e8b35a;
+    --gold-dim: #9e7432;
+    --sage: #5ca689;
+    --text: #eef2ee;
+    --muted: #8d9ea6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(circle at 50% 25%, #161d22 0%, #070a0d 72%);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+  .cinema-shell {
+    width: 100%;
+    max-width: 1240px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 4px 4px;
+  }
+  .brand-lockup {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .brand-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .brand-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .top-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pill-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill-btn:hover { background: rgba(232,179,90,0.16); border-color: var(--gold); color: #fff; }
+  .pill-btn.primary {
+    background: linear-gradient(135deg, #e8b35a, #c77b2e);
+    border-color: #f3c87a;
+    color: #161108;
+    font-weight: 800;
+  }
+  .pill-btn.primary:hover { filter: brightness(1.08); }
+  .pill-btn.recording {
+    background: linear-gradient(135deg, #d94136, #991f17);
+    border-color: #ff7e75;
+    color: #fff;
+    animation: recPulse 1.1s infinite;
+  }
+  @keyframes recPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217,65,54,0.6); }
+    50% { box-shadow: 0 0 0 8px rgba(217,65,54,0); }
+  }
+
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #040608;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2b353c;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.78), 0 0 0 1px rgba(232,179,90,0.12);
+  }
+  canvas#film {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+  }
+
+  /* CURTAIN OVERLAY */
+  .curtain {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 42%, rgba(36,28,20,0.88) 0%, rgba(6,9,12,0.96) 72%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    z-index: 10;
+    transition: opacity 0.65s ease, visibility 0.65s ease;
+    text-align: center;
+    padding: 24px;
+  }
+  .curtain.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .curtain-eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.9;
+  }
+  .curtain-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.2rem, 5.2vw, 4.1rem);
+    letter-spacing: 0.24em;
+    font-weight: 700;
+    background: linear-gradient(180deg, #fff6df 0%, #e8b35a 55%, #b56a25 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 40px rgba(232,179,90,0.22);
+    padding-left: 0.24em;
+  }
+  .curtain-desc {
+    max-width: 560px;
+    color: #c7d1d6;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .play-hero {
+    margin-top: 8px;
+    background: linear-gradient(135deg, #f0c06d 0%, #c97728 100%);
+    color: #161006;
+    border: 1px solid #ffe1a3;
+    border-radius: 999px;
+    padding: 15px 36px;
+    font-size: 1.02rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 34px rgba(232,179,90,0.38);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .play-hero:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 14px 44px rgba(232,179,90,0.55);
+    filter: brightness(1.06);
+  }
+  .play-hero:disabled { opacity: 0.55; cursor: wait; }
+  .load-bar-wrap {
+    width: 280px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .load-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #5ca689, #e8b35a);
+    transition: width 0.2s ease;
+  }
+  .load-status {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* CONTROLS */
+  .controls-bar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .time-readout {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    min-width: 96px;
+  }
+  .scrubber {
+    position: relative;
+    flex: 1;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .scrubber-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scrubber-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #5ca689, #e8b35a, #e06a3c);
+    border-radius: 999px;
+  }
+  .scrubber-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff5df;
+    border: 2px solid var(--gold);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(232,179,90,0.8);
+    pointer-events: none;
+  }
+  .acts-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .transport {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .act-chips {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .act-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    font-size: 0.72rem;
+    padding: 4px 9px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .act-chip:hover { color: #fff; border-color: rgba(232,179,90,0.45); }
+  .act-chip.active {
+    background: rgba(232,179,90,0.18);
+    border-color: var(--gold);
+    color: #ffe7b8;
+    font-weight: 700;
+  }
+  .status-toast {
+    font-size: 0.76rem;
+    color: #a9d9c4;
+    text-align: right;
+    min-height: 1em;
+  }
+</style>
+</head>
+<body>
+<div class="cinema-shell">
+  <div class="top-bar">
+    <div class="brand-lockup">
+      <div class="brand-title">WILDLANDS</div>
+      <div class="brand-sub">100% Code Procedural Motion Film · Live Web Audio Score &amp; VFX</div>
+    </div>
+    <div class="top-links">
+      <button id="btnRecord" class="pill-btn primary" title="Renders the entire 78s film with music &amp; SFX directly to a downloadable .webm video">⏺ Export Video (.webm)</button>
+      <a href="./play.html" class="pill-btn">🃏 Play 2P Game</a>
+      <button id="btnFull" class="pill-btn">⛶ Fullscreen</button>
+    </div>
+  </div>
+
+  <div class="stage-wrap" id="stageWrap">
+    <canvas id="film" width="1280" height="720"></canvas>
+    <div class="curtain" id="curtain">
+      <div class="curtain-eyebrow">TONTO BASIN · ARIZONA · ORIGINAL MOTION TRAILER</div>
+      <div class="curtain-title">WILDLANDS</div>
+      <div class="curtain-desc">
+        Every frame, desert skyline, lightning strike, 3D card animation, orchestral synth motif, canyon wind,
+        and thunderclap generated <strong>100% live in code</strong> — showcasing the real Tonto Basin card illustrations.
+      </div>
+      <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+      <div class="load-status" id="loadStatus">Preparing Tonto Basin SVG card artwork...</div>
+      <button class="play-hero" id="btnHeroPlay" disabled>▶ Watch Film With Sound</button>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="timeline-row">
+      <span class="time-readout" id="timeReadout">0:00 / 1:18</span>
+      <div class="scrubber" id="scrubber" title="Click or drag to jump to any moment">
+        <div class="scrubber-track"><div class="scrubber-fill" id="scrubFill"></div></div>
+        <div class="scrubber-thumb" id="scrubThumb"></div>
+      </div>
+    </div>
+    <div class="acts-row">
+      <div class="transport">
+        <button id="btnPlayPause" class="pill-btn">▶ Play</button>
+        <button id="btnRestart" class="pill-btn">↺ Replay</button>
+        <button id="btnMute" class="pill-btn">🔊 Sound On</button>
+      </div>
+      <div class="act-chips" id="actChips"></div>
+    </div>
+    <div class="status-toast" id="statusToast">Tip: Click Export Video (.webm) to record a shareable Kickstarter / social video with synchronized music &amp; SFX.</div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// 1. REAL WILDLANDS DECK DATA (EXTRACTED FROM data/tonto_basin_alpha.json)
+// ============================================================================
+const HERO_CARDS = {
+  "2S": {
+    "id": "2S",
+    "rank": "2",
+    "suit": "S",
+    "name": "Sonoran Desert Scrub",
+    "sub": "",
+    "img": "assets/svg/foundations_sonoran_desert_scrub.svg",
+    "fact": "Sonoran Desert Scrub mixes cacti, trees, shrubs, and flowers. Plants use different strategies to survive cycles of rain and drought. Some store water, while others rely on deep or shallow roots.",
+    "lines": [
+      "Sonoran Desert Scrub mixes cacti, trees,",
+      "shrubs, and flowers. Plants use different",
+      "strategies to survive cycles of rain and",
+      "drought. Some store water, while others"
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "2C": {
+    "id": "2C",
+    "rank": "2",
+    "suit": "C",
+    "name": "Desert Grass",
+    "sub": "plant biomass",
+    "img": "assets/svg/biomass_desert_grass.svg",
+    "fact": "Native grasses occur across Tonto's semidesert grasslands and other plant communities. Their growth varies with rainfall, soil, elevation, and season. Grasses help stabilize soil and provide food for many desert animals.",
+    "lines": [
+      "Native grasses occur across Tonto's",
+      "semidesert grasslands and other plant",
+      "communities. Their growth varies with",
+      "rainfall, soil, elevation, and season."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "2H": {
+    "id": "2H",
+    "rank": "2",
+    "suit": "H",
+    "name": "Kangaroo Rat",
+    "sub": "",
+    "img": "assets/svg/consumers_kangaroo_rat.svg",
+    "fact": "They can survive without drinking water. Moisture from the seeds they eat provides what they need, while their kidneys conserve water by producing highly concentrated urine.",
+    "lines": [
+      "They can survive without drinking water.",
+      "Moisture from the seeds they eat provides",
+      "what they need, while their kidneys conserve",
+      "water by producing highly concentrated urine."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "3H": {
+    "id": "3H",
+    "rank": "3",
+    "suit": "H",
+    "name": "Cottontail",
+    "sub": "Sylvilagus audubonii",
+    "img": "assets/svg/consumers_desert_cottontail.svg",
+    "fact": "Most of their water comes from the plants they eat, and they rarely drink free water. They can eat grasses, weeds, twigs, and even cactus when other foods are scarce.",
+    "lines": [
+      "Most of their water comes from the plants",
+      "they eat, and they rarely drink free water.",
+      "They can eat grasses, weeds, twigs, and even",
+      "cactus when other foods are scarce."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "4H": {
+    "id": "4H",
+    "rank": "4",
+    "suit": "H",
+    "name": "Jackrabbit",
+    "sub": "",
+    "img": "assets/svg/consumers_black_tailed_jackrabbit.svg",
+    "fact": "They live in open areas with little cover and may travel several miles at night to find food before returning to their home range during the day.",
+    "lines": [
+      "They live in open areas with little cover and",
+      "may travel several miles at night to find",
+      "food before returning to their home range",
+      "during the day."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "5C": {
+    "id": "5C",
+    "rank": "5",
+    "suit": "C",
+    "name": "Prickly Pear",
+    "sub": "plant biomass",
+    "img": "assets/svg/biomass_prickly_pear_tuna.svg",
+    "fact": "Prickly pear pads are modified branches that store water and perform photosynthesis. Flowers develop into red or purple fruits called tunas. Both pads and fruit can provide food and moisture in the desert. The fruit ripens during the warmer season.",
+    "lines": [
+      "Prickly pear pads are modified branches",
+      "that store water and perform photosynthesis.",
+      "Flowers develop into red or purple fruits",
+      "called tunas. Both pads and fruit can"
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "5H": {
+    "id": "5H",
+    "rank": "5",
+    "suit": "H",
+    "name": "Javelina",
+    "sub": "",
+    "img": "assets/svg/consumers_javelina.svg",
+    "fact": "They look like pigs, but they are not pigs or wild boars. They belong to a different family and are smaller, with different teeth and no large tusks.",
+    "lines": [
+      "They look like pigs, but they are not pigs or",
+      "wild boars. They belong to a different family",
+      "and are smaller, with different teeth and no",
+      "large tusks."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "4D": {
+    "id": "4D",
+    "rank": "4",
+    "suit": "D",
+    "name": "Monsoon",
+    "sub": "Ecosystem refresh",
+    "img": "assets/svg/disturbances_monsoon_storm.svg",
+    "fact": "The Arizona monsoon is part of a seasonal shift in wind patterns that brings moisture into the Southwest. In the Tonto Basin, monsoon storms provide a major portion of annual rainfall.",
+    "lines": [
+      "The Arizona monsoon is part of a seasonal",
+      "shift in wind patterns that brings moisture",
+      "into the Southwest. In the Tonto Basin,",
+      "monsoon storms provide a major portion of"
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "6D": {
+    "id": "6D",
+    "rank": "6",
+    "suit": "D",
+    "name": "Wild Fires",
+    "sub": "Ecosystem reset",
+    "img": "assets/svg/disturbances_brush_fire.svg",
+    "fact": "The Sonoran Desert did not evolve with frequent large wildfires. Native cacti, shrubs, and trees can be vulnerable when fires burn through desert vegetation.",
+    "lines": [
+      "The Sonoran Desert did not evolve with",
+      "frequent large wildfires. Native cacti,",
+      "shrubs, and trees can be vulnerable when",
+      "fires burn through desert vegetation."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "KD": {
+    "id": "KD",
+    "rank": "K",
+    "suit": "D",
+    "name": "Dust Storm",
+    "sub": "Ecosystem refresh",
+    "img": "assets/svg/disturbances_dust_storm.svg",
+    "fact": "Arizona dust storms are especially common during the summer monsoon season. Strong outflow winds from thunderstorms can lift loose soil and create walls of dust.",
+    "lines": [
+      "Arizona dust storms are especially common",
+      "during the summer monsoon season. Strong",
+      "outflow winds from thunderstorms can lift",
+      "loose soil and create walls of dust."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "8H": {
+    "id": "8H",
+    "rank": "8",
+    "suit": "H",
+    "name": "Gila Monster",
+    "sub": "",
+    "img": "assets/svg/consumers_gila_monster.svg",
+    "fact": "They are the largest lizard native to the United States and one of only a few venomous lizards in the world. They spend most of their time underground.",
+    "lines": [
+      "They are the largest lizard native to the",
+      "United States and one of only a few venomous",
+      "lizards in the world. They spend most of",
+      "their time underground."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "10H": {
+    "id": "10H",
+    "rank": "10",
+    "suit": "H",
+    "name": "Roadrunner",
+    "sub": "",
+    "img": "assets/svg/consumers_roadrunner.svg",
+    "fact": "They are built for life on the ground, with long legs and a long tail that helps them balance while running. They can reach speeds of about 20 miles per hour.",
+    "lines": [
+      "They are built for life on the ground, with",
+      "long legs and a long tail that helps them",
+      "balance while running. They can reach speeds",
+      "of about 20 miles per hour."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "QS": {
+    "id": "QS",
+    "rank": "Q",
+    "suit": "S",
+    "name": "Saguaro Cactus Forest",
+    "sub": "Low Desert Basins",
+    "img": "assets/svg/foundations_saguaro.svg",
+    "fact": "Saguaro forests are found only in the Sonoran Desert. Their range is limited by elevation and winter freezing temperatures, so they grow more commonly on warm, sun-facing slopes.",
+    "lines": [
+      "Saguaro forests are found only in the Sonoran",
+      "Desert. Their range is limited by elevation",
+      "and winter freezing temperatures, so they",
+      "grow more commonly on warm, sun-facing"
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "QH": {
+    "id": "QH",
+    "rank": "Q",
+    "suit": "H",
+    "name": "Bobcat",
+    "sub": "Lynx rufus",
+    "img": "assets/svg/consumers_bobcat.svg",
+    "fact": "They are the only wild cats in Arizona with naturally short tails. They are common across the state but are seldom seen because they are mostly nocturnal.",
+    "lines": [
+      "They are the only wild cats in Arizona with",
+      "naturally short tails. They are common across",
+      "the state but are seldom seen because they",
+      "are mostly nocturnal."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "KC": {
+    "id": "KC",
+    "rank": "K",
+    "suit": "C",
+    "name": "Leporidae",
+    "sub": "Mammal Biomass",
+    "img": "assets/svg/biomass_leporidae.svg",
+    "fact": "Leporidae is the family containing rabbits and hares. Tonto's cottontails and jackrabbits feed mainly on green vegetation. They are common herbivores and important prey for predators in the Sonoran Desert.",
+    "lines": [
+      "Leporidae is the family containing",
+      "rabbits and hares. Tonto's cottontails",
+      "and jackrabbits feed mainly on green",
+      "vegetation. They are common herbivores"
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "KH": {
+    "id": "KH",
+    "rank": "K",
+    "suit": "H",
+    "name": "Coyote",
+    "sub": "Canis latrans",
+    "img": "assets/svg/consumers_desert_coyote.svg",
+    "fact": "They can live in almost any habitat, from cactus forests to cities. Their diet is equally varied, including mammals, birds, fruit, carrion, and even saguaro fruit.",
+    "lines": [
+      "They can live in almost any habitat, from",
+      "cactus forests to cities. Their diet is",
+      "equally varied, including mammals, birds,",
+      "fruit, carrion, and even saguaro fruit."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  },
+  "AH": {
+    "id": "AH",
+    "rank": "A",
+    "suit": "H",
+    "name": "Desert Bald Eagle",
+    "sub": "",
+    "img": "assets/svg/consumers_bald_eagle.svg",
+    "fact": "They are found near lakes and rivers in Arizona, where they feed mainly on fish and waterfowl. They also eat carrion when it is available.",
+    "lines": [
+      "They are found near lakes and rivers in",
+      "Arizona, where they feed mainly on fish and",
+      "waterfowl. They also eat carrion when it is",
+      "available."
+    ],
+    "rarity": "C",
+    "year": "2026",
+    "exp": "Tonto Alpha",
+    "artist": "Tearran Studios"
+  }
+};
+
+// Custom Myth-vs-Real-Science Joker SVGs (inline, zero external deps!)
+const JACKALOPE_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+  <defs>
+    <linearGradient id="jg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#28163d"/><stop offset="55%" stop-color="#4e2670"/><stop offset="100%" stop-color="#b85b2c"/></linearGradient>
+    <radialGradient id="jm" cx="50%" cy="42%" r="48%"><stop offset="0%" stop-color="#ffe7a3" stop-opacity="0.95"/><stop offset="65%" stop-color="#e89a45" stop-opacity="0.35"/><stop offset="100%" stop-color="#28163d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="320" height="200" fill="url(#jg)"/>
+  <circle cx="160" cy="88" r="76" fill="url(#jm)"/>
+  <path d="M0 164 Q85 142 160 156 T320 150 L320 200 L0 200 Z" fill="#180e24"/>
+  <!-- Antlers -->
+  <path d="M138 78 C126 52 108 38 92 26 M116 46 C118 32 122 24 126 16 M126 60 C112 58 102 56 90 50" stroke="#f5d99b" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+  <path d="M182 78 C194 52 212 38 228 26 M204 46 C202 32 198 24 194 16 M194 60 C208 58 218 56 230 50" stroke="#f5d99b" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+  <!-- Long Desert Rabbit Ears -->
+  <ellipse cx="144" cy="56" rx="9" ry="30" transform="rotate(-14 144 56)" fill="#d6b48c" stroke="#221230" stroke-width="2.5"/>
+  <ellipse cx="144" cy="56" rx="4.5" ry="20" transform="rotate(-14 144 56)" fill="#e89885"/>
+  <ellipse cx="176" cy="56" rx="9" ry="30" transform="rotate(14 176 56)" fill="#d6b48c" stroke="#221230" stroke-width="2.5"/>
+  <ellipse cx="176" cy="56" rx="4.5" ry="20" transform="rotate(14 176 56)" fill="#e89885"/>
+  <!-- Rabbit Head & Shoulders -->
+  <path d="M116 176 C118 134 134 114 160 114 C186 114 202 134 204 176 Z" fill="#c79e72" stroke="#221230" stroke-width="3"/>
+  <ellipse cx="160" cy="100" rx="34" ry="28" fill="#dfb98d" stroke="#221230" stroke-width="3"/>
+  <circle cx="147" cy="96" r="4.5" fill="#1b0e26"/><circle cx="148.5" cy="94.5" r="1.5" fill="#fff"/>
+  <circle cx="173" cy="96" r="4.5" fill="#1b0e26"/><circle cx="174.5" cy="94.5" r="1.5" fill="#fff"/>
+  <path d="M155 107 L165 107 L160 113 Z" fill="#a84852"/>
+  <path d="M151 115 Q160 120 169 115" stroke="#3b1f2b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <!-- Stars -->
+  <circle cx="48" cy="40" r="2.2" fill="#ffe7a3"/><circle cx="272" cy="48" r="2.5" fill="#ffe7a3"/><circle cx="66" cy="112" r="1.8" fill="#f5d99b"/><circle cx="256" cy="118" r="2" fill="#f5d99b"/>
+</svg>`);
+
+const MIRAGE_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#173a5e"/><stop offset="48%" stop-color="#58a6c4"/><stop offset="68%" stop-color="#f5c77e"/><stop offset="100%" stop-color="#b56534"/></linearGradient>
+    <linearGradient id="mw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9fe7ff" stop-opacity="0.92"/><stop offset="100%" stop-color="#2a79a8" stop-opacity="0.2"/></linearGradient>
+  </defs>
+  <rect width="320" height="200" fill="url(#mg)"/>
+  <circle cx="160" cy="68" r="32" fill="#fff4cf" opacity="0.92"/>
+  <path d="M0 118 L52 92 L106 114 L168 86 L224 110 L276 90 L320 112 L320 132 L0 132 Z" fill="#703d29"/>
+  <!-- Shimmering Phantom Lake -->
+  <ellipse cx="160" cy="146" rx="126" ry="18" fill="url(#mw)"/>
+  <path d="M52 146 Q106 138 160 146 T268 146" stroke="#ffffff" stroke-width="2.2" fill="none" opacity="0.75"/>
+  <path d="M84 156 Q160 149 236 156" stroke="#dff8ff" stroke-width="1.8" fill="none" opacity="0.65"/>
+  <!-- Bent Optical Light Ray Diagram -->
+  <path d="M160 68 C160 118 118 142 36 132" stroke="#fff7d6" stroke-width="2" stroke-dasharray="5 4" fill="none" opacity="0.8"/>
+  <path d="M160 68 C160 118 202 142 284 132" stroke="#fff7d6" stroke-width="2" stroke-dasharray="5 4" fill="none" opacity="0.8"/>
+</svg>`);
+
+HERO_CARDS["J1"] = {
+  id: "J1", rank: "★", suit: "J", name: "Jackalope",
+  sub: "Folklore · Shope Papillomavirus (1933)",
+  img: JACKALOPE_SVG,
+  fact: "Wild rabbits infected with CRPV grow horn-like keratin tumors — the first DNA virus proven to cause cancer in mammals.",
+  lines: ["Wild rabbits with Shope papillomavirus", "(CRPV, 1933) grow horn-like keratin.", "First DNA virus proven to cause cancer", "in mammals — launching HPV research."],
+  rarity: "★", year: "1933", exp: "Myth vs. Science Joker", artist: "Wildlands"
+};
+HERO_CARDS["J2"] = {
+  id: "J2", rank: "★", suit: "J", name: "Desert Mirage",
+  sub: "Folklore · Atmospheric Refraction",
+  img: MIRAGE_SVG,
+  fact: "Superheated desert air bends cool sky light upward into shimmering phantom lakes across hot Sonoran basins.",
+  lines: ["Inferior optical mirage: steep heat", "gradients bend sky light upward into", "shimmering phantom desert lakes.", "Pure physics behind desert legend."],
+  rarity: "★", year: "2026", exp: "Myth vs. Science Joker", artist: "Wildlands"
+};
+
+const SUIT_META = {
+  S: { sym: "♠", label: "FOUNDATION", color: "#2d5f5d", glow: "#58c4b8", banner: "#253e3c" },
+  C: { sym: "♣", label: "RESOURCE",   color: "#2f6e3f", glow: "#6bd47f", banner: "#263f2c" },
+  H: { sym: "♥", label: "CONSUMER",   color: "#a8382c", glow: "#f2735e", banner: "#4a2422" },
+  D: { sym: "♦", label: "DYNAMICS",   color: "#c26318", glow: "#ffad47", banner: "#4a2f16" },
+  J: { sym: "★", label: "TRUE WILD",  color: "#7638ad", glow: "#cc8cff", banner: "#351e4d" }
+};
+
+// ============================================================================
+// 2. FILM TIMELINE & ACT DEFINITIONS (78 SECONDS TOTAL)
+// ============================================================================
+const DURATION = 78.0;
+const ACTS = [
+  { id: 0, start: 0.0,  end: 11.5, name: "I. Dawn" },
+  { id: 1, start: 11.5, end: 24.5, name: "II. 52 Cards" },
+  { id: 2, start: 24.5, end: 37.5, name: "III. Food Web" },
+  { id: 3, start: 37.5, end: 49.5, name: "IV. Storm" },
+  { id: 4, start: 49.5, end: 59.5, name: "V. Myth & Science" },
+  { id: 5, start: 59.5, end: 70.5, name: "VI. Apex" },
+  { id: 6, start: 70.5, end: 78.0, name: "VII. Finale" },
+];
+
+// ============================================================================
+// 3. OFFSCREEN CARD TEXTURE BAKERY (AUTHENTICAL card_template.svg STYLING!)
+// ============================================================================
+const CARD_TEX = {}; // id -> Offscreen Canvas (340 x 476)
+const RAW_IMGS = {};
+
+function wrapText(ctx, text, maxW, maxLines) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let cur = "";
+  for (const w of words) {
+    const next = cur ? cur + " " + w : w;
+    if (ctx.measureText(next).width <= maxW) cur = next;
+    else {
+      if (cur) lines.push(cur);
+      cur = w;
+      if (lines.length >= maxLines) break;
+    }
+  }
+  if (cur && lines.length < maxLines) lines.push(cur);
+  return lines;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function bakeCardTexture(card, img) {
+  const W = 340, H = 476;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  const sm = SUIT_META[card.suit];
+
+  // Outer black casino card border (matching card_template.svg)
+  roundRect(g, 0, 0, W, H, 20);
+  g.fillStyle = "#101312";
+  g.fill();
+
+  // Warm archival linen card interior
+  roundRect(g, 11, 11, W - 22, H - 22, 14);
+  const paper = g.createLinearGradient(0, 11, W, H - 11);
+  paper.addColorStop(0, "#fbf8f1");
+  paper.addColorStop(0.5, "#f4ede0");
+  paper.addColorStop(1, "#ebe2cf");
+  g.fillStyle = paper;
+  g.fill();
+
+  // Subtle linen cross-hatch texture
+  g.save();
+  roundRect(g, 11, 11, W - 22, H - 22, 14);
+  g.clip();
+  g.strokeStyle = "rgba(110,92,66,0.045)";
+  g.lineWidth = 1;
+  for (let i = 0; i < W; i += 6) {
+    g.beginPath(); g.moveTo(i, 0); g.lineTo(i, H); g.stroke();
+  }
+  for (let j = 0; j < H; j += 6) {
+    g.beginPath(); g.moveTo(0, j); g.lineTo(W, j); g.stroke();
+  }
+  g.restore();
+
+  // Inner crisp dark border line
+  roundRect(g, 11, 11, W - 22, H - 22, 14);
+  g.strokeStyle = "#1c221e";
+  g.lineWidth = 3;
+  g.stroke();
+
+  // Top-right deep forest / suit header banner (card_template.svg style!)
+  roundRect(g, 82, 22, 236, 56, 8);
+  g.fillStyle = sm.banner;
+  g.fill();
+  g.strokeStyle = "#111614";
+  g.lineWidth = 2.5;
+  g.stroke();
+
+  // Card Title + Secondary Name in header
+  g.fillStyle = "#ffffff";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  const titleFontSize = card.name.length > 20 ? 15.5 : (card.name.length > 15 ? 17.5 : 19.5);
+  g.font = `700 ${titleFontSize}px Georgia, "Times New Roman", serif`;
+  g.fillText(card.name, 200, 42);
+  g.fillStyle = "#d9e3db";
+  g.font = `italic 11.5px Georgia, "Times New Roman", serif`;
+  const subTxt = card.sub.length > 34 ? card.sub.slice(0, 33) + "…" : card.sub;
+  g.fillText(subTxt || sm.label, 200, 62);
+
+  // Top-left white Rank + Suit corner plate (card_template.svg style!)
+  roundRect(g, 20, 22, 58, 96, 8);
+  g.fillStyle = "#ffffff";
+  g.fill();
+  g.strokeStyle = "#111614";
+  g.lineWidth = 2.5;
+  g.stroke();
+
+  g.fillStyle = sm.color;
+  g.font = `800 32px Georgia, "Times New Roman", serif`;
+  g.fillText(card.rank, 49, 52);
+  g.font = `700 30px "Segoe UI Symbol", Georgia, serif`;
+  g.fillText(sm.sym, 49, 92);
+
+  // Panoramic Illustration Window (sandstone matted frame!)
+  const ax = 22, ay = 86, aw = 296, ah = 212;
+  g.save();
+  roundRect(g, ax, ay, aw, ah, 6);
+  g.fillStyle = "#d6cec0";
+  g.fill();
+  g.clip();
+  if (img && img.naturalWidth > 0) {
+    // Aspect-preserving cover-fit centered nicely in the art window
+    const ir = img.naturalWidth / img.naturalHeight;
+    const ar = aw / ah;
+    let dw = aw, dh = ah, dx = ax, dy = ay;
+    if (ir > ar) {
+      dh = ah; dw = ah * ir; dx = ax - (dw - aw) / 2;
+    } else {
+      dw = aw; dh = aw / ir; dy = ay - (dh - ah) / 2;
+    }
+    g.drawImage(img, dx, dy, dw, dh);
+  } else {
+    const fg = g.createLinearGradient(ax, ay, ax + aw, ay + ah);
+    fg.addColorStop(0, sm.banner); fg.addColorStop(1, sm.color);
+    g.fillStyle = fg;
+    g.fillRect(ax, ay, aw, ah);
+    g.fillStyle = "rgba(255,255,255,0.22)";
+    g.font = "800 96px Georgia, serif";
+    g.fillText(sm.sym, ax + aw / 2, ay + ah / 2 + 8);
+  }
+  // Subtle warm vignette on artwork
+  const vig = g.createRadialGradient(ax + aw/2, ay + ah/2, aw*0.25, ax + aw/2, ay + ah/2, aw*0.65);
+  vig.addColorStop(0, "rgba(0,0,0,0)");
+  vig.addColorStop(1, "rgba(18,14,10,0.28)");
+  g.fillStyle = vig;
+  g.fillRect(ax, ay, aw, ah);
+  g.restore();
+
+  // Art frame bevel border + re-stamp top-left plate on top so it overlaps like card_template.svg!
+  roundRect(g, ax, ay, aw, ah, 6);
+  g.strokeStyle = "#7a6856";
+  g.lineWidth = 3;
+  g.stroke();
+
+  roundRect(g, 20, 22, 58, 96, 8);
+  g.fillStyle = "#ffffff";
+  g.fill();
+  g.strokeStyle = "#111614";
+  g.lineWidth = 2.5;
+  g.stroke();
+  g.fillStyle = sm.color;
+  g.textAlign = "center";
+  g.font = `800 32px Georgia, "Times New Roman", serif`;
+  g.fillText(card.rank, 49, 52);
+  g.font = `700 30px "Segoe UI Symbol", Georgia, serif`;
+  g.fillText(sm.sym, 49, 92);
+
+  // Suit Tag Pill below art
+  roundRect(g, 22, 306, 112, 20, 99);
+  g.fillStyle = sm.color;
+  g.fill();
+  g.fillStyle = "#fff";
+  g.font = `800 10px "Segoe UI", sans-serif`;
+  g.textAlign = "center";
+  g.fillText(`${sm.sym} ${sm.label}`, 78, 316.5);
+
+  // Scientific Field Fact Lines (monospace archival print style)
+  g.fillStyle = "#1e2420";
+  g.textAlign = "left";
+  g.font = `600 11.5px ui-monospace, Consolas, monospace`;
+  const factLines = wrapText(g, card.fact || card.lines.join(" "), 292, 4);
+  factLines.forEach((ln, idx) => {
+    g.fillText(ln, 24, 344 + idx * 17);
+  });
+
+  // Footer Bar (card_template.svg dark forest bottom bar + sandstone rarity badge)
+  roundRect(g, 22, 418, 226, 36, 7);
+  g.fillStyle = "#2d3a2e";
+  g.fill();
+  g.strokeStyle = "#111614";
+  g.lineWidth = 2;
+  g.stroke();
+  g.fillStyle = "#e8efe9";
+  g.font = `700 10px ui-monospace, Consolas, monospace`;
+  g.fillText(`Expansion: ${card.exp}`, 32, 431);
+  g.fillStyle = "#a8bda9";
+  g.font = `600 9.5px ui-monospace, Consolas, monospace`;
+  g.fillText(`Wildlands · Tonto Basin`, 32, 445);
+
+  roundRect(g, 256, 412, 62, 42, 7);
+  g.fillStyle = "#d0c9bc";
+  g.fill();
+  g.strokeStyle = "#111614";
+  g.lineWidth = 2;
+  g.stroke();
+  g.fillStyle = "#2d3a2e";
+  g.textAlign = "center";
+  g.font = `800 19px Georgia, serif`;
+  g.fillText(card.rarity || "C", 287, 428);
+  g.font = `700 9px ui-monospace, Consolas, monospace`;
+  g.fillText(card.year || "2026", 287, 446);
+
+  return c;
+}
+
+// Bake a gorgeous luxury card back too!
+function bakeCardBack() {
+  const W = 340, H = 476;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  roundRect(g, 0, 0, W, H, 20);
+  g.fillStyle = "#0e1513";
+  g.fill();
+  roundRect(g, 12, 12, W - 24, H - 24, 14);
+  const bg = g.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, "#192d27"); bg.addColorStop(0.5, "#111e1b"); bg.addColorStop(1, "#241913");
+  g.fillStyle = bg;
+  g.fill();
+  roundRect(g, 20, 20, W - 40, H - 40, 10);
+  g.strokeStyle = "#d8a452";
+  g.lineWidth = 2.5;
+  g.stroke();
+  // Ornate geometric desert compass
+  g.save();
+  g.translate(W/2, H/2);
+  g.strokeStyle = "rgba(232,179,90,0.45)";
+  g.lineWidth = 1.6;
+  for (let i = 0; i < 8; i++) {
+    g.rotate(Math.PI / 4);
+    g.beginPath(); g.moveTo(0, -110); g.lineTo(18, -32); g.lineTo(0, 0); g.stroke();
+  }
+  g.beginPath(); g.arc(0, 0, 68, 0, Math.PI * 2); g.stroke();
+  g.beginPath(); g.arc(0, 0, 96, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = "#e8b35a";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.font = `700 26px Georgia, serif`;
+  g.fillText("WILDLANDS", 0, -4);
+  g.font = `700 11px ui-monospace, monospace`;
+  g.fillStyle = "#9ec4b2";
+  g.fillText("♠  ♣  ♥  ♦", 0, 28);
+  g.restore();
+  return c;
+}
+const CARD_BACK_TEX = bakeCardBack();
+
+async function preloadAllArtwork() {
+  const keys = Object.keys(HERO_CARDS);
+  const loadBar = document.getElementById("loadBar");
+  const loadStatus = document.getElementById("loadStatus");
+  let done = 0;
+
+  await Promise.all(keys.map(k => new Promise(resolve => {
+    const card = HERO_CARDS[k];
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    const finish = (ok) => {
+      RAW_IMGS[k] = ok ? img : null;
+      CARD_TEX[k] = bakeCardTexture(card, ok ? img : null);
+      done++;
+      const pct = Math.round((done / keys.length) * 100);
+      loadBar.style.width = pct + "%";
+      loadStatus.textContent = `Baking Wildlands artwork textures: ${done} / ${keys.length} cards (${pct}%)`;
+      resolve();
+    };
+    img.onload = () => finish(true);
+    img.onerror = () => finish(false);
+    img.src = card.img;
+  })));
+
+  loadStatus.textContent = `Ready · All ${keys.length} Wildlands cards baked at 60 FPS HD`;
+  document.getElementById("btnHeroPlay").disabled = false;
+}
+
+// ============================================================================
+// 4. PROCEDURAL WEB AUDIO ENGINE (ORCHESTRAL SCORE + DESERT REVERB + SFX!)
+// ============================================================================
+class WildlandsAudio {
+  constructor() {
+    this.ctx = null;
+    this.master = null;
+    this.musicBus = null;
+    this.sfxBus = null;
+    this.reverb = null;
+    this.streamDest = null;
+    this.noiseBuf = null;
+    this.muted = false;
+    this.windGain = null;
+    this.windFilter = null;
+    this.droneNodes = [];
+    this.lastStep = -1;
+    this.firedCues = new Set();
+  }
+
+  init() {
+    if (this.ctx) {
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      return;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AC();
+
+    // Master Limiter / Compressor so cinematic peaks stay warm & punchy
+    const comp = this.ctx.createDynamicsCompressor();
+    comp.threshold.value = -14;
+    comp.knee.value = 18;
+    comp.ratio.value = 4;
+    comp.attack.value = 0.008;
+    comp.release.value = 0.22;
+
+    this.master = this.ctx.createGain();
+    this.master.gain.value = 0.9;
+    this.musicBus = this.ctx.createGain();
+    this.musicBus.gain.value = 0.72;
+    this.sfxBus = this.ctx.createGain();
+    this.sfxBus.gain.value = 0.92;
+
+    // Procedural Canyon Reverb Impulse Response (2.4s warm desert space)
+    this.reverb = this.ctx.createConvolver();
+    const sr = this.ctx.sampleRate;
+    const irLen = Math.floor(sr * 2.4);
+    const ir = this.ctx.createBuffer(2, irLen, sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = ir.getChannelData(ch);
+      let lp = 0;
+      for (let i = 0; i < irLen; i++) {
+        const env = Math.pow(1 - i / irLen, 2.6);
+        const w = (Math.random() * 2 - 1) * env;
+        lp = lp * 0.78 + w * 0.22;
+        data[i] = lp * 0.7;
+      }
+    }
+    this.reverb.buffer = ir;
+    const wetGain = this.ctx.createGain();
+    wetGain.gain.value = 0.36;
+
+    // Shared 3-second noise buffer for wind, thunder, card snaps, percussion
+    this.noiseBuf = this.ctx.createBuffer(1, sr * 3, sr);
+    const nd = this.noiseBuf.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+
+    this.musicBus.connect(comp);
+    this.musicBus.connect(this.reverb);
+    this.sfxBus.connect(comp);
+    this.sfxBus.connect(this.reverb);
+    this.reverb.connect(wetGain);
+    wetGain.connect(comp);
+    comp.connect(this.master);
+    this.master.connect(this.ctx.destination);
+
+    // MediaStreamDestination for 1-click Video+Audio .webm recording!
+    this.streamDest = this.ctx.createMediaStreamDestination();
+    this.master.connect(this.streamDest);
+
+    this._startAmbientBed();
+  }
+
+  _startAmbientBed() {
+    // Continuous sculpted desert wind (modulated dynamically per Act)
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.noiseBuf;
+    src.loop = true;
+    const flt = this.ctx.createBiquadFilter();
+    flt.type = "bandpass";
+    flt.frequency.value = 380;
+    flt.Q.value = 2.8;
+    const g = this.ctx.createGain();
+    g.gain.value = 0.0001;
+    src.connect(flt);
+    flt.connect(g);
+    g.connect(this.sfxBus);
+    src.start();
+    this.windGain = g;
+    this.windFilter = flt;
+  }
+
+  setMuted(m) {
+    this.muted = m;
+    if (this.master && this.ctx) {
+      this.master.gain.setTargetAtTime(m ? 0.0 : 0.9, this.ctx.currentTime, 0.04);
+    }
+  }
+
+  resetTimeline(t) {
+    this.lastStep = Math.floor(t / (60 / 108 / 2)) - 1;
+    this.firedCues.clear();
+    // Mark cues earlier than t as already fired so scrubbing doesn't replay old hits
+    for (const cue of SFX_CUES) {
+      if (cue.t < t - 0.08) this.firedCues.add(cue.id);
+    }
+  }
+
+  silence() {
+    if (!this.ctx || !this.windGain) return;
+    this.windGain.gain.setTargetAtTime(0.0001, this.ctx.currentTime, 0.08);
+  }
+
+  // Convert MIDI note number to Hz
+  m2f(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+  // Warm bowed string / desert pad note
+  playPad(midi, dur, vol = 0.14, bright = 1400) {
+    const now = this.ctx.currentTime;
+    const freq = this.m2f(midi);
+    [-6, 6].forEach(det => {
+      const o = this.ctx.createOscillator();
+      o.type = "sawtooth";
+      o.frequency.value = freq;
+      o.detune.value = det;
+      const f = this.ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.setValueAtTime(bright * 0.5, now);
+      f.frequency.linearRampToValueAtTime(bright, now + dur * 0.35);
+      f.frequency.exponentialRampToValueAtTime(320, now + dur);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(vol * 0.5, now + Math.min(0.45, dur * 0.3));
+      g.gain.setValueAtTime(vol * 0.45, now + dur * 0.72);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      o.connect(f); f.connect(g); g.connect(this.musicBus);
+      o.start(now); o.stop(now + dur + 0.05);
+    });
+  }
+
+  // Native-style breathy desert wooden flute
+  playFlute(midi, dur, vol = 0.16) {
+    const now = this.ctx.currentTime;
+    const freq = this.m2f(midi);
+    const o = this.ctx.createOscillator();
+    o.type = "triangle";
+    o.frequency.setValueAtTime(freq * 0.985, now);
+    o.frequency.exponentialRampToValueAtTime(freq, now + 0.09);
+    // Subtle vibrato
+    const lfo = this.ctx.createOscillator();
+    const lfoG = this.ctx.createGain();
+    lfo.frequency.value = 5.2; lfoG.gain.value = 3.2;
+    lfo.connect(lfoG); lfoG.connect(o.frequency);
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(vol, now + 0.12);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+    // Soft breath air
+    const n = this.ctx.createBufferSource();
+    n.buffer = this.noiseBuf;
+    const nf = this.ctx.createBiquadFilter();
+    nf.type = "bandpass"; nf.frequency.value = freq * 2; nf.Q.value = 8;
+    const ng = this.ctx.createGain();
+    ng.gain.setValueAtTime(0.0001, now);
+    ng.gain.linearRampToValueAtTime(vol * 0.18, now + 0.08);
+    ng.gain.exponentialRampToValueAtTime(0.0001, now + dur * 0.8);
+
+    o.connect(g); g.connect(this.musicBus);
+    n.connect(nf); nf.connect(ng); ng.connect(this.musicBus);
+    o.start(now); lfo.start(now); n.start(now);
+    o.stop(now + dur + 0.05); lfo.stop(now + dur + 0.05); n.stop(now + dur + 0.05);
+  }
+
+  // Acoustic Southwest nylon/steel pluck
+  playPluck(midi, dur = 0.65, vol = 0.17) {
+    const now = this.ctx.currentTime;
+    const freq = this.m2f(midi);
+    const o = this.ctx.createOscillator();
+    o.type = "triangle";
+    o.frequency.value = freq;
+    const o2 = this.ctx.createOscillator();
+    o2.type = "sawtooth";
+    o2.frequency.value = freq * 2;
+    const f = this.ctx.createBiquadFilter();
+    f.type = "lowpass";
+    f.frequency.setValueAtTime(3400, now);
+    f.frequency.exponentialRampToValueAtTime(520, now + dur);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(vol, now + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    const g2 = this.ctx.createGain(); g2.gain.value = 0.28;
+    o.connect(f); o2.connect(g2); g2.connect(f);
+    f.connect(g); g.connect(this.musicBus);
+    o.start(now); o2.start(now);
+    o.stop(now + dur + 0.04); o2.stop(now + dur + 0.04);
+  }
+
+  // Deep cinema tom / taiko / canyon drum
+  playDrum(pitch = 78, vol = 0.34, punch = 0.28) {
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    o.type = "sine";
+    o.frequency.setValueAtTime(pitch * 1.9, now);
+    o.frequency.exponentialRampToValueAtTime(pitch, now + 0.09);
+    o.frequency.exponentialRampToValueAtTime(pitch * 0.68, now + punch);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(vol, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + punch + 0.14);
+    o.connect(g); g.connect(this.musicBus);
+    o.start(now); o.stop(now + punch + 0.16);
+  }
+
+  // Desert shaker / light brush hit
+  playShaker(vol = 0.06) {
+    const now = this.ctx.currentTime;
+    const n = this.ctx.createBufferSource();
+    n.buffer = this.noiseBuf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = "highpass"; f.frequency.value = 5400;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(vol, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+    n.connect(f); f.connect(g); g.connect(this.musicBus);
+    n.start(now, Math.random() * 1.5, 0.07);
+  }
+
+  // Crystalline bell / celesta shimmer
+  playBell(midi, dur = 1.6, vol = 0.13) {
+    const now = this.ctx.currentTime;
+    const freq = this.m2f(midi);
+    [1, 2.003, 3.01].forEach((mult, i) => {
+      const o = this.ctx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = freq * mult;
+      const g = this.ctx.createGain();
+      const v = vol / (i * 1.9 + 1);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(v, now + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur / (i + 1));
+      o.connect(g); g.connect(this.musicBus);
+      o.start(now); o.stop(now + dur + 0.05);
+    });
+  }
+
+  // Cinematic brass / horn swell
+  playBrass(midi, dur = 1.8, vol = 0.15) {
+    const now = this.ctx.currentTime;
+    const freq = this.m2f(midi);
+    const o = this.ctx.createOscillator();
+    o.type = "sawtooth";
+    o.frequency.value = freq;
+    const f = this.ctx.createBiquadFilter();
+    f.type = "lowpass";
+    f.frequency.setValueAtTime(240, now);
+    f.frequency.exponentialRampToValueAtTime(1950, now + dur * 0.35);
+    f.frequency.exponentialRampToValueAtTime(600, now + dur);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(vol, now + dur * 0.22);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    o.connect(f); f.connect(g); g.connect(this.musicBus);
+    o.start(now); o.stop(now + dur + 0.05);
+  }
+
+  // === CINEMATIC FOLEY & SFX ===
+  sfxEagle() {
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(2450, now);
+    o.frequency.exponentialRampToValueAtTime(2880, now + 0.16);
+    o.frequency.exponentialRampToValueAtTime(1650, now + 0.95);
+    const bp = this.ctx.createBiquadFilter();
+    bp.type = "bandpass"; bp.frequency.value = 2100; bp.Q.value = 6.5;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(0.14, now + 0.08);
+    g.gain.setValueAtTime(0.12, now + 0.5);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 1.05);
+    o.connect(bp); bp.connect(g); g.connect(this.sfxBus);
+    o.start(now); o.stop(now + 1.1);
+  }
+
+  sfxCardSnap() {
+    const now = this.ctx.currentTime;
+    const n = this.ctx.createBufferSource();
+    n.buffer = this.noiseBuf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = "bandpass";
+    f.frequency.setValueAtTime(2600, now);
+    f.frequency.exponentialRampToValueAtTime(900, now + 0.09);
+    f.Q.value = 1.6;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.24, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.095);
+    n.connect(f); f.connect(g); g.connect(this.sfxBus);
+    n.start(now, Math.random(), 0.12);
+  }
+
+  sfxLinkChime(baseMidi = 69) {
+    [0, 3, 7, 12].forEach((st, idx) => {
+      setTimeout(() => { if (this.ctx) this.playBell(baseMidi + st, 1.3, 0.12); }, idx * 70);
+    });
+  }
+
+  sfxThunder() {
+    const now = this.ctx.currentTime;
+    // Sharp crack
+    const crack = this.ctx.createBufferSource();
+    crack.buffer = this.noiseBuf;
+    const cf = this.ctx.createBiquadFilter();
+    cf.type = "bandpass"; cf.frequency.value = 1100; cf.Q.value = 0.7;
+    const cg = this.ctx.createGain();
+    cg.gain.setValueAtTime(0.55, now);
+    cg.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+    crack.connect(cf); cf.connect(cg); cg.connect(this.sfxBus);
+    crack.start(now, 0, 0.25);
+
+    // Deep rolling sub-rumble
+    const rumb = this.ctx.createBufferSource();
+    rumb.buffer = this.noiseBuf;
+    const rf = this.ctx.createBiquadFilter();
+    rf.type = "lowpass";
+    rf.frequency.setValueAtTime(280, now);
+    rf.frequency.exponentialRampToValueAtTime(68, now + 2.3);
+    const rg = this.ctx.createGain();
+    rg.gain.setValueAtTime(0.0001, now);
+    rg.gain.linearRampToValueAtTime(0.68, now + 0.07);
+    rg.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+    rumb.connect(rf); rf.connect(rg); rg.connect(this.sfxBus);
+    rumb.start(now, 0.2, 2.5);
+    this.playDrum(52, 0.52, 0.65);
+  }
+
+  sfxShatter() {
+    this.playDrum(64, 0.45, 0.35);
+    const now = this.ctx.currentTime;
+    const n = this.ctx.createBufferSource();
+    n.buffer = this.noiseBuf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = "highpass"; f.frequency.value = 1800;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.32, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+    n.connect(f); f.connect(g); g.connect(this.sfxBus);
+    n.start(now, 0.4, 0.3);
+  }
+
+  sfxPrism() {
+    [62, 69, 73, 76, 81, 86].forEach((m, i) => {
+      setTimeout(() => { if (this.ctx) this.playBell(m, 2.0, 0.11); }, i * 65);
+    });
+  }
+
+  // Real-time Music Sequencer + Cue Trigger (driven every animation frame)
+  update(t) {
+    if (!this.ctx || this.ctx.state !== "running") return;
+
+    // 1. Modulate desert wind envelope by Act
+    let windTarget = 0.05;
+    let windFreq = 380;
+    if (t < 11.5) { windTarget = 0.09; windFreq = 340 + Math.sin(t * 0.7) * 90; }
+    else if (t < 37.5) { windTarget = 0.035; windFreq = 420; }
+    else if (t < 49.5) { windTarget = 0.16; windFreq = 620 + Math.sin(t * 2.5) * 240; } // Storm wind!
+    else if (t < 59.5) { windTarget = 0.05; windFreq = 510; }
+    else if (t < 70.5) { windTarget = 0.06; windFreq = 440; }
+    else { windTarget = Math.max(0.0001, 0.08 * (1 - (t - 70.5) / 7.5)); windFreq = 320; }
+
+    this.windGain.gain.setTargetAtTime(windTarget, this.ctx.currentTime, 0.12);
+    this.windFilter.frequency.setTargetAtTime(windFreq, this.ctx.currentTime, 0.12);
+
+    // 2. Fire Timed Story SFX Cues
+    for (const cue of SFX_CUES) {
+      if (!this.firedCues.has(cue.id) && t >= cue.t) {
+        this.firedCues.add(cue.id);
+        cue.fn(this);
+      }
+    }
+
+    // 3. 108 BPM Eighth-Note Sequencer (each step = 0.2778s)
+    const stepDur = 60 / 108 / 2;
+    const step = Math.floor(t / stepDur);
+    if (step <= this.lastStep) return;
+    this.lastStep = step;
+    const barStep = step % 8;
+    const bar = Math.floor(step / 8);
+
+    // ACT I (0 - 11.5s): Dawn Drone + Breathy Desert Flute in D Dorian
+    if (t < 11.5) {
+      if (barStep === 0 && bar % 2 === 0) {
+        this.playPad(38, 4.4, 0.15, 780); // D2
+        this.playPad(50, 4.4, 0.12, 950); // D3
+        this.playPad(57, 4.4, 0.09, 1100); // A3
+      }
+      const fluteLine = { 6: 74, 10: 77, 13: 79, 16: 81, 22: 77, 26: 74, 30: 72, 34: 74 };
+      if (fluteLine[step]) this.playFlute(fluteLine[step], 1.25, 0.15);
+    }
+    // ACT II (11.5 - 24.5s): 52-Card Showcase — Acoustic Southwest Guitar + Frame Drum
+    else if (t < 24.5) {
+      const chords = [
+        [50, 57, 62, 65], // Dm
+        [48, 55, 60, 64], // C
+        [46, 53, 58, 62], // Bb
+        [45, 52, 57, 62], // Asus4
+      ];
+      const ch = chords[bar % 4];
+      const arp = [0, 1, 2, 3, 2, 1, 3, 2];
+      this.playPluck(ch[arp[barStep]], 0.55, 0.15);
+      if (barStep === 0) {
+        this.playDrum(72, 0.26, 0.22);
+        this.playPad(ch[0] - 12, 2.1, 0.11, 900);
+      }
+      if (barStep === 3 || barStep === 6) this.playDrum(108, 0.14, 0.14);
+      if (barStep % 2 === 1) this.playShaker(0.055);
+    }
+    // ACT III (24.5 - 37.5s): Food Web Reveal — Driving Pulse + Bell Counterpoint
+    else if (t < 37.5) {
+      const chords = [
+        [50, 57, 62, 65], // Dm
+        [53, 57, 60, 65], // F
+        [48, 55, 60, 67], // C
+        [46, 53, 58, 65], // Bb
+      ];
+      const ch = chords[bar % 4];
+      const arp = [0, 2, 1, 3, 2, 3, 1, 2];
+      this.playPluck(ch[arp[barStep]], 0.52, 0.17);
+      if (barStep === 0 || barStep === 4) this.playDrum(68, 0.30, 0.24);
+      if (barStep === 2 || barStep === 6) this.playDrum(118, 0.15, 0.14);
+      this.playShaker(barStep % 2 === 0 ? 0.04 : 0.075);
+      if (barStep === 0) {
+        this.playPad(ch[0] - 12, 2.2, 0.14, 1300);
+        this.playPad(ch[3], 2.0, 0.08, 1600);
+      }
+      if (barStep === 0 || barStep === 3) this.playBell(ch[3] + 12, 0.9, 0.07);
+    }
+    // ACT IV (37.5 - 49.5s): THE STORM STRIKES — Heavy Taiko + Dark Phrygian Tension!
+    else if (t < 49.5) {
+      const darkBass = [38, 38, 39, 37]; // D - D - Eb - C# dramatic tension
+      const bNote = darkBass[bar % 4];
+      if (barStep === 0 || barStep === 3 || barStep === 6) this.playDrum(56, 0.44, 0.32);
+      if (barStep === 4) this.playDrum(94, 0.28, 0.2);
+      this.playShaker(0.08);
+      if (barStep === 0) this.playBrass(bNote + 12, 1.9, 0.17);
+      const ost = [0, 7, 1, 7, 3, 7, 1, 0];
+      this.playPluck(bNote + 24 + ost[barStep], 0.32, 0.14);
+    }
+    // ACT V (49.5 - 59.5s): MYTH MEETS REAL SCIENCE — Ethereal Celesta & Lydian Shimmer
+    else if (t < 59.5) {
+      const chords = [
+        [50, 57, 62, 66], // Dmaj
+        [47, 54, 59, 66], // Bm7
+        [43, 50, 54, 59], // Gmaj7
+        [45, 52, 57, 61], // A
+      ];
+      const ch = chords[bar % 4];
+      if (barStep === 0) {
+        this.playPad(ch[0] - 12, 2.4, 0.13, 1350);
+        this.playPad(ch[2], 2.4, 0.09, 1700);
+      }
+      if (barStep % 2 === 0) {
+        this.playBell(ch[(barStep / 2) % 4] + 12, 1.5, 0.095);
+      }
+      if (barStep === 0) this.playFlute(ch[3] + 12, 1.4, 0.11);
+    }
+    // ACT VI (59.5 - 70.5s): APEX FLIGHT & GRAND FINALE — Soaring D-Major Triumph!
+    else if (t < 70.5) {
+      const chords = [
+        [50, 57, 62, 66], // D
+        [45, 52, 57, 61], // A
+        [47, 54, 59, 62], // Bm
+        [43, 50, 55, 59], // G
+      ];
+      const ch = chords[bar % 4];
+      const heroMel = [74, 78, 81, 83, 81, 78, 76, 74];
+      if (barStep === 0) {
+        this.playPad(ch[0] - 12, 2.3, 0.17, 1900);
+        this.playBrass(ch[0], 2.0, 0.16);
+        this.playBrass(ch[3], 1.8, 0.12);
+      }
+      if (barStep === 0 || barStep === 4) this.playDrum(62, 0.42, 0.34);
+      if (barStep === 2 || barStep === 6) this.playDrum(110, 0.22, 0.18);
+      this.playShaker(0.065);
+      this.playPluck(ch[barStep % 4] + 12, 0.48, 0.16);
+      if (barStep === 0 || barStep === 3 || barStep === 6) {
+        this.playFlute(heroMel[(bar * 2 + Math.floor(barStep / 3)) % heroMel.length], 0.9, 0.14);
+      }
+    }
+    // ACT VII (70.5 - 78.0s): TITLE CARD & RESOLVING HARMONIC
+    else if (t < 75.0) {
+      if (barStep === 0 && t < 72.8) {
+        this.playPad(38, 5.2, 0.16, 1200);
+        this.playPad(50, 5.2, 0.13, 1500);
+        this.playPad(54, 5.2, 0.10, 1400); // F# major triumph resolution!
+        this.playPad(57, 5.2, 0.10, 1400);
+        this.playBell(74, 3.6, 0.14);
+      }
+      if (t >= 73.2 && t < 73.6) {
+        this.playPluck(74, 2.8, 0.18);
+        this.playBell(86, 3.0, 0.11);
+      }
+    }
+  }
+}
+
+const SFX_CUES = [
+  { id: "eagle1", t: 2.1,  fn: a => a.sfxEagle() },
+  { id: "snap1",  t: 11.7, fn: a => a.sfxCardSnap() },
+  { id: "snap2",  t: 14.5, fn: a => a.sfxCardSnap() },
+  { id: "snap3",  t: 17.5, fn: a => a.sfxCardSnap() },
+  { id: "snap4",  t: 20.5, fn: a => a.sfxCardSnap() },
+  { id: "snap5",  t: 23.0, fn: a => a.sfxCardSnap() },
+  { id: "link1",  t: 27.6, fn: a => a.sfxLinkChime(62) },
+  { id: "link2",  t: 31.2, fn: a => a.sfxLinkChime(65) },
+  { id: "link3",  t: 34.8, fn: a => a.sfxLinkChime(69) },
+  { id: "thund1", t: 37.8, fn: a => a.sfxThunder() },
+  { id: "shat1",  t: 41.2, fn: a => a.sfxShatter() },
+  { id: "thund2", t: 44.3, fn: a => a.sfxThunder() },
+  { id: "snap6",  t: 46.5, fn: a => a.sfxCardSnap() },
+  { id: "prism1", t: 50.0, fn: a => a.sfxPrism() },
+  { id: "prism2", t: 54.6, fn: a => a.sfxPrism() },
+  { id: "eagle2", t: 60.1, fn: a => a.sfxEagle() },
+  { id: "link4",  t: 66.2, fn: a => a.sfxLinkChime(74) },
+  { id: "final1", t: 70.6, fn: a => { a.playDrum(54, 0.48, 0.8); a.sfxPrism(); } },
+];
+
+const audio = new WildlandsAudio();
+
+// ============================================================================
+// 5. DETERMINISTIC PARTICLE & VFX SYSTEMS (DUST, RAIN, EMBERS, STARS, LIGHTNING)
+// ============================================================================
+const W = 1280, H = 720;
+const BAR_H = 54; // 2.35:1 anamorphic cinema letterbox bars
+
+const STARS = Array.from({ length: 130 }, (_, i) => ({
+  x: ((i * 197.3) % W),
+  y: ((i * 89.7) % (H * 0.56)),
+  r: 0.7 + (i % 4) * 0.55,
+  tw: 1.2 + (i % 7) * 0.65,
+  ph: i * 1.13
+}));
+
+const DUST = Array.from({ length: 95 }, (_, i) => ({
+  x: (i * 137.5) % W,
+  y: (i * 73.1) % H,
+  r: 1.0 + (i % 5) * 0.8,
+  vx: 14 + (i % 6) * 8,
+  vy: -6 - (i % 4) * 4,
+  a: 0.16 + (i % 5) * 0.11
+}));
+
+const EMBERS = Array.from({ length: 110 }, (_, i) => ({
+  x: (i * 119.3) % W,
+  y: (i * 91.7) % H,
+  vx: 35 + (i % 9) * 14,
+  vy: -45 - (i % 7) * 18,
+  r: 1.5 + (i % 4) * 1.1,
+  hue: 16 + (i % 28)
+}));
+
+const RAIN = Array.from({ length: 160 }, (_, i) => ({
+  x: (i * 83.7) % (W + 240),
+  y: (i * 61.3) % H,
+  len: 22 + (i % 5) * 10,
+  sp: 780 + (i % 4) * 180
+}));
+
+// Easing helpers
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOutCubic = t => 1 - Math.pow(1 - clamp(t), 3);
+const easeInOutCubic = t => {
+  const x = clamp(t);
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+};
+const easeOutBack = t => {
+  const x = clamp(t), c1 = 1.70158, c3 = c1 + 1;
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+};
+const fadeWindow = (t, t0, t1, fin = 0.65, fout = 0.65) => {
+  if (t < t0 || t > t1) return 0;
+  return Math.min(clamp((t - t0) / fin), clamp((t1 - t) / fout));
+};
+
+// ============================================================================
+// 6. ARTICULATED PROCEDURAL WILDLIFE & LIVING ENVIRONMENT ANIMATIONS (100% CODE!)
+// ============================================================================
+function drawAnimatedEagle(ctx, x, y, sc, t, color = "#100c0d", rimColor = "rgba(255,214,132,0.55)") {
+  ctx.save();
+  const flap = Math.sin(t * 4.4);
+  const tipLag = Math.sin(t * 4.4 - 0.65);
+  const bank = Math.sin(t * 1.1) * 0.14;
+  ctx.translate(x, y + Math.sin(t * 4.4 - 0.3) * 7 * sc);
+  ctx.rotate(bank);
+  ctx.scale(sc, sc);
+
+  // Subtle sunlit golden rim glow
+  ctx.shadowColor = rimColor;
+  ctx.shadowBlur = 14;
+  ctx.fillStyle = color;
+
+  // Tail fan (spreads slightly on downstroke)
+  const tailSpread = 16 + Math.max(0, -flap) * 7;
+  ctx.beginPath();
+  ctx.moveTo(-10, 4);
+  ctx.lineTo(-44, -tailSpread * 0.45);
+  ctx.quadraticCurveTo(-52, 4, -44, tailSpread);
+  ctx.closePath();
+  ctx.fill();
+
+  // Left Wing (inner arm + outer primary feathers with phase lag!)
+  const lwY1 = -24 * flap - 10;
+  const lwY2 = -42 * tipLag - 16;
+  ctx.beginPath();
+  ctx.moveTo(-6, -2);
+  ctx.quadraticCurveTo(-18, lwY1 - 12, -38, lwY1);
+  ctx.quadraticCurveTo(-68, lwY2 - 8, -94, lwY2 + 6);
+  // Wingtip feather notches
+  ctx.lineTo(-86, lwY2 + 16);
+  ctx.lineTo(-76, lwY2 + 12);
+  ctx.lineTo(-68, lwY2 + 21);
+  ctx.quadraticCurveTo(-36, lwY1 + 18, -8, 9);
+  ctx.closePath();
+  ctx.fill();
+
+  // Right Wing (mirrored forward sweep)
+  const rwY1 = -24 * flap - 10;
+  const rwY2 = -42 * tipLag - 16;
+  ctx.beginPath();
+  ctx.moveTo(8, -2);
+  ctx.quadraticCurveTo(22, rwY1 - 12, 42, rwY1);
+  ctx.quadraticCurveTo(72, rwY2 - 8, 98, rwY2 + 4);
+  ctx.lineTo(90, rwY2 + 15);
+  ctx.lineTo(79, rwY2 + 11);
+  ctx.lineTo(71, rwY2 + 20);
+  ctx.quadraticCurveTo(38, rwY1 + 18, 10, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  // Sleek eagle body + bright white Bald Eagle head & hooked golden beak!
+  ctx.beginPath();
+  ctx.ellipse(2, 3, 24, 9.5, -0.05, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#f7f3e8"; // Iconic white Bald Eagle head!
+  ctx.beginPath();
+  ctx.ellipse(25, -2, 10.5, 7.2, -0.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#f2b844"; // Hooked golden beak
+  ctx.beginPath();
+  ctx.moveTo(33, -4); ctx.quadraticCurveTo(43, -3, 41, 4); ctx.lineTo(33, 1); ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawAnimatedKangarooRat(ctx, baseX, baseY, sc, t, color = "#140e0e") {
+  // Energetic bipedal desert hop cycle!
+  const cycle = (t * 2.4) % 1;
+  const hopArc = Math.sin(cycle * Math.PI);
+  const yOff = -Math.pow(hopArc, 0.85) * 34 * sc;
+  const pitch = (0.5 - cycle) * 0.36;
+  ctx.save();
+  ctx.translate(baseX, baseY + yOff);
+  ctx.scale(sc, sc);
+  ctx.rotate(pitch);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+
+  // Long counter-balancing whip tail with tufted tip
+  ctx.lineWidth = 3.2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(-12, 2);
+  ctx.quadraticCurveTo(-42, -10 + Math.sin(t * 11) * 8, -74, -4 + Math.cos(t * 11) * 10);
+  ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(-76, -4 + Math.cos(t * 11) * 10, 7, 3.8, -0.2, 0, Math.PI * 2); ctx.fill();
+
+  // Springy hind leg
+  const legExt = hopArc * 14;
+  ctx.lineWidth = 4.5;
+  ctx.beginPath();
+  ctx.moveTo(-4, 6); ctx.lineTo(-12, 16 + legExt * 0.4); ctx.lineTo(2, 24 + legExt * 0.6);
+  ctx.stroke();
+  // Round compact body + large ears + bright eye glint
+  ctx.beginPath(); ctx.ellipse(0, 0, 15, 11, -0.15, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(14, -6, 9, 7, 0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(11, -15, 4.5, 6.5, -0.25, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "rgba(255,220,145,0.85)";
+  ctx.beginPath(); ctx.arc(17, -7, 1.5, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  // Tiny kicking dust puff on landing!
+  if (cycle < 0.25) {
+    const p = cycle / 0.25;
+    ctx.save();
+    ctx.fillStyle = `rgba(245,198,130,${(1 - p) * 0.42})`;
+    ctx.beginPath(); ctx.arc(baseX - 8 * sc - p * 18, baseY + 18 * sc - p * 10, (4 + p * 11) * sc, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawAnimatedRoadrunner(ctx, x, y, sc, t, color = "#e8b35a") {
+  ctx.save();
+  const stride = t * 18;
+  ctx.translate(x, y + Math.abs(Math.sin(stride)) * -5 * sc);
+  ctx.scale(sc, sc);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.shadowColor = "rgba(232,179,90,0.45)";
+  ctx.shadowBlur = 10;
+
+  // Long expressive counter-balance tail bobbing up & down
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(-16, -2);
+  ctx.lineTo(-68, -16 + Math.sin(t * 9) * 8);
+  ctx.stroke();
+
+  // Streaking body + neck + iconic spiky crest + sharp beak
+  ctx.beginPath(); ctx.ellipse(0, -4, 24, 11, -0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.moveTo(18, -8); ctx.quadraticCurveTo(30, -24, 36, -24); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(38, -24, 9, 6.5, 0, 0, Math.PI * 2); ctx.fill();
+  // Shaggy crest feathers
+  ctx.lineWidth = 2.4;
+  for (let i = 0; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(34 - i * 2, -29);
+    ctx.lineTo(25 - i * 3, -39 + i * 1.5 + Math.sin(t * 14 + i) * 2);
+    ctx.stroke();
+  }
+  // Sharp forward beak
+  ctx.beginPath(); ctx.moveTo(45, -26); ctx.lineTo(62, -22); ctx.lineTo(45, -20); ctx.closePath(); ctx.fill();
+
+  // Fast articulated sprinting legs!
+  ctx.lineWidth = 3.2;
+  [0, Math.PI].forEach(ph => {
+    const a = Math.sin(stride + ph);
+    const b = Math.cos(stride + ph);
+    const kx = 2 + a * 18, ky = 12 + b * 6;
+    const fx = kx - 6 + a * 16, fy = 26 + Math.max(0, b) * -10;
+    ctx.beginPath(); ctx.moveTo(2, 4); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+  });
+  ctx.restore();
+
+  // Speed dust trail puffs behind roadrunner!
+  ctx.save();
+  for (let i = 0; i < 4; i++) {
+    const ph = ((t * 4.5 + i * 0.25) % 1);
+    ctx.fillStyle = `rgba(245,204,132,${(1 - ph) * 0.35})`;
+    ctx.beginPath();
+    ctx.arc(x - (24 + ph * 68) * sc, y + (22 - ph * 14) * sc, (4 + ph * 10) * sc, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawAnimatedRabbit(ctx, x, y, sc, t, isJackrabbit = true, color = "#ffd9a8") {
+  const cyc = (t * 2.1) % 1;
+  const leap = Math.sin(cyc * Math.PI);
+  const stretch = 0.85 + leap * 0.32;
+  ctx.save();
+  ctx.translate(x, y - leap * 28 * sc);
+  ctx.rotate((0.5 - cyc) * 0.48);
+  ctx.scale(sc, sc);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.shadowColor = "rgba(255,195,120,0.45)";
+  ctx.shadowBlur = 10;
+
+  // Elongated leaping torso
+  ctx.beginPath(); ctx.ellipse(0, 0, 20 * stretch, 10, -0.08, 0, Math.PI * 2); ctx.fill();
+  // Head + signature long Jackrabbit (or shorter Cottontail) ears!
+  ctx.beginPath(); ctx.ellipse(19 * stretch, -7, 9, 7, 0.1, 0, Math.PI * 2); ctx.fill();
+  const earLen = isJackrabbit ? 22 : 12;
+  ctx.beginPath(); ctx.ellipse(14 * stretch, -13 - earLen * 0.45, 3.6, earLen * 0.55, -0.28, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(18 * stretch, -13 - earLen * 0.42, 3.2, earLen * 0.52, -0.10, 0, Math.PI * 2); ctx.fill();
+  // Cotton tail puff
+  ctx.fillStyle = "#fff8ee";
+  ctx.beginPath(); ctx.arc(-20 * stretch, -2, isJackrabbit ? 4.5 : 6.2, 0, Math.PI * 2); ctx.fill();
+  // Front & hind bounding legs
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 4; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(14 * stretch, 3); ctx.lineTo(28 * stretch, 14 - leap * 6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-14 * stretch, 3); ctx.lineTo(-30 * stretch, 15 - leap * 4); ctx.stroke();
+  ctx.restore();
+}
+
+function drawAnimatedCoyote(ctx, x, y, sc, t, color = "#130e10", rim = "rgba(240,180,100,0.35)") {
+  const cyc = t * 6.5;
+  ctx.save();
+  ctx.translate(x, y + Math.sin(cyc) * -4 * sc);
+  ctx.scale(sc, sc);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.shadowColor = rim;
+  ctx.shadowBlur = 12;
+
+  // Sleek loping canine body + bushy tail
+  ctx.beginPath(); ctx.ellipse(0, 0, 28, 11, Math.sin(cyc) * 0.06, 0, Math.PI * 2); ctx.fill();
+  ctx.lineWidth = 7; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-24, -1); ctx.quadraticCurveTo(-42, 6 + Math.sin(cyc) * 6, -54, 14 + Math.cos(cyc) * 5); ctx.stroke();
+  // Neck + pointed snout + alert upright coyote ears
+  ctx.beginPath(); ctx.moveTo(20, -4); ctx.lineTo(34, -18); ctx.lineTo(48, -14); ctx.lineTo(34, -6); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(32, -16, 9, 7, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(27, -21); ctx.lineTo(24, -35); ctx.lineTo(32, -23); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(32, -21); ctx.lineTo(33, -34); ctx.lineTo(38, -22); ctx.closePath(); ctx.fill();
+
+  // Articulated 4-leg gallop
+  ctx.lineWidth = 4.2;
+  const f1 = Math.sin(cyc), f2 = Math.sin(cyc + 0.8), b1 = Math.sin(cyc + Math.PI), b2 = Math.sin(cyc + Math.PI + 0.8);
+  [[18, f1], [13, f2], [-17, b1], [-22, b2]].forEach(([hx, s]) => {
+    ctx.beginPath();
+    ctx.moveTo(hx, 6);
+    ctx.lineTo(hx + s * 14, 22);
+    ctx.lineTo(hx + s * 22 - 4, 34 - Math.max(0, s) * 6);
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function drawSwayingGrasses(ctx, t, baseY, alpha = 1, tint = "#120d0e", stormWind = 0) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = tint;
+  ctx.lineCap = "round";
+  for (let i = 0; i < 42; i++) {
+    const gx = (i * 33.7) % W;
+    const h = 24 + (i % 5) * 14;
+    const sway = Math.sin(t * (2.1 + stormWind * 4.2) + i * 0.7) * (8 + stormWind * 22) + stormWind * 18;
+    ctx.lineWidth = 2 + (i % 3) * 0.9;
+    ctx.beginPath();
+    ctx.moveTo(gx, baseY + 12);
+    ctx.quadraticCurveTo(gx + sway * 0.45, baseY - h * 0.5, gx + sway, baseY - h);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawAnimatedStormClouds(ctx, t, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  for (let i = 0; i < 9; i++) {
+    const cx = ((i * 195 + t * (28 + (i % 3) * 12)) % (W + 340)) - 170;
+    const cy = 96 + (i % 3) * 34;
+    const rx = 140 + (i % 4) * 38;
+    const ry = 46 + (i % 3) * 14;
+    const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, rx);
+    g.addColorStop(0, "rgba(38,34,54,0.85)");
+    g.addColorStop(0.6, "rgba(20,18,30,0.65)");
+    g.addColorStop(1, "rgba(10,10,18,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawAnimatedDustDevil(ctx, x, baseY, height, t, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const layers = 26;
+  for (let i = 0; i < layers; i++) {
+    const p = i / layers;
+    const y = baseY - p * height;
+    const wobble = Math.sin(t * 5.2 - p * 6.5) * (10 + p * 26);
+    const rx = 14 + Math.pow(p, 1.35) * 72;
+    const ry = 5 + p * 12;
+    ctx.strokeStyle = `rgba(225,168,108,${(0.14 + (1 - p) * 0.22).toFixed(3)})`;
+    ctx.lineWidth = 2.4 + p * 2.2;
+    ctx.beginPath();
+    ctx.ellipse(x + wobble, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawWildfireFlames(ctx, t, baseY, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  for (let i = 0; i < 28; i++) {
+    const fx = (i / 27) * W;
+    const flicker = Math.sin(t * 9.5 + i * 2.1) * 18 + Math.cos(t * 14.3 + i * 1.3) * 10;
+    const fh = 55 + (i % 4) * 28 + flicker;
+    const fg = ctx.createLinearGradient(fx, baseY + 20, fx, baseY - fh);
+    fg.addColorStop(0, "rgba(255,72,18,0.82)");
+    fg.addColorStop(0.5, "rgba(255,156,38,0.58)");
+    fg.addColorStop(1, "rgba(255,235,120,0)");
+    ctx.fillStyle = fg;
+    ctx.beginPath();
+    ctx.moveTo(fx - 38, baseY + 24);
+    ctx.quadraticCurveTo(fx - 12 + Math.sin(t * 11 + i) * 14, baseY - fh * 0.6, fx + Math.cos(t * 8 + i) * 16, baseY - fh);
+    ctx.quadraticCurveTo(fx + 18, baseY - fh * 0.5, fx + 38, baseY + 24);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawAnimatedDNAHelix(ctx, cx, cy, height, t, alpha = 1) {
+  if (alpha <= 0.02) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const rungs = 18;
+  for (let i = 0; i < rungs; i++) {
+    const p = i / (rungs - 1);
+    const y = cy - height / 2 + p * height;
+    const ang = p * Math.PI * 3.2 - t * 3.0;
+    const x1 = cx + Math.sin(ang) * 44;
+    const x2 = cx - Math.sin(ang) * 44;
+    const z1 = Math.cos(ang);
+
+    // Base-pair rung connecting strands
+    ctx.strokeStyle = `rgba(232,179,90,${(0.28 + Math.abs(z1) * 0.42).toFixed(3)})`;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y); ctx.stroke();
+
+    // Glowing nucleotides
+    ctx.fillStyle = "#cc8cff";
+    ctx.shadowColor = "#cc8cff"; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.arc(x1, y, 4.2 + z1 * 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ffe08c";
+    ctx.shadowColor = "#ffe08c";
+    ctx.beginPath(); ctx.arc(x2, y, 4.2 - z1 * 1.8, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "#e2c8ff";
+  ctx.font = `700 11px ui-monospace, Consolas, monospace`;
+  ctx.textAlign = "center";
+  ctx.fillText("CRPV DNA · 1933", cx, cy + height / 2 + 22);
+  ctx.restore();
+}
+
+function drawAnimatedMirageOptics(ctx, cx, cy, t, alpha = 1) {
+  if (alpha <= 0.02) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // Bent optical light rays shimmering upward into phantom water
+  for (let i = 0; i < 4; i++) {
+    const yOff = (i - 1.5) * 20;
+    ctx.strokeStyle = i % 2 === 0 ? "rgba(136,216,255,0.68)" : "rgba(255,224,140,0.6)";
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([8, 6]);
+    ctx.lineDashOffset = -t * 48 - i * 12;
+    ctx.beginPath();
+    ctx.moveTo(cx - 70, cy - 75 + yOff);
+    ctx.quadraticCurveTo(cx, cy + 72 + Math.sin(t * 4 + i) * 10, cx + 72, cy - 55 + yOff);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  // Rippling mirage lake oval below
+  const rg = ctx.createRadialGradient(cx, cy + 62, 6, cx, cy + 62, 74);
+  rg.addColorStop(0, "rgba(140,225,255,0.65)");
+  rg.addColorStop(1, "rgba(140,225,255,0)");
+  ctx.fillStyle = rg;
+  ctx.beginPath(); ctx.ellipse(cx, cy + 62, 74, 16 + Math.sin(t * 5) * 3, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#9fe3ff";
+  ctx.font = `700 11px ui-monospace, Consolas, monospace`;
+  ctx.textAlign = "center";
+  ctx.fillText("LIGHT REFRACTION", cx, cy + 102);
+  ctx.restore();
+}
+
+// ============================================================================
+// 6B. HIGH-CRAFT RENDERING HELPERS (LIVING 3D CARDS, MOUNTAINS, LIGHTNING, TEXT)
+// ============================================================================
+function drawCard3D(ctx, cardId, x, y, scale, rotZ = 0, flipY = 0, alpha = 1, glowColor = null, sheenPhase = 0) {
+  if (alpha <= 0.01) return;
+  const cosFlip = Math.cos(flipY);
+  const showBack = cosFlip < 0;
+  const tex = showBack ? CARD_BACK_TEX : (CARD_TEX[cardId] || CARD_BACK_TEX);
+  const cw = 340 * scale, ch = 476 * scale;
+  const sx = Math.max(0.02, Math.abs(cosFlip));
+
+  ctx.save();
+  ctx.globalAlpha = clamp(alpha);
+  ctx.translate(x, y);
+  ctx.rotate(rotZ);
+  ctx.scale(sx, 1);
+
+  // Soft 3D elevation shadow + pulsing living energy aura
+  const pulse = 1 + Math.sin(sheenPhase * 3.2) * 0.14;
+  ctx.shadowColor = glowColor || "rgba(0,0,0,0.68)";
+  ctx.shadowBlur = glowColor ? 36 * scale * pulse : 26 * scale;
+  ctx.shadowOffsetY = glowColor ? 4 : 16 * scale;
+
+  ctx.drawImage(tex, -cw / 2, -ch / 2, cw, ch);
+
+  // Reset shadow before living card overlay + sheen pass
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+
+  if (!showBack) {
+    ctx.save();
+    roundRect(ctx, -cw / 2, -ch / 2, cw, ch, 20 * scale);
+    ctx.clip();
+
+    // LIVING CARD ARTWORK VFX (subtle animated wind/pollen/sparks inside the art window!)
+    const card = HERO_CARDS[cardId];
+    if (card) {
+      const ax = -cw / 2 + 22 * scale, ay = -ch / 2 + 86 * scale, aw = 296 * scale, ah = 212 * scale;
+      ctx.save();
+      roundRect(ctx, ax, ay, aw, ah, 6 * scale);
+      ctx.clip();
+      for (let i = 0; i < 6; i++) {
+        const px = ax + (((sheenPhase * 55 + i * 67) % 1) * aw);
+        const py = ay + ah - (((sheenPhase * 0.45 + i * 0.19) % 1) * ah);
+        ctx.fillStyle = card.suit === "D" ? "rgba(255,165,60,0.55)" : (card.suit === "J" ? "rgba(220,165,255,0.55)" : "rgba(255,244,200,0.42)");
+        ctx.beginPath(); ctx.arc(px, py, (2.2 + (i % 3)) * scale, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Dynamic diagonal specular light sweep across card face
+    const sPos = ((sheenPhase % 2.4) - 0.6) * cw * 1.4;
+    const lg = ctx.createLinearGradient(sPos - cw * 0.35, -ch / 2, sPos + cw * 0.35, ch / 2);
+    lg.addColorStop(0, "rgba(255,255,255,0)");
+    lg.addColorStop(0.5, "rgba(255,248,225,0.24)");
+    lg.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = lg;
+    ctx.fillRect(-cw / 2, -ch / 2, cw, ch);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawDesertSkyline(ctx, t, dawnProg, stormMix = 0) {
+  // Multi-stop Arizona desert sky gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  if (stormMix > 0.01) {
+    sky.addColorStop(0, "#0b0e18");
+    sky.addColorStop(0.45, "#1d1a2c");
+    sky.addColorStop(0.82, "#4a241b");
+    sky.addColorStop(1, "#140c0a");
+  } else {
+    const p = clamp(dawnProg);
+    const r1 = Math.round(lerp(8, 28, p)), g1 = Math.round(lerp(13, 38, p)), b1 = Math.round(lerp(24, 62, p));
+    const r2 = Math.round(lerp(18, 178, p)), g2 = Math.round(lerp(24, 86, p)), b2 = Math.round(lerp(42, 48, p));
+    const r3 = Math.round(lerp(26, 245, p)), g3 = Math.round(lerp(30, 174, p)), b3 = Math.round(lerp(44, 86, p));
+    sky.addColorStop(0, `rgb(${r1},${g1},${b1})`);
+    sky.addColorStop(0.55, `rgb(${r2},${g2},${b2})`);
+    sky.addColorStop(0.86, `rgb(${r3},${g3},${b3})`);
+    sky.addColorStop(1, "#2a1711");
+  }
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Twinkling desert night stars (fade out as dawn rises)
+  const starA = clamp(1 - dawnProg * 1.35) * (1 - stormMix);
+  if (starA > 0.02) {
+    for (const s of STARS) {
+      const a = starA * (0.45 + 0.55 * Math.sin(t * s.tw + s.ph));
+      ctx.fillStyle = `rgba(255,248,230,${a.toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  // Rising Tonto Basin sun + volumetric god rays
+  if (dawnProg > 0.15 && stormMix < 0.7) {
+    const sunX = W * 0.5;
+    const sunY = lerp(H * 0.86, H * 0.52, easeOutCubic((dawnProg - 0.15) / 0.85));
+    const sunA = clamp((dawnProg - 0.15) * 1.4) * (1 - stormMix);
+    const rg = ctx.createRadialGradient(sunX, sunY, 12, sunX, sunY, 390);
+    rg.addColorStop(0, `rgba(255,244,205,${0.95 * sunA})`);
+    rg.addColorStop(0.24, `rgba(248,176,84,${0.55 * sunA})`);
+    rg.addColorStop(0.6, `rgba(218,96,42,${0.18 * sunA})`);
+    rg.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle rotating sunbeams
+    ctx.save();
+    ctx.translate(sunX, sunY);
+    for (let i = 0; i < 9; i++) {
+      const ang = -Math.PI + (i / 8) * Math.PI + Math.sin(t * 0.25 + i) * 0.04;
+      ctx.save();
+      ctx.rotate(ang);
+      const beam = ctx.createLinearGradient(0, 0, 520, 0);
+      beam.addColorStop(0, `rgba(255,222,150,${0.10 * sunA})`);
+      beam.addColorStop(1, "rgba(255,222,150,0)");
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(0, -8); ctx.lineTo(520, -48); ctx.lineTo(520, 48); ctx.lineTo(0, 8);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  // Parallax Mountain Ridges (Four Peaks / Mazatzal silhouettes!)
+  const pan = t * 10;
+  const drawRidge = (baseY, amp, freq, shift, col) => {
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 16) {
+      const n = Math.sin((x + shift) * freq) * amp
+              + Math.sin((x + shift) * freq * 2.3 + 1.4) * (amp * 0.42)
+              + Math.cos((x + shift) * freq * 0.45) * (amp * 0.55);
+      // Four Peaks jagged crest near center-left
+      const peak = Math.exp(-Math.pow((x - W * 0.34) / 95, 2)) * amp * 1.15;
+      ctx.lineTo(x, baseY - Math.abs(n) - peak);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fill();
+  };
+
+  drawRidge(H * 0.72, 54, 0.0055, pan * 0.35, stormMix > 0.3 ? "#1b141e" : "#3a2528");
+  drawRidge(H * 0.79, 44, 0.0078, pan * 0.75 + 220, stormMix > 0.3 ? "#130e15" : "#24171a");
+  drawRidge(H * 0.87, 30, 0.011, pan * 1.3 + 510, "#100c0d");
+
+  // Iconic Foreground Saguaro Silhouettes
+  const drawSaguaro = (sx, baseY, sc) => {
+    ctx.save();
+    ctx.translate(sx, baseY);
+    ctx.scale(sc, sc);
+    ctx.fillStyle = "#0b090a";
+    roundRect(ctx, -9, -110, 18, 118, 9); ctx.fill();
+    // Left arm
+    ctx.beginPath();
+    ctx.moveTo(-8, -54); ctx.quadraticCurveTo(-34, -54, -34, -76);
+    ctx.lineTo(-34, -92); ctx.arc(-27, -92, 7, Math.PI, 0);
+    ctx.lineTo(-20, -76); ctx.quadraticCurveTo(-20, -66, -8, -66);
+    ctx.closePath(); ctx.fill();
+    // Right arm
+    ctx.beginPath();
+    ctx.moveTo(8, -40); ctx.quadraticCurveTo(32, -40, 32, -62);
+    ctx.lineTo(32, -82); ctx.arc(25, -82, 7, 0, Math.PI, true);
+    ctx.lineTo(18, -62); ctx.quadraticCurveTo(18, -52, 8, -52);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  };
+  drawSaguaro(148 - pan * 0.3, H * 0.91, 1.15);
+  drawSaguaro(1110 - pan * 0.4, H * 0.90, 1.3);
+  drawSaguaro(945 - pan * 0.25, H * 0.88, 0.72);
+  drawSaguaro(295 - pan * 0.2, H * 0.87, 0.65);
+}
+
+function drawDustMotes(ctx, t, alpha = 1, tint = "255,220,150") {
+  ctx.save();
+  for (const d of DUST) {
+    const x = (d.x + t * d.vx) % W;
+    const y = ((d.y + t * d.vy) % H + H) % H;
+    ctx.fillStyle = `rgba(${tint},${(d.a * alpha).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(x, y, d.r, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawLightning(ctx, startX, startY, endY, seed, intensity) {
+  if (intensity <= 0.02) return;
+  ctx.save();
+  let x = startX, y = startY;
+  const segs = 14;
+  const dy = (endY - startY) / segs;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  const pts = [{ x, y }];
+  for (let i = 1; i <= segs; i++) {
+    const jitter = Math.sin(seed * 41.7 + i * 19.3) * 42;
+    x += jitter;
+    y += dy;
+    ctx.lineTo(x, y);
+    pts.push({ x, y });
+  }
+  ctx.strokeStyle = `rgba(170,215,255,${intensity * 0.55})`;
+  ctx.lineWidth = 10;
+  ctx.shadowColor = "#9fd8ff";
+  ctx.shadowBlur = 28;
+  ctx.stroke();
+
+  ctx.strokeStyle = `rgba(255,255,255,${intensity})`;
+  ctx.lineWidth = 2.8;
+  ctx.stroke();
+
+  // Branch fork
+  const bp = pts[5];
+  ctx.beginPath();
+  ctx.moveTo(bp.x, bp.y);
+  ctx.lineTo(bp.x + 56, bp.y + 44);
+  ctx.lineTo(bp.x + 92, bp.y + 108);
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawGlowBeam(ctx, x1, y1, x2, y2, prog, color, label = "") {
+  if (prog <= 0.01) return;
+  const ex = lerp(x1, x2, easeOutCubic(prog));
+  const ey = lerp(y1, y2, easeOutCubic(prog));
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 4;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 18;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(ex, ey); ctx.stroke();
+
+  // Luminous pulse head
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(ex, ey, 6.5, 0, Math.PI * 2); ctx.fill();
+
+  if (label && prog > 0.55) {
+    const la = clamp((prog - 0.55) / 0.35);
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - 18;
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = la;
+    ctx.font = `800 13px ui-monospace, Consolas, monospace`;
+    const tw = ctx.measureText(label).width + 20;
+    roundRect(ctx, mx - tw / 2, my - 13, tw, 26, 99);
+    ctx.fillStyle = "rgba(12,18,16,0.88)";
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e8";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, mx, my);
+  }
+  ctx.restore();
+}
+
+function drawCinemaCaption(ctx, eyebrow, title, sub, alpha, yCenter = H * 0.5) {
+  if (alpha <= 0.01) return;
+  ctx.save();
+  ctx.globalAlpha = clamp(alpha);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  if (eyebrow) {
+    ctx.fillStyle = "#e8b35a";
+    ctx.font = `700 15px ui-monospace, Consolas, monospace`;
+    ctx.fillText(eyebrow.toUpperCase(), W / 2, yCenter - 46);
+  }
+  if (title) {
+    ctx.shadowColor = "rgba(0,0,0,0.85)";
+    ctx.shadowBlur = 22;
+    ctx.fillStyle = "#fff8ea";
+    let fs = 46;
+    ctx.font = `700 ${fs}px Georgia, "Times New Roman", serif`;
+    while (ctx.measureText(title).width > W - 120 && fs > 24) {
+      fs -= 2;
+      ctx.font = `700 ${fs}px Georgia, "Times New Roman", serif`;
+    }
+    ctx.fillText(title, W / 2, yCenter);
+  }
+  if (sub) {
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = "#cfd9de";
+    let sfs = 19;
+    ctx.font = `500 ${sfs}px "Segoe UI", system-ui, sans-serif`;
+    while (ctx.measureText(sub).width > W - 110 && sfs > 13) {
+      sfs -= 1;
+      ctx.font = `500 ${sfs}px "Segoe UI", system-ui, sans-serif`;
+    }
+    ctx.fillText(sub, W / 2, yCenter + 42);
+  }
+  ctx.restore();
+}
+
+// ============================================================================
+// 7. THE 7-ACT CINEMATIC FRAME RENDERER (60 FPS)
+// ============================================================================
+function renderFrame(ctx, t) {
+  ctx.save();
+  ctx.clearRect(0, 0, W, H);
+
+  // Subtle camera shake during Act IV Storm hits!
+  let shakeX = 0, shakeY = 0;
+  if (t >= 37.5 && t <= 49.5) {
+    const hit1 = Math.exp(-Math.pow((t - 37.85) * 4.5, 2));
+    const hit2 = Math.exp(-Math.pow((t - 41.25) * 5.0, 2));
+    const hit3 = Math.exp(-Math.pow((t - 44.35) * 4.2, 2));
+    const mag = (hit1 * 18 + hit2 * 16 + hit3 * 14);
+    shakeX = Math.sin(t * 97.3) * mag;
+    shakeY = Math.cos(t * 113.1) * mag;
+  }
+  ctx.translate(shakeX, shakeY);
+
+  // --------------------------------------------------------------------------
+  // ACT I: DAWN OVER TONTO BASIN (0.0s - 11.5s) — LIVING DESERT SUNRISE!
+  // --------------------------------------------------------------------------
+  if (t < 11.5) {
+    const dawn = easeInOutCubic(t / 9.8);
+    drawDesertSkyline(ctx, t, dawn, 0);
+    drawDustMotes(ctx, t, 0.35 + dawn * 0.65);
+
+    // Animated soaring Bald Eagle gliding across the Tonto Basin sunrise!
+    const eagleX = lerp(-120, W + 140, clamp((t - 0.6) / 9.2));
+    const eagleY = H * 0.25 + Math.sin(t * 0.85) * 28 - clamp((t - 0.6) / 9.2) * 32;
+    drawAnimatedEagle(ctx, eagleX, eagleY, 0.92, t, "#120d0e", "rgba(255,210,120,0.65)");
+
+    // Animated Kangaroo Rat hopping briskly across the desert floor with dust puffs!
+    const kratX = lerp(W * 0.16, W * 0.84, clamp((t - 1.4) / 8.5));
+    drawAnimatedKangarooRat(ctx, kratX, H * 0.84, 1.08, t, "#0e0a0b");
+
+    // Gently swaying desert grasses along the canyon floor
+    drawSwayingGrasses(ctx, t, H * 0.90, 0.92, "#0b0809", 0.1);
+
+    // Coordinates & opening story beats
+    drawCinemaCaption(
+      ctx,
+      "33.834° N · 111.298° W · ARIZONA",
+      "TONTO BASIN RANGER DISTRICT",
+      "Where desert scrub, canyons, and river corridors collide.",
+      fadeWindow(t, 0.7, 4.4, 0.9, 0.7),
+      H * 0.38
+    );
+    drawCinemaCaption(
+      ctx,
+      "REAL LANDSCAPES · REAL WILDLIFE",
+      "BEFORE IT WAS A CARD GAME...",
+      "...it was a living Sonoran Desert ecosystem.",
+      fadeWindow(t, 4.5, 8.6, 0.8, 0.7),
+      H * 0.39
+    );
+
+    // Three golden cards materialize from the sunrise at 8.0s -> 11.5s
+    if (t > 8.0) {
+      const p = easeOutCubic((t - 8.0) / 2.6);
+      const fan = ["2S", "2C", "2H"];
+      fan.forEach((id, i) => {
+        const cx = W / 2 + (i - 1) * lerp(260, 175, p);
+        const cy = lerp(H + 140, H * 0.49, p) + Math.abs(i - 1) * 18;
+        const rot = (i - 1) * 0.14 * p;
+        const flip = lerp(Math.PI, 0, clamp((t - 8.5 - i * 0.28) / 1.1));
+        drawCard3D(ctx, id, cx, cy, 0.56, rot, flip, p, SUIT_META[HERO_CARDS[id].suit].glow, t * 0.6 + i);
+      });
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT II: THE 52-CARD ARCHITECTURE (11.5s - 24.5s) — ANIMATED SUIT WORLDS!
+  // --------------------------------------------------------------------------
+  else if (t < 24.5) {
+    const lt = t - 11.5;
+    // Deep emerald-slate studio tabletop lighting
+    const bg = ctx.createRadialGradient(W * 0.5, H * 0.44, 60, W * 0.5, H * 0.5, W * 0.72);
+    bg.addColorStop(0, "#1d2b27");
+    bg.addColorStop(0.55, "#101718");
+    bg.addColorStop(1, "#06090b");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    drawDustMotes(ctx, t, 0.45, "232,190,120");
+
+    // 4 Suit Showcases (3.25s each)
+    const suits = [
+      { sym: "♠", code: "S", title: "FOUNDATIONS", sub: "Habitats & biomes forming the ecological base of Tonto Basin", cards: ["2S", "QS"] },
+      { sym: "♣", code: "C", title: "RESOURCES",   sub: "Forage plants & prey families sustaining the food web", cards: ["2C", "5C", "KC"] },
+      { sym: "♥", code: "H", title: "CONSUMERS",   sub: "Individual wildlife species observed across the basin", cards: ["2H", "5H", "8H", "10H"] },
+      { sym: "♦", code: "D", title: "DYNAMICS",    sub: "Weather, wildfire & cross-landscape disturbances", cards: ["4D", "6D", "KD"] },
+    ];
+    const segLen = 13.0 / 4;
+    const idx = Math.min(3, Math.floor(lt / segLen));
+    const st = lt - idx * segLen;
+    const cur = suits[idx];
+    const sm = SUIT_META[cur.code];
+    const segAlpha = fadeWindow(st, 0, segLen, 0.35, 0.35);
+
+    // Living suit-themed foreground animations for EACH of the 4 suits!
+    if (idx === 0) {
+      // ♠ Foundations: Swaying sage desert grasses & distant soaring eagle
+      drawSwayingGrasses(ctx, t, H * 0.90, 0.45 * segAlpha, "#428f84", 0.2);
+      drawAnimatedEagle(ctx, lerp(120, 620, st / segLen), H * 0.21, 0.55, t, "#428f84", "#58c4b8");
+    } else if (idx === 1) {
+      // ♣ Resources: Leaping Cottontail & swaying emerald grasses!
+      drawSwayingGrasses(ctx, t, H * 0.90, 0.5 * segAlpha, "#4da65e", 0.15);
+      drawAnimatedRabbit(ctx, lerp(80, 560, st / segLen), H * 0.81, 0.95, t, false, "#8ae89c");
+    } else if (idx === 2) {
+      // ♥ Consumers: Sprinting Roadrunner tearing across the canyon floor!
+      drawAnimatedRoadrunner(ctx, lerp(-60, W + 80, st / segLen), H * 0.81, 1.05, t, "#f28e79");
+    } else {
+      // ♦ Dynamics: Swirling animated Dust Devil + flickering amber embers!
+      drawAnimatedDustDevil(ctx, lerp(160, 480, st / segLen), H * 0.89, 240, t, 0.55 * segAlpha);
+      drawWildfireFlames(ctx, t, H * 0.92, 0.32 * segAlpha);
+    }
+
+    // Big translucent pulsing suit watermark
+    ctx.save();
+    ctx.globalAlpha = (0.075 + Math.sin(t * 3) * 0.015) * segAlpha;
+    ctx.fillStyle = sm.glow;
+    ctx.font = `700 440px "Segoe UI Symbol", Georgia, serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(cur.sym, W * 0.25, H * 0.54);
+    ctx.restore();
+
+    // Left editorial text block
+    ctx.save();
+    ctx.globalAlpha = segAlpha;
+    const slideX = lerp(-40, 0, easeOutCubic(st / 0.65));
+    ctx.translate(slideX, 0);
+    ctx.textAlign = "left";
+    ctx.fillStyle = sm.glow;
+    ctx.font = `800 15px ui-monospace, Consolas, monospace`;
+    ctx.fillText(`SUIT ${idx + 1} OF 4 · 52-CARD POKER DECK`, 96, H * 0.34);
+    ctx.fillStyle = "#fff8eb";
+    ctx.font = `700 54px Georgia, "Times New Roman", serif`;
+    ctx.fillText(`${cur.sym} ${cur.title}`, 92, H * 0.44);
+    ctx.fillStyle = "#c9d4d9";
+    ctx.font = `500 20px "Segoe UI", sans-serif`;
+    const subLines = wrapText(ctx, cur.sub, 430, 3);
+    subLines.forEach((ln, li) => ctx.fillText(ln, 96, H * 0.54 + li * 28));
+    ctx.fillStyle = "rgba(232,179,90,0.85)";
+    ctx.font = `700 13px ui-monospace, monospace`;
+    ctx.fillText("13 CARDS PER SUIT · PLAY CLASSIC POKER OR WILDLANDS", 96, H * 0.69);
+    ctx.restore();
+
+    // Right 3D Hero Card Fan showcasing real Wildlands SVG artwork!
+    const n = cur.cards.length;
+    cur.cards.forEach((cid, ci) => {
+      const enter = easeOutBack((st - ci * 0.14) / 0.65);
+      const spread = (ci - (n - 1) / 2);
+      const cx = W * 0.72 + spread * (n > 3 ? 98 : 122) * clamp(enter);
+      const cy = H * 0.51 + Math.abs(spread) * 20 + (1 - clamp(enter)) * 120 + Math.sin(t * 2.2 + ci) * 5;
+      const rot = spread * 0.085 + Math.sin(t * 1.4 + ci) * 0.018;
+      const sc = (n > 3 ? 0.56 : 0.64) - Math.abs(spread) * 0.03;
+      drawCard3D(ctx, cid, cx, cy, sc, rot, (1 - clamp(enter)) * 0.65, segAlpha, sm.glow, t * 0.8 + ci * 0.5);
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT III: NATURE'S HIDDEN TRACK — THE LIVING FOOD WEB (24.5s - 37.5s)
+  // --------------------------------------------------------------------------
+  else if (t < 37.5) {
+    const lt = t - 24.5;
+    const bg = ctx.createRadialGradient(W * 0.5, H * 0.48, 80, W * 0.5, H * 0.5, W * 0.76);
+    bg.addColorStop(0, "#182924");
+    bg.addColorStop(0.6, "#0d1616");
+    bg.addColorStop(1, "#05090a");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    drawDustMotes(ctx, t, 0.55, "140,235,190");
+
+    // Top Luminous 13-Rank Track Bar
+    const ranks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+    const trackY = 112;
+    const trackX0 = 160, trackX1 = W - 160;
+    ctx.save();
+    ctx.strokeStyle = "rgba(232,179,90,0.35)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(trackX0, trackY); ctx.lineTo(trackX1, trackY); ctx.stroke();
+    // Moving radar pulse along the 13-rank track!
+    const scanX = lerp(trackX0, trackX1, (lt % 6.5) / 6.5);
+    ctx.fillStyle = "rgba(255,220,130,0.75)";
+    ctx.shadowColor = "#e8b35a"; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.arc(scanX, trackY, 4.5, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ranks.forEach((rk, ri) => {
+      const rx = lerp(trackX0, trackX1, ri / (ranks.length - 1));
+      const isHot = (lt < 6.4 && ri <= 1) || (lt >= 6.4 && ri >= 10);
+      ctx.fillStyle = isHot ? "#e8b35a" : "#223236";
+      ctx.beginPath(); ctx.arc(rx, trackY, isHot ? 14 : 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = isHot ? "#151006" : "#8da2a8";
+      ctx.font = `800 ${isHot ? 13 : 11}px ui-monospace, monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(rk, rx, trackY + 0.5);
+    });
+    ctx.restore();
+
+    // Part A (0 - 6.4s): Rank 2 Dependency Chain (♥ → ♣ → ♠) + Hopping Kangaroo Rat!
+    if (lt < 6.4) {
+      const a = fadeWindow(lt, 0, 6.4, 0.45, 0.5);
+      const p1 = easeOutBack(lt / 0.8);
+      const p2 = easeOutBack((lt - 1.1) / 0.8);
+      const p3 = easeOutBack((lt - 2.3) / 0.8);
+      const beam1 = clamp((lt - 1.7) / 0.8);
+      const beam2 = clamp((lt - 2.9) / 0.8);
+
+      drawGlowBeam(ctx, W * 0.25 + 95, H * 0.50, W * 0.50 - 95, H * 0.50, beam1, "#f2735e", "EATS · ±1");
+      drawGlowBeam(ctx, W * 0.50 + 95, H * 0.50, W * 0.75 - 95, H * 0.50, beam2, "#6bd47f", "GROWS IN · ±1");
+
+      // Animated Kangaroo Rat hopping right between 2♥ and 2♣ along the ground!
+      drawAnimatedKangarooRat(ctx, lerp(W * 0.20, W * 0.78, lt / 6.4), H * 0.73, 0.92, t, "#f29b7e");
+      drawSwayingGrasses(ctx, t, H * 0.77, 0.42 * a, "#6bd47f", 0.15);
+
+      drawCard3D(ctx, "2H", W * 0.25, H * 0.48 + (1 - clamp(p1)) * 70 + Math.sin(t * 2) * 4, 0.60, -0.04, 0, a * clamp(p1), "#f2735e", t * 0.7);
+      drawCard3D(ctx, "2C", W * 0.50, H * 0.48 + (1 - clamp(p2)) * 70 + Math.sin(t * 2 + 1) * 4, 0.60, 0, 0, a * clamp(p2), "#6bd47f", t * 0.7 + 0.4);
+      drawCard3D(ctx, "2S", W * 0.75, H * 0.48 + (1 - clamp(p3)) * 70 + Math.sin(t * 2 + 2) * 4, 0.60, 0.04, 0, a * clamp(p3), "#58c4b8", t * 0.7 + 0.8);
+
+      drawCinemaCaption(
+        ctx,
+        "CARD VALUES ARE NOT POWER — THEY ARE REAL ECOLOGY",
+        "",
+        "♥ Consumer Species  →  ♣ Resource Guild  →  ♠ Habitat Biome (±1 Track)",
+        a, H * 0.84
+      );
+    }
+    // Part B (6.4 - 13.0s): Leaping Rabbits → K♣ Leporidae → Loping Coyote & Swooping Eagle!
+    else {
+      const st = lt - 6.4;
+      const a = fadeWindow(st, 0, 6.6, 0.45, 0.5);
+      const b1 = clamp((st - 0.6) / 0.8);
+      const b2 = clamp((st - 1.8) / 0.9);
+
+      drawGlowBeam(ctx, 210, 290, 520, 390, b1, "#f2735e");
+      drawGlowBeam(ctx, 210, 490, 520, 390, b1, "#f2735e", "SPECIES → FAMILY");
+      drawGlowBeam(ctx, 640, 390, 960, 260, b2, "#e8b35a");
+      drawGlowBeam(ctx, 640, 390, 1020, 395, b2, "#e8b35a", "PREY GUILD");
+      drawGlowBeam(ctx, 640, 390, 960, 525, b2, "#e8b35a");
+
+      // Animated leaping Jackrabbit + Cottontail racing along the food-web filaments!
+      const hopP = (st * 0.55) % 1;
+      drawAnimatedRabbit(ctx, lerp(250, 520, hopP), lerp(485, 400, hopP), 0.75, t, true, "#ffd9a8");
+      // Animated loping Coyote across the lower canyon & soaring Eagle above!
+      drawAnimatedCoyote(ctx, lerp(580, 1180, clamp(st / 6.2)), H * 0.74, 0.82, t, "#d99d59", "rgba(255,210,130,0.45)");
+      drawAnimatedEagle(ctx, lerp(620, 1150, clamp((st - 1.2) / 5.0)), 195, 0.62, t, "#f0c778", "rgba(255,230,150,0.7)");
+
+      drawCard3D(ctx, "3H", 190, 285 + Math.sin(t * 2) * 3, 0.40, -0.06, 0, a, "#f2735e", t * 0.7);
+      drawCard3D(ctx, "4H", 190, 495 + Math.cos(t * 2) * 3, 0.40, 0.06, 0, a, "#f2735e", t * 0.7 + 0.3);
+      drawCard3D(ctx, "KC", 580, 390 + Math.sin(t * 1.8) * 4, 0.58, 0, 0, a, "#6bd47f", t * 0.9);
+
+      const pPred = easeOutBack((st - 1.4) / 0.85);
+      drawCard3D(ctx, "QH", 990, 260, 0.38, -0.05, 0, a * clamp(pPred), "#e8b35a", t * 0.7 + 0.6);
+      drawCard3D(ctx, "KH", 1075, 395, 0.42, 0.02, 0, a * clamp(pPred), "#e8b35a", t * 0.7 + 0.9);
+      drawCard3D(ctx, "AH", 990, 525, 0.40, 0.06, 0, a * clamp(pPred), "#ffe184", t * 0.7 + 1.2);
+
+      drawCinemaCaption(
+        ctx,
+        "VERIFIED BY ARIZONA WILDLIFE STUDIES & TONTO BASIN FIELDWORK",
+        "",
+        "Individual Consumers (♥) at low ranks become Prey Families (♣) for Apex Predators",
+        a, H * 0.84
+      );
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT IV: THE STORM STRIKES — VFX CLIMAX & GAMEPLAY CONFLICT (37.5s - 49.5s)
+  // --------------------------------------------------------------------------
+  else if (t < 49.5) {
+    const lt = t - 37.5;
+    drawDesertSkyline(ctx, t, 0.2, 1.0);
+    // Rolling animated monsoon storm clouds + spinning dust devil + wildfire flames!
+    drawAnimatedStormClouds(ctx, t, 0.92);
+    drawAnimatedDustDevil(ctx, lerp(120, 290, lt / 12.0), H * 0.89, 280, t, 0.65);
+    drawWildfireFlames(ctx, t, H * 0.92, 0.72);
+    drawSwayingGrasses(ctx, t, H * 0.91, 0.85, "#190c0a", 1.0);
+
+    // Rain streaks
+    ctx.save();
+    ctx.strokeStyle = "rgba(180,215,245,0.32)";
+    ctx.lineWidth = 1.5;
+    for (const r of RAIN) {
+      const rx = ((r.x - t * r.sp * 0.32) % (W + 240) + (W + 240)) % (W + 240) - 120;
+      const ry = (r.y + t * r.sp) % H;
+      ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - r.len * 0.32, ry + r.len); ctx.stroke();
+    }
+    ctx.restore();
+
+    // Wildfire rising glowing embers!
+    ctx.save();
+    for (const e of EMBERS) {
+      const ex = ((e.x + t * e.vx) % W + W) % W;
+      const ey = ((e.y + t * e.vy) % H + H) % H;
+      ctx.fillStyle = `hsla(${e.hue}, 100%, 62%, 0.78)`;
+      ctx.shadowColor = "#ff6a22";
+      ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(ex, ey, e.r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+
+    // Forked Lightning Flashes timed with Thunder SFX!
+    const flash1 = Math.exp(-Math.pow((lt - 0.35) * 6.5, 2));
+    const flash2 = Math.exp(-Math.pow((lt - 3.75) * 7.0, 2));
+    const flash3 = Math.exp(-Math.pow((lt - 6.85) * 6.5, 2));
+    if (flash1 > 0.05) drawLightning(ctx, W * 0.32, 40, H * 0.72, 1.1, flash1);
+    if (flash2 > 0.05) drawLightning(ctx, W * 0.68, 40, H * 0.76, 2.7, flash2);
+    if (flash3 > 0.05) drawLightning(ctx, W * 0.50, 40, H * 0.74, 4.3, flash3);
+    const screenFlash = Math.max(flash1, flash2, flash3) * 0.38;
+    if (screenFlash > 0.01) {
+      ctx.fillStyle = `rgba(220,238,255,${screenFlash.toFixed(3)})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Rival Board vs Storm Attack Choreography!
+    const hitT = clamp((lt - 3.65) / 1.1);
+    drawCard3D(ctx, "QS", W * 0.32, H * 0.52 + Math.sin(t * 4) * 3, 0.50, -0.04, 0, 0.95, "#58c4b8", t * 0.5);
+    drawCard3D(ctx, "KC", W * 0.50, H * 0.52 + Math.cos(t * 4) * 3, 0.50, 0, 0, 0.95, "#6bd47f", t * 0.5);
+
+    // K♥ Coyote gets struck and flung into the Playable Discard Pile on the right!
+    const khX = lerp(W * 0.68, W * 0.84, easeOutCubic(hitT));
+    const khY = lerp(H * 0.52, H * 0.62, easeOutCubic(hitT)) - Math.sin(hitT * Math.PI) * 90;
+    const khRot = lerp(0.04, 0.34, hitT);
+    drawCard3D(ctx, "KH", khX, khY, lerp(0.50, 0.42, hitT), khRot, hitT * 0.3, 0.95, hitT > 0.05 ? "#ff7733" : "#f2735e", t);
+
+    // Flying glowing card shatter sparks on impact!
+    if (lt > 3.65 && lt < 5.3) {
+      const sp = (lt - 3.65) / 1.65;
+      ctx.save();
+      for (let i = 0; i < 18; i++) {
+        const ang = (i / 18) * Math.PI * 2 + i * 0.2;
+        const dist = 30 + sp * (180 + (i % 5) * 45);
+        ctx.fillStyle = `rgba(255,${140 + (i % 4) * 28},60,${(1 - sp).toFixed(3)})`;
+        ctx.save();
+        ctx.translate(W * 0.68 + Math.cos(ang) * dist, H * 0.52 + Math.sin(ang) * dist);
+        ctx.rotate(ang + sp * 6);
+        ctx.fillRect(-6, -3, 12, 6);
+        ctx.restore();
+      }
+      ctx.strokeStyle = `rgba(255,155,60,${(1 - sp).toFixed(3)})`;
+      ctx.lineWidth = 6 * (1 - sp);
+      ctx.beginPath(); ctx.arc(W * 0.68, H * 0.52, 40 + sp * 320, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+
+    // 6♦ Wild Fires & 4♦ Monsoon slamming in!
+    const stormIn = easeOutBack(clamp((lt - 1.2) / 0.75));
+    drawCard3D(ctx, "6D", lerp(W * 0.82, W * 0.67, stormIn), lerp(-180, H * 0.34, stormIn), 0.54, -0.10, 0, clamp(stormIn), "#ff8c2b", t * 1.1);
+    const mIn = easeOutBack(clamp((lt - 5.2) / 0.75));
+    if (lt > 5.1) {
+      drawCard3D(ctx, "4D", lerp(W * 0.14, W * 0.22, mIn), lerp(-180, H * 0.33, mIn), 0.50, 0.10, 0, clamp(mIn), "#7ac6ff", t * 1.1);
+    }
+
+    // Discard Market callout pill at 7.2s -> 11.8s
+    if (lt > 7.2) {
+      const da = fadeWindow(lt, 7.2, 11.8, 0.5, 0.5);
+      ctx.save();
+      ctx.globalAlpha = da;
+      roundRect(ctx, W * 0.73, H * 0.36, 280, 44, 99);
+      ctx.fillStyle = "rgba(18,14,10,0.88)";
+      ctx.fill();
+      ctx.strokeStyle = "#e8b35a";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#ffe5a8";
+      ctx.font = `800 13px ui-monospace, monospace`;
+      ctx.textAlign = "center";
+      ctx.fillText("2-CARD PLAYABLE DISCARD MARKET", W * 0.73 + 140, H * 0.36 + 22);
+      ctx.restore();
+    }
+
+    drawCinemaCaption(
+      ctx,
+      "♦ CROSS-LANDSCAPE DISTURBANCES",
+      lt < 6.2 ? "DISRUPT YOUR RIVAL'S ECOSYSTEM" : "EVERY DISCARD STAYS IN PLAY",
+      lt < 6.2 ? "Wildfire, monsoon, and drought cross every habitat — strike any card on the board." : "Draw or play straight from Discard A & B — zero dead hands, pure strategy.",
+      fadeWindow(lt, 0.3, 11.6, 0.5, 0.6),
+      H * 0.83
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT V: MYTH MEETS REAL SCIENCE — ANIMATED DNA HELIX & MIRAGE OPTICS! (49.5s - 59.5s)
+  // --------------------------------------------------------------------------
+  else if (t < 59.5) {
+    const lt = t - 49.5;
+    const bg = ctx.createRadialGradient(W * 0.5, H * 0.48, 40, W * 0.5, H * 0.5, W * 0.74);
+    bg.addColorStop(0, "#2f1b47");
+    bg.addColorStop(0.52, "#141024");
+    bg.addColorStop(1, "#07070f");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Animated optical refraction mirage waves
+    ctx.save();
+    for (let i = 0; i < 6; i++) {
+      ctx.strokeStyle = `rgba(204,140,255,${0.08 + i * 0.015})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 20) {
+        const y = H * 0.52 + (i - 2.5) * 44 + Math.sin(x * 0.012 + t * 2.2 + i) * 16;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+    drawDustMotes(ctx, t, 0.7, "220,170,255");
+
+    const j1In = easeOutBack(lt / 0.9);
+    const j2In = easeOutBack((lt - 3.6) / 0.9);
+    const a = fadeWindow(lt, 0, 10.0, 0.5, 0.6);
+
+    // Animated 3D Rotating DNA Double Helix (CRPV 1933) on the left!
+    drawAnimatedDNAHelix(ctx, W * 0.14, H * 0.44, 240, t, a * clamp(lt / 0.9));
+    // Animated leaping holographic Jackrabbit silhouette bounding underneath!
+    drawAnimatedRabbit(ctx, lerp(160, 560, (lt * 0.28) % 1), H * 0.74, 0.85, t, true, "rgba(225,180,255,0.68)");
+
+    const j1X = lerp(W * 0.50, W * 0.36, easeInOutCubic(clamp((lt - 3.2) / 1.0)));
+    drawCard3D(ctx, "J1", j1X, H * 0.45 + Math.sin(t * 2) * 5, 0.64, -0.05 + Math.sin(t * 1.6) * 0.02, lerp(Math.PI, 0, clamp(lt / 0.85)), a * clamp(j1In), "#cc8cff", t * 1.1);
+
+    if (lt > 3.5) {
+      drawCard3D(ctx, "J2", W * 0.64, H * 0.45 + Math.cos(t * 2) * 5, 0.64, 0.05 + Math.cos(t * 1.6) * 0.02, lerp(Math.PI, 0, clamp((lt - 3.5) / 0.85)), a * clamp(j2In), "#88d8ff", t * 1.1 + 0.5);
+      // Animated Atmospheric Light Refraction Rays on the right!
+      drawAnimatedMirageOptics(ctx, W * 0.86, H * 0.44, t, a * clamp((lt - 3.7) / 0.9));
+    }
+
+    drawCinemaCaption(
+      ctx,
+      "★ TWO OPTIONAL TRUE-WILD JOKERS · MYTH VS. REAL SCIENCE",
+      lt < 4.5 ? "THE JACKALOPE HAS REAL BIOLOGY" : "FOLKLORE ON THE JOKERS. PURE SCIENCE IN THE 52.",
+      lt < 4.5 ? "Shope papillomavirus (1933) — the first DNA virus proven to cause cancer in mammals." : "Play Jackalope & Desert Mirage as True Wilds — or pull them out for 100% pure ecology.",
+      a, H * 0.83
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT VI: APEX FLIGHT & 3D ORBITING GALLERY (59.5s - 70.5s) — FULL WILDLIFE ALIVE!
+  // --------------------------------------------------------------------------
+  else if (t < 70.5) {
+    const lt = t - 59.5;
+    drawDesertSkyline(ctx, t, 0.88, 0);
+    ctx.fillStyle = "rgba(18,12,8,0.42)";
+    ctx.fillRect(0, 0, W, H);
+    drawDustMotes(ctx, t, 0.9, "255,222,145");
+    drawSwayingGrasses(ctx, t, H * 0.91, 0.85, "#0d0909", 0.25);
+
+    // Living wildlife parade moving across the sunlit canyon behind & below!
+    drawAnimatedEagle(ctx, lerp(-110, W + 140, (lt / 9.5) % 1), H * 0.19 + Math.sin(t * 1.3) * 18, 0.86, t, "#16100e", "rgba(255,222,132,0.85)");
+    drawAnimatedCoyote(ctx, lerp(-90, W + 100, clamp(lt / 9.0)), H * 0.85, 0.92, t, "#120d0e", "rgba(255,205,120,0.45)");
+    drawAnimatedRoadrunner(ctx, lerp(W * 0.12, W + 120, clamp((lt - 2.2) / 5.5)), H * 0.86, 0.82, t, "#f2b85c");
+
+    // 3D Depth-Sorted Orbiting Carousel of 16 Wildlands Cards around A♥ Desert Bald Eagle!
+    const orbitIds = ["2S","2C","2H","3H","4H","5C","5H","4D","6D","KD","8H","10H","QS","QH","KC","KH"];
+    const items = orbitIds.map((id, i) => {
+      const ang = (i / orbitIds.length) * Math.PI * 2 + lt * 0.52;
+      const rx = 500, rz = Math.sin(ang);
+      return {
+        id,
+        x: W / 2 + Math.cos(ang) * rx,
+        y: H * 0.45 + Math.sin(ang) * 72,
+        z: rz,
+        sc: 0.30 + (rz + 1) * 0.12,
+        rot: Math.cos(ang) * 0.14
+      };
+    });
+
+    const a = fadeWindow(lt, 0, 11.0, 0.6, 0.7);
+    items.filter(o => o.z < 0).sort((p, q) => p.z - q.z).forEach(o => {
+      drawCard3D(ctx, o.id, o.x, o.y, o.sc, o.rot, 0, a * (0.45 + (o.z + 1) * 0.35), null, t * 0.5);
+    });
+
+    const eagleScale = 0.72 + Math.sin(lt * 2.2) * 0.02;
+    const rg = ctx.createRadialGradient(W / 2, H * 0.45, 20, W / 2, H * 0.45, 280);
+    rg.addColorStop(0, `rgba(255,220,130,${0.48 * a})`);
+    rg.addColorStop(1, "rgba(255,180,60,0)");
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, W, H);
+    drawCard3D(ctx, "AH", W / 2, H * 0.45, eagleScale, Math.sin(lt * 1.1) * 0.03, 0, a, "#ffd778", t * 1.0);
+
+    items.filter(o => o.z >= 0).sort((p, q) => p.z - q.z).forEach(o => {
+      drawCard3D(ctx, o.id, o.x, o.y, o.sc, o.rot, 0, a * 0.96, SUIT_META[HERO_CARDS[o.id].suit].glow, t * 0.8);
+    });
+
+    if (lt > 6.5) {
+      const vp = clamp((lt - 6.5) / 1.5);
+      ctx.save();
+      ctx.strokeStyle = `rgba(255,222,132,${(1 - vp) * 0.85})`;
+      ctx.lineWidth = 6 * (1 - vp);
+      ctx.beginPath(); ctx.arc(W / 2, H * 0.45, 90 + vp * 420, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+
+    drawCinemaCaption(
+      ctx,
+      "2 PLAYERS · 52 REAL CARDS · FIRST TO 2 ECOSYSTEM SETS",
+      "EVERY HAND TELLS A STORY",
+      "Real species. Real habitats. Real science — right on your tabletop.",
+      a, H * 0.84
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // ACT VII: ICONIC LIVING TITLE CARD & FINALE (70.5s - 78.0s)
+  // --------------------------------------------------------------------------
+  else {
+    const lt = t - 70.5;
+    const endFade = clamp(1 - (lt - 6.2) / 1.6);
+    drawDesertSkyline(ctx, t, 0.55, 0);
+    ctx.fillStyle = "rgba(8,10,12,0.56)";
+    ctx.fillRect(0, 0, W, H);
+    drawDustMotes(ctx, t, 0.65 * endFade);
+    drawSwayingGrasses(ctx, t, H * 0.91, 0.85 * endFade, "#0a0808", 0.12);
+
+    // Majestic Bald Eagle gliding slowly across behind the golden title!
+    drawAnimatedEagle(ctx, lerp(W * 0.16, W * 0.86, lt / 7.5), H * 0.22 + Math.sin(t * 1.2) * 10, 0.72, t, "rgba(232,179,90,0.42)", "rgba(255,220,140,0.55)");
+
+    // Breathing bottom poker-hand fan of 5 iconic Wildlands cards
+    const handIds = ["QS", "2C", "AH", "6D", "J1"];
+    const fanP = easeOutCubic(lt / 1.2);
+    handIds.forEach((id, i) => {
+      const sp = i - 2;
+      drawCard3D(ctx, id, W / 2 + sp * 115 * fanP, H * 0.79 + Math.abs(sp) * 14 + Math.sin(t * 2 + i) * 4, 0.36, sp * 0.12, 0, 0.90 * fanP * endFade, null, t * 0.6 + i);
+    });
+
+    // Metallic Gold WILDLANDS Title Lockup with animated light sweep!
+    ctx.save();
+    ctx.globalAlpha = easeOutCubic(lt / 0.9) * endFade;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = "#e8b35a";
+    ctx.font = `700 15px ui-monospace, Consolas, monospace`;
+    ctx.fillText("TONTO BASIN ALPHA · ARIZONA", W / 2, H * 0.27);
+
+    const sweep = ((lt * 0.45) % 1.4) - 0.2;
+    const tg = ctx.createLinearGradient(W * (0.2 + sweep * 0.5), H * 0.33, W * (0.55 + sweep * 0.5), H * 0.44);
+    tg.addColorStop(0, "#d48d3a");
+    tg.addColorStop(0.45, "#fffaf0");
+    tg.addColorStop(0.55, "#ffe59e");
+    tg.addColorStop(1, "#b86824");
+    ctx.shadowColor = "rgba(232,179,90,0.5)";
+    ctx.shadowBlur = 34;
+    ctx.fillStyle = tg;
+    ctx.font = `700 84px Georgia, "Times New Roman", serif`;
+    ctx.fillText("W I L D L A N D S", W / 2, H * 0.38);
+
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = "#e8eee9";
+    ctx.font = `italic 24px Georgia, "Times New Roman", serif`;
+    ctx.fillText("Collect the World's Wildlands. Discover Nature's Connections.", W / 2, H * 0.48);
+
+    ctx.fillStyle = "#b5c6cc";
+    ctx.font = `700 14px ui-monospace, Consolas, monospace`;
+    ctx.fillText("♠ FOUNDATIONS   ·   ♣ RESOURCES   ·   ♥ CONSUMERS   ·   ♦ DYNAMICS   ·   ★ JOKERS WILD", W / 2, H * 0.555);
+    ctx.restore();
+  }
+
+  // Smooth fade-to-black crossfades right at Act cuts (0.28s soft cinema dip)
+  for (let i = 1; i < ACTS.length; i++) {
+    const cut = ACTS[i].start;
+    const dist = Math.abs(t - cut);
+    if (dist < 0.22) {
+      const dip = (1 - dist / 0.22) * 0.65;
+      ctx.fillStyle = `rgba(4,6,8,${dip.toFixed(3)})`;
+      ctx.fillRect(-30, -30, W + 60, H + 60);
+    }
+  }
+  if (t > DURATION - 1.2) {
+    const fadeOut = clamp((t - (DURATION - 1.2)) / 1.1);
+    ctx.fillStyle = `rgba(4,6,8,${fadeOut.toFixed(3)})`;
+    ctx.fillRect(-30, -30, W + 60, H + 60);
+  }
+
+  ctx.restore();
+
+  // Cinematic 2.35:1 Anamorphic Letterbox Bars (always razor crisp, never shaken!)
+  ctx.fillStyle = "#040608";
+  ctx.fillRect(0, 0, W, BAR_H);
+  ctx.fillRect(0, H - BAR_H, W, BAR_H);
+  // Subtle warm hairline frame edges
+  ctx.fillStyle = "rgba(232,179,90,0.22)";
+  ctx.fillRect(0, BAR_H, W, 1);
+  ctx.fillRect(0, H - BAR_H - 1, W, 1);
+
+  // Live Act watermark subtly tucked inside top cinema bar
+  const curAct = ACTS.find(a => t >= a.start && t < a.end) || ACTS[ACTS.length - 1];
+  ctx.fillStyle = "rgba(232,179,90,0.62)";
+  ctx.font = `700 11px ui-monospace, Consolas, monospace`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`WILDLANDS · ${curAct.name.toUpperCase()}`, 26, BAR_H / 2);
+  ctx.textAlign = "right";
+  ctx.fillStyle = "rgba(180,196,202,0.55)";
+  ctx.fillText("100% PROCEDURAL CODE · CANVAS VFX + WEB AUDIO", W - 26, BAR_H / 2);
+}
+
+// ============================================================================
+// 8. PLAYBACK LOOP, SCRUBBER, ACT CHIPS & 1-CLICK .WEBM VIDEO EXPORTER
+// ============================================================================
+const canvas = document.getElementById("film");
+const ctx = canvas.getContext("2d");
+let playing = false;
+let currentTime = 0;
+let lastTs = null;
+let recording = false;
+let recorder = null;
+let recChunks = [];
+
+function fmtTime(sec) {
+  const s = Math.max(0, Math.floor(sec));
+  const m = Math.floor(s / 60);
+  return `${m}:${String(s % 60).padStart(2, "0")}`;
+}
+
+function updateUI() {
+  document.getElementById("timeReadout").textContent = `${fmtTime(currentTime)} / ${fmtTime(DURATION)}`;
+  const pct = (currentTime / DURATION) * 100;
+  document.getElementById("scrubFill").style.width = pct + "%";
+  document.getElementById("scrubThumb").style.left = pct + "%";
+  document.getElementById("btnPlayPause").textContent = playing ? "⏸ Pause" : "▶ Play";
+
+  const curAct = ACTS.find(a => currentTime >= a.start && currentTime < a.end) || ACTS[ACTS.length - 1];
+  document.querySelectorAll(".act-chip").forEach(el => {
+    el.classList.toggle("active", Number(el.dataset.act) === curAct.id);
+  });
+}
+
+function startPlayback(fromTime = null) {
+  audio.init();
+  if (fromTime !== null) {
+    currentTime = clamp(fromTime, 0, DURATION);
+    audio.resetTimeline(currentTime);
+  } else if (currentTime >= DURATION - 0.1) {
+    currentTime = 0;
+    audio.resetTimeline(0);
+  }
+  document.getElementById("curtain").classList.add("hidden");
+  playing = true;
+  lastTs = null;
+  updateUI();
+}
+
+function pausePlayback() {
+  playing = false;
+  audio.silence();
+  updateUI();
+}
+
+function tick(ts) {
+  if (lastTs === null) lastTs = ts;
+  const dt = Math.min(0.05, (ts - lastTs) / 1000);
+  lastTs = ts;
+
+  if (playing) {
+    currentTime += dt;
+    if (currentTime >= DURATION) {
+      currentTime = DURATION;
+      playing = false;
+      audio.silence();
+      if (recording && recorder && recorder.state === "recording") {
+        recorder.stop();
+      }
+    } else {
+      audio.update(currentTime);
+    }
+    updateUI();
+  }
+  renderFrame(ctx, currentTime);
+  requestAnimationFrame(tick);
+}
+
+// Build Act jump buttons
+const actChipsEl = document.getElementById("actChips");
+ACTS.forEach(a => {
+  const b = document.createElement("button");
+  b.className = "act-chip";
+  b.dataset.act = a.id;
+  b.textContent = a.name;
+  b.addEventListener("click", () => startPlayback(a.start + 0.05));
+  actChipsEl.appendChild(b);
+});
+
+// Controls wiring
+document.getElementById("btnHeroPlay").addEventListener("click", () => startPlayback(0));
+document.getElementById("btnPlayPause").addEventListener("click", () => playing ? pausePlayback() : startPlayback());
+document.getElementById("btnRestart").addEventListener("click", () => startPlayback(0));
+canvas.addEventListener("click", () => {
+  if (!document.getElementById("curtain").classList.contains("hidden")) return;
+  playing ? pausePlayback() : startPlayback();
+});
+document.getElementById("btnMute").addEventListener("click", e => {
+  audio.init();
+  audio.setMuted(!audio.muted);
+  e.target.textContent = audio.muted ? "🔇 Muted" : "🔊 Sound On";
+});
+document.getElementById("btnFull").addEventListener("click", () => {
+  const wrap = document.getElementById("stageWrap");
+  if (!document.fullscreenElement) wrap.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+
+// Scrubber click/drag
+const scrubber = document.getElementById("scrubber");
+let scrubbing = false;
+function scrubTo(e) {
+  const rect = scrubber.getBoundingClientRect();
+  const p = clamp((e.clientX - rect.left) / rect.width);
+  currentTime = p * DURATION;
+  if (audio.ctx) audio.resetTimeline(currentTime);
+  renderFrame(ctx, currentTime);
+  updateUI();
+}
+scrubber.addEventListener("mousedown", e => { scrubbing = true; scrubTo(e); });
+window.addEventListener("mousemove", e => { if (scrubbing) scrubTo(e); });
+window.addEventListener("mouseup", () => { scrubbing = false; });
+
+// 1-Click Real-Time Video + Audio Export (.webm)
+document.getElementById("btnRecord").addEventListener("click", () => {
+  const btn = document.getElementById("btnRecord");
+  const toast = document.getElementById("statusToast");
+  if (recording && recorder && recorder.state === "recording") {
+    recorder.stop();
+    return;
+  }
+  try {
+    audio.init();
+    const videoStream = canvas.captureStream(60);
+    const mixed = new MediaStream([
+      ...videoStream.getVideoTracks(),
+      ...audio.streamDest.stream.getAudioTracks()
+    ]);
+    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
+      ? "video/webm;codecs=vp9,opus"
+      : "video/webm";
+    recChunks = [];
+    recorder = new MediaRecorder(mixed, { mimeType: mime, videoBitsPerSecond: 6500000 });
+    recorder.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
+    recorder.onstop = () => {
+      recording = false;
+      btn.classList.remove("recording");
+      btn.textContent = "⏺ Export Video (.webm)";
+      if (recChunks.length > 0) {
+        const blob = new Blob(recChunks, { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "wildlands_trailer.webm";
+        a.click();
+        toast.textContent = "Saved wildlands_trailer.webm! Ready for Kickstarter, YouTube, TikTok & Instagram.";
+      }
+    };
+    recording = true;
+    btn.classList.add("recording");
+    btn.textContent = "⏹ Stop & Save Video";
+    toast.textContent = "Recording live 60 FPS HD video + Web Audio from 0:00 to 1:18... (downloads automatically when finished)";
+    recorder.start(250);
+    startPlayback(0);
+  } catch (err) {
+    toast.textContent = "Video export needs HTTP (run via localhost:8765/trailer.html or GitHub Pages). Live playback still works directly!";
+  }
+});
+
+// Keyboard shortcuts: Space = Play/Pause, Left/Right = Seek 5s
+window.addEventListener("keydown", e => {
+  if (e.target.tagName === "BUTTON") return;
+  if (e.key === " ") { e.preventDefault(); playing ? pausePlayback() : startPlayback(); }
+  if (e.key === "ArrowRight") { startPlayback(Math.min(DURATION - 0.1, currentTime + 5)); }
+  if (e.key === "ArrowLeft") { startPlayback(Math.max(0, currentTime - 5)); }
+});
+
+// Boot: preload all 19 hero cards & start render loop on gorgeous Act I sunrise frame!
+preloadAllArtwork().then(() => {
+  renderFrame(ctx, 2.5);
+  updateUI();
+  requestAnimationFrame(tick);
+});
+</script>
+</body>
+</html>
